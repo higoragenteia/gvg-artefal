@@ -216,6 +216,74 @@
   .gvgp-future-card .gvgp-btn{margin-top:18px}
   .gvgp-toast{position:fixed;right:18px;bottom:18px;z-index:80;background:#082f3c;color:#fff;padding:11px 14px;border-radius:11px;font-size:11px;box-shadow:0 14px 30px rgba(0,0,0,.24);opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .2s ease,transform .2s ease;max-width:340px}
   .gvgp-toast.show{opacity:1;transform:none}
+  /* Dois layouts da visão geral: executivo (A) e monitor (B) */
+  .gvgp-layout{transition:opacity .32s ease,transform .32s ease}
+  #gvgpViewOverview.gvgp-switching .gvgp-layout{opacity:0;transform:translateY(-8px) scale(.995)}
+  .gvgp-layout-enter{animation:gvgpLayoutIn .58s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes gvgpLayoutIn{from{opacity:0;transform:translateY(14px) scale(.99)}to{opacity:1;transform:none}}
+  .gvgp-layout-bar{display:flex;align-items:center;justify-content:flex-end;gap:9px;margin:0 0 10px;font-size:9.5px;color:#5f7783;font-weight:750}
+  .gvgp-live-dot{width:6px;height:6px;border-radius:50%;background:#0f766e;box-shadow:0 0 0 4px rgba(15,118,110,.12),0 0 10px rgba(15,118,110,.55);flex:0 0 auto}
+  .gvgp-layout-bar button{border:1px solid #cfdee3;background:#fff;color:#0b4a5a;border-radius:999px;padding:6px 10px;font-size:9px;font-weight:850;box-shadow:0 4px 10px rgba(8,47,60,.06)}
+  .gvgp-layout-bar.is-paused .gvgp-live-dot{background:#b9c7cc;box-shadow:none}
+  .gvgp-layout-b{background:transparent}
+  .gvgp-tv{
+    position:relative;overflow:hidden;border-radius:26px;padding:24px 24px 18px;color:#fff;
+    background:
+      radial-gradient(85% 110% at 92% 4%,rgba(241,210,124,.24),transparent 56%),
+      radial-gradient(65% 95% at 8% 100%,rgba(15,118,110,.40),transparent 58%),
+      linear-gradient(135deg,#0b3f4f 0%,#082f3c 52%,#041f28 100%);
+    border:1px solid rgba(255,255,255,.09);
+    box-shadow:0 24px 52px rgba(8,47,60,.22),inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  .gvgp-tv:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:38px 38px;mask-image:linear-gradient(90deg,#000,transparent 82%);pointer-events:none}
+  .gvgp-tv-head{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:22px}
+  .gvgp-tv-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:8.5px;text-transform:uppercase;letter-spacing:2px;font-weight:900;color:#f1d27c;background:rgba(241,210,124,.1);border:1px solid rgba(241,210,124,.18);padding:6px 9px;border-radius:999px}
+  .gvgp-tv-head h2{margin:12px 0 5px;font-size:27px;letter-spacing:-1px;line-height:1.08}
+  .gvgp-tv-head p{margin:0;max-width:610px;color:#b8d2d7;font-size:11.5px;line-height:1.55}
+  .gvgp-tv-clock{text-align:right;flex:0 0 auto;padding:4px 0 0 14px;border-left:1px solid rgba(255,255,255,.12)}
+  .gvgp-tv-clock strong{display:block;font-size:29px;line-height:1;letter-spacing:-1.5px;font-variant-numeric:tabular-nums;color:#fff}
+  .gvgp-tv-clock span{display:block;margin-top:5px;font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:#9fc2c9;font-weight:800}
+  .gvgp-tv-kpis{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-top:19px}
+  .gvgp-tv-kpi{padding:14px 14px 12px;border-radius:15px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 8px 18px rgba(0,0,0,.1)}
+  .gvgp-tv-kpi span{display:block;font-size:8px;text-transform:uppercase;letter-spacing:1.1px;color:#9fc2c9;font-weight:900}
+  .gvgp-tv-kpi strong{display:block;margin-top:6px;font-size:32px;line-height:1;letter-spacing:-1.4px;font-variant-numeric:tabular-nums;color:#fff}
+  .gvgp-tv-kpi small{display:block;margin-top:6px;font-size:8.5px;color:#8fb2ba}
+  .gvgp-tv-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.35fr .85fr;gap:13px;margin-top:13px}
+  .gvgp-tv-card{padding:14px;border-radius:15px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09)}
+  .gvgp-tv-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+  .gvgp-tv-card-head h3{margin:0;font-size:12px;color:#fff;letter-spacing:-.1px}
+  .gvgp-tv-card-head span{font-size:8.5px;color:#9fc2c9;font-weight:750}
+  .gvgp-tv-recent{display:grid;gap:7px;max-height:250px;overflow:auto;scrollbar-width:thin}
+  .gvgp-tv-order{display:grid;grid-template-columns:1.05fr 1fr .95fr auto;gap:8px;align-items:center;padding:8px 9px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)}
+  .gvgp-tv-order b{font-size:10px;color:#f1d27c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .gvgp-tv-order span{font-size:9px;color:#c3d9de;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .gvgp-tv-order .gvgp-tv-date{color:#8fb2ba;text-align:right}
+  .gvgp-tv-top{display:grid;gap:9px;max-height:250px;overflow:auto;scrollbar-width:thin}
+  .gvgp-tv-top-item{display:grid;gap:4px}
+  .gvgp-tv-top-line{display:flex;justify-content:space-between;gap:8px;font-size:9.5px;color:#d7e8eb}
+  .gvgp-tv-top-line b{font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .gvgp-tv-top-line span{color:#f1d27c;font-size:8.5px;white-space:nowrap}
+  .gvgp-tv-bar{height:5px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden}
+  .gvgp-tv-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#f1d27c,#d5a63b);box-shadow:0 0 8px rgba(241,210,124,.3)}
+  .gvgp-tv-empty{padding:18px 8px;text-align:center;color:#9fc2c9;font-size:10px}
+  .gvgp-tv-foot{position:relative;z-index:1;display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:13px;padding-top:11px;border-top:1px solid rgba(255,255,255,.1);font-size:9px;color:#9fc2c9;font-weight:700}
+  .gvgp-tv-foot b{color:#f1d27c;font-weight:900}
+  .gvgp-tv-rot{margin-left:auto;display:inline-flex;align-items:center;gap:5px}
+  .gvgp-tv-rot b{font-variant-numeric:tabular-nums}
+  @media (max-width:980px){
+    .gvgp-tv-head{flex-direction:column;gap:12px}
+    .gvgp-tv-clock{text-align:left;border-left:0;padding:0}
+    .gvgp-tv-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .gvgp-tv-grid{grid-template-columns:1fr}
+    .gvgp-tv-rot{margin-left:0}
+  }
+  @media (max-width:640px){
+    .gvgp-tv{padding:18px 15px 15px}
+    .gvgp-tv-head h2{font-size:22px}
+    .gvgp-tv-kpi strong{font-size:26px}
+    .gvgp-tv-order{grid-template-columns:1fr auto}
+    .gvgp-tv-order .gvgp-tv-obra{display:none}
+  }
   @media (max-width:1100px){
     .gvgp-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
     .gvgp-grid-2{grid-template-columns:1fr}
@@ -313,6 +381,12 @@
 
     <div class="gvgp-content">
       <section id="gvgpViewOverview" class="gvgp-view">
+        <div id="gvgpLayoutBar" class="gvgp-layout-bar gvgp-hidden" aria-live="polite">
+          <span class="gvgp-live-dot" aria-hidden="true"></span>
+          <span>Rotação automática · <b id="gvgpBarCountdown">10</b>s</span>
+          <button type="button" id="gvgpRotateBtn">Pausar</button>
+        </div>
+        <div id="gvgpLayoutA" class="gvgp-layout gvgp-layout-a">
         <div class="gvgp-hero">
           <div class="gvgp-hero-copy">
             <span class="gvgp-eyebrow">GVG&amp;ARTEFAL · operação interna</span>
@@ -432,6 +506,45 @@
           <p>Os indicadores aparecerão aqui assim que o primeiro pedido for registrado no módulo Pedidos. Você pode abrir o módulo agora e cadastrar um pedido de teste.</p>
           <button type="button" class="gvgp-btn gvgp-btn-gold" data-go="pedidos">Cadastrar primeiro pedido</button>
         </div>
+        </div>
+
+        <div id="gvgpLayoutB" class="gvgp-layout gvgp-layout-b gvgp-hidden">
+          <div class="gvgp-tv">
+            <div class="gvgp-tv-head">
+              <div>
+                <span class="gvgp-tv-eyebrow">GVG&amp;ARTEFAL · monitor operacional</span>
+                <h2>Pedidos em tempo real</h2>
+                <p>Segundo layout da visão geral. Ele alterna automaticamente com o layout executivo a cada 10 segundos, mantendo os mesmos indicadores da base nova.</p>
+              </div>
+              <div class="gvgp-tv-clock">
+                <strong id="gvgpTvClock">--:--:--</strong>
+                <span id="gvgpTvDate">--/--/----</span>
+              </div>
+            </div>
+            <div class="gvgp-tv-kpis">
+              <div class="gvgp-tv-kpi"><span>Pedidos</span><strong id="gvgpTvTotal">—</strong><small>registrados na base</small></div>
+              <div class="gvgp-tv-kpi"><span>Em andamento</span><strong id="gvgpTvOpen">—</strong><small>aguardando entrega</small></div>
+              <div class="gvgp-tv-kpi"><span>Entregues</span><strong id="gvgpTvDone">—</strong><small>ou entregues parciais</small></div>
+              <div class="gvgp-tv-kpi"><span>Itens</span><strong id="gvgpTvItems">—</strong><small>linhas solicitadas</small></div>
+            </div>
+            <div class="gvgp-tv-grid">
+              <div class="gvgp-tv-card">
+                <div class="gvgp-tv-card-head"><h3>Últimas solicitações</h3><span id="gvgpTvUpdated">—</span></div>
+                <div id="gvgpTvRecent" class="gvgp-tv-recent"><p class="gvgp-tv-empty">Carregando pedidos…</p></div>
+              </div>
+              <div class="gvgp-tv-card">
+                <div class="gvgp-tv-card-head"><h3>Ranking de materiais</h3><span>un. equivalentes</span></div>
+                <div id="gvgpTvTop" class="gvgp-tv-top"><p class="gvgp-tv-empty">Carregando…</p></div>
+              </div>
+            </div>
+            <div class="gvgp-tv-foot">
+              <span>Produtos ativos: <b id="gvgpTvProducts">—</b></span>
+              <span>Obras ativas: <b id="gvgpTvWorks">—</b></span>
+              <span>Ambiente: <b id="gvgpTvEnv">—</b></span>
+              <span class="gvgp-tv-rot">Próxima troca em <b id="gvgpTvCountdown">10</b>s</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section id="gvgpViewPedidos" class="gvgp-view gvgp-hidden">
@@ -465,7 +578,7 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
-  const state = { token:'', adminToken:'', user:null, data:null, view:'overview', frameLoaded:false };
+  const state = { token:'', adminToken:'', user:null, data:null, view:'overview', frameLoaded:false, layout:1, rotation:true, rotationTimer:null, countdown:10 };
   const FUTURE = {
     gastos:{title:'Controle de Gastos', subtitle:'Integração futura'},
     fornecedores:{title:'Fornecedores', subtitle:'Integração futura'},
@@ -512,9 +625,16 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
     $('gvgpRecentBody').innerHTML='<tr><td colspan="5" class="gvgp-empty-row">Entre no painel para ver os pedidos.</td></tr>';
     $('gvgpTopList').innerHTML='<p class="gvgp-empty-row">Entre no painel para ver os produtos mais solicitados.</p>';
     $('gvgpUpdatedAt').textContent='—';
+    ['gvgpTvTotal','gvgpTvOpen','gvgpTvDone','gvgpTvItems','gvgpTvProducts','gvgpTvWorks','gvgpTvEnv'].forEach(id=>{const n=$(id);if(n)n.textContent='—';});
+    const tr=$('gvgpTvRecent');if(tr)tr.innerHTML='<p class="gvgp-tv-empty">Entre no painel para ver os pedidos.</p>';
+    const tt=$('gvgpTvTop');if(tt)tt.innerHTML='<p class="gvgp-tv-empty">Entre no painel para ver o ranking.</p>';
+    const tu=$('gvgpTvUpdated');if(tu)tu.textContent='—';
   }
   function renderLoggedOut(){
     state.token=''; state.adminToken=''; state.user=null; state.data=null;
+    stopRotation();
+    switchLayout(1,false);
+    $('gvgpLayoutBar').classList.add('gvgp-hidden');
     $('gvgpLoginCard').classList.remove('gvgp-hidden');
     $('gvgpDashboard').classList.add('gvgp-hidden');
     $('gvgpEmpty').classList.add('gvgp-hidden');
@@ -561,6 +681,102 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
       return '<div class="gvgp-top-item"><div class="gvgp-top-line"><b>'+safe(x.nome)+'</b><span>'+q.toLocaleString('pt-BR')+' un.</span></div><div class="gvgp-bar"><i style="width:'+pct+'%"></i></div></div>';
     }).join('');
   }
+  function tickClock(){
+    const now=new Date();
+    const clock=$('gvgpTvClock'), date=$('gvgpTvDate');
+    if(clock)clock.textContent=now.toLocaleTimeString('pt-BR',{hour12:false});
+    if(date)date.textContent=now.toLocaleDateString('pt-BR');
+  }
+  function renderTv(d){
+    const i=(d&&d.indicadores)||{};
+    const set=(id,v)=>{const n=$(id);if(n)n.textContent=v;};
+    set('gvgpTvTotal',Number(i.totalPedidos||0).toLocaleString('pt-BR'));
+    set('gvgpTvOpen',Number(i.abertos||0).toLocaleString('pt-BR'));
+    set('gvgpTvDone',Number(i.entregues||0).toLocaleString('pt-BR'));
+    set('gvgpTvItems',Number(i.itens||0).toLocaleString('pt-BR'));
+    set('gvgpTvProducts',Number(i.produtosAtivos||0).toLocaleString('pt-BR'));
+    set('gvgpTvWorks',Number(i.obrasAtivas||0).toLocaleString('pt-BR'));
+    set('gvgpTvEnv',String(d&&d.ambiente||'TESTE'));
+    set('gvgpTvUpdated',d&&d.atualizadoEm?'Atualizado '+d.atualizadoEm:'—');
+    const recent=(d&&d.recentes)||[];
+    const rb=$('gvgpTvRecent');
+    if(rb){
+      rb.innerHTML=recent.length?recent.map(p=>'<div class="gvgp-tv-order"><b>'+safe(p.id)+'</b><span class="gvgp-tv-obra">'+safe(p.obra||'—')+'</span><span class="gvgp-status '+statusClass(p.status)+'">'+safe(p.status||'—')+'</span><span class="gvgp-tv-date">'+safe(p.data||'—')+'</span></div>').join(''):'<p class="gvgp-tv-empty">Nenhum pedido registrado ainda.</p>';
+    }
+    const top=(d&&d.topProdutos)||[];
+    const tb=$('gvgpTvTop');
+    if(tb){
+      if(!top.length){tb.innerHTML='<p class="gvgp-tv-empty">Nenhum item registrado ainda.</p>';}
+      else{
+        const max=Math.max.apply(null,top.map(x=>Number(x.quantidade)||0))||1;
+        tb.innerHTML=top.map(x=>{const q=Number(x.quantidade)||0,pct=Math.max(4,Math.round(q/max*100));return '<div class="gvgp-tv-top-item"><div class="gvgp-tv-top-line"><b>'+safe(x.nome)+'</b><span>'+q.toLocaleString('pt-BR')+' un.</span></div><div class="gvgp-tv-bar"><i style="width:'+pct+'%"></i></div></div>';}).join('');
+      }
+    }
+  }
+  function updateRotationUI(){
+    const bar=$('gvgpLayoutBar');
+    const b=$('gvgpBarCountdown'), t=$('gvgpTvCountdown'), btn=$('gvgpRotateBtn');
+    if(b)b.textContent=state.rotation?String(state.countdown):'—';
+    if(t)t.textContent=state.rotation?String(state.countdown):'—';
+    if(btn)btn.textContent=state.rotation?'Pausar':'Retomar';
+    if(bar)bar.classList.toggle('is-paused',!state.rotation);
+  }
+  function stopRotation(){
+    if(state.rotationTimer){clearInterval(state.rotationTimer);state.rotationTimer=null;}
+  }
+  function startRotation(){
+    stopRotation();
+    if(!state.data||state.view!=='overview')return;
+    $('gvgpLayoutBar').classList.remove('gvgp-hidden');
+    state.rotation=true;
+    state.countdown=10;
+    updateRotationUI();
+    state.rotationTimer=setInterval(()=>{
+      if(!state.rotation||state.view!=='overview'||document.hidden)return;
+      state.countdown--;
+      if(state.countdown<=0){
+        state.countdown=10;
+        updateRotationUI();
+        switchLayout(state.layout===1?2:1);
+        refreshDataSilently();
+      }else updateRotationUI();
+    },1000);
+  }
+  function switchLayout(next,animate){
+    const view=$('gvgpViewOverview'),a=$('gvgpLayoutA'),b=$('gvgpLayoutB');
+    if(!a||!b||state.layout===next)return;
+    if(animate===false){
+      a.classList.toggle('gvgp-hidden',next!==1);
+      b.classList.toggle('gvgp-hidden',next!==2);
+      state.layout=next;
+      return;
+    }
+    view.classList.add('gvgp-switching');
+    setTimeout(()=>{
+      a.classList.toggle('gvgp-hidden',next!==1);
+      b.classList.toggle('gvgp-hidden',next!==2);
+      state.layout=next;
+      view.classList.remove('gvgp-switching');
+      const active=next===1?a:b;
+      active.classList.remove('gvgp-layout-enter');
+      void active.offsetWidth;
+      active.classList.add('gvgp-layout-enter');
+    },300);
+  }
+  function toggleRotation(){
+    state.rotation=!state.rotation;
+    if(state.rotation)state.countdown=10;
+    updateRotationUI();
+    toast(state.rotation?'Rotação automática retomada (10s).':'Rotação automática pausada.');
+  }
+  function refreshDataSilently(){
+    const token=store.get('gvgUsrToken');if(!token)return;
+    run('getPainelInicial',token).then(d=>{
+      if(!d||d.ok!==true){if(d&&d.error)console.warn(d.error);return;}
+      state.data=d;
+      renderDashboard(d);
+    }).catch(()=>{});
+  }
   function renderDashboard(d){
     state.data=d; state.user=d.usuario||null;
     $('gvgpLoginCard').classList.add('gvgp-hidden');
@@ -570,6 +786,7 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
     renderKpis(d);
     renderRecent(d.recentes);
     renderTop(d.topProdutos);
+    renderTv(d);
   }
   function loadDashboard(){
     const token=store.get('gvgUsrToken');
@@ -592,6 +809,7 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
       else {state.adminToken='';}
       store.remove('gvgAdminToken');
       renderDashboard(d);
+      startRotation();
       if(state.frameLoaded){
         const f=$('gvgpPedidosFrame');
         if(f){try{f.contentWindow.location.reload()}catch(e){f.src=PEDIDOS_URL;}}
@@ -641,6 +859,7 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
   function setView(view){
     const future=FUTURE[view];
     state.view=view;
+    if(view!=='overview'){stopRotation();$('gvgpLayoutBar').classList.add('gvgp-hidden');}
     document.querySelectorAll('.gvgp-nav-item').forEach(b=>b.classList.toggle('is-active',b.getAttribute('data-view')===view));
     $('gvgpViewOverview').classList.toggle('gvgp-hidden',view!=='overview');
     $('gvgpViewPedidos').classList.toggle('gvgp-hidden',view!=='pedidos');
@@ -649,6 +868,8 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
       $('gvgpPageTitle').textContent='Visão geral';
       $('gvgpPageSubtitle').textContent='Indicadores do módulo Pedidos';
       $('gvgpViewFuture').classList.add('gvgp-hidden');
+      if(state.data){$('gvgpLayoutBar').classList.remove('gvgp-hidden');startRotation();}
+      else {$('gvgpLayoutBar').classList.add('gvgp-hidden');switchLayout(1,false);}
     } else if(view==='pedidos'){
       $('gvgpPageTitle').textContent='Pedidos';
       $('gvgpPageSubtitle').textContent='Catálogo, carrinho, histórico e Gestão';
@@ -677,6 +898,7 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
   $('gvgpBackdrop').addEventListener('click',()=>setSidebar(false));
   $('gvgpLoginForm').addEventListener('submit',login);
   $('gvgpRefreshBtn').addEventListener('click',refresh);
+  $('gvgpRotateBtn').addEventListener('click',toggleRotation);
   window.addEventListener('storage',e=>{
     if(e.key==='gvgUsrToken'){
       if(e.newValue){state.user=null;loadDashboard();}
@@ -685,6 +907,8 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
   });
   window.addEventListener('resize',()=>{if(window.innerWidth>980)setSidebar(false)});
   // Inicialização
+  tickClock();
+  setInterval(tickClock,1000);
   renderLoggedOut();
   if(store.get('gvgUsrToken')) loadDashboard(); else renderLoggedOut();
 })();
