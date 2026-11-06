@@ -452,6 +452,27 @@ function painelResumoFrotas_(){
   }
   return {valor:total,label:'veículos na frota',detalhe:'Veículos cadastrados',recente:recente};
 }
+function painelResumosExternos_(){
+  const cache=CacheService.getScriptCache();
+  const key='gvg_painel_resumos_v1';
+  const cached=cache.get(key);
+  if(cached){
+    try{const parsed=JSON.parse(cached);if(parsed&&parsed.gastos&&parsed.fornecedores&&parsed.frotas)return parsed;}catch(e){}
+  }
+  let gastos={valor:'—',label:'gastos no mês',detalhe:'Indisponível',recente:null};
+  let fornecedores={valor:'—',label:'fornecedores ativos',detalhe:'Indisponível',recente:null};
+  let frotas={valor:'—',label:'veículos na frota',detalhe:'Indisponível',recente:null};
+  try{gastos=painelResumoGastos_()}catch(e){}
+  try{fornecedores=painelResumoFornecedores_()}catch(e){}
+  try{frotas=painelResumoFrotas_()}catch(e){}
+  const out={gastos:gastos,fornecedores:fornecedores,frotas:frotas};
+  try{cache.put(key,JSON.stringify(out),300);}catch(e){}
+  return out;
+}
+function aquecerResumos(){
+  const r=painelResumosExternos_();
+  return {gastos:r.gastos.valor,fornecedores:r.fornecedores.valor,frotas:r.frotas.valor};
+}
 function getPainelInicial(sessao){
   let usuario;
   try{usuario=gvguVerificarSessao_(sessao);}catch(e){return {ok:false,error:String(e&&e.message||e)};}
@@ -487,12 +508,8 @@ function getPainelInicial(sessao){
       mapaProdutos[nome].pedidos++;
     });
     const topProdutos=Object.values(mapaProdutos).sort((a,b)=>b.quantidade-a.quantidade).slice(0,5);
-    let gastos={valor:'—',label:'gastos no mês',detalhe:'Indisponível',recente:null};
-    let fornecedores={valor:'—',label:'fornecedores ativos',detalhe:'Indisponível',recente:null};
-    let frotas={valor:'—',label:'veículos na frota',detalhe:'Indisponível',recente:null};
-    try{gastos=painelResumoGastos_()}catch(e){}
-    try{fornecedores=painelResumoFornecedores_()}catch(e){}
-    try{frotas=painelResumoFrotas_()}catch(e){}
+    const externos=painelResumosExternos_();
+    const gastos=externos.gastos, fornecedores=externos.fornecedores, frotas=externos.frotas;
     const pedidosResumo={
       valor:lista.length,
       label:lista.length===1?'pedido registrado':'pedidos registrados',
