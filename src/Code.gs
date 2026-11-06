@@ -152,7 +152,7 @@ function salvarFotoPerfil(sessao,foto){
 }
 // Registra SOLICITAÇÃO, não comprova envio no WhatsApp nem entrega de materiais.
 function registrarSolicitacao(d){
- const auth=gvguVerificarSessao_(d&&d.sessao); d.nome=auth.nome; d.usuarioId=auth.id;
+ const auth=gvguVerificarSessao_(d&&d.sessao); const perm=String(auth.permissoes&&auth.permissoes.pedidos||'').toUpperCase(); if(perm!=='OPERADOR'&&perm!=='ADMIN')throw new Error('Seu acesso ao Pedidos é somente leitura.'); d.nome=auth.nome; d.usuarioId=auth.id;
  if(!d||!String(d.nome||'').trim()||!String(d.obra||'').trim()||!Array.isArray(d.itens)||!d.itens.length)throw new Error('Pedido incompleto.');
  if(d.itens.length>100)throw new Error('Limite de itens do pedido excedido.');
  const lock=LockService.getScriptLock();lock.waitLock(20000);try{
@@ -255,6 +255,14 @@ function gvguFotoCol_(sh){
   if(col<0){sh.getRange(1,12).setValue('Foto (URL)');col=11;}
   return col+1;
 }
+const GVG_PERM_KEYS=['pedidos','gastos','fornecedores','frotas'];
+function gvguPermValor_(v){v=String(v||'').toUpperCase();return ['VISUAL','OPERADOR','ADMIN'].indexOf(v)>=0?v:'';}
+function gvguPermissoes_(r){return {pedidos:gvguPermValor_(r&&r[12]),gastos:gvguPermValor_(r&&r[13]),fornecedores:gvguPermValor_(r&&r[14]),frotas:gvguPermValor_(r&&r[15])};}
+function gvguPermObj_(p){const o={};GVG_PERM_KEYS.forEach(k=>o[k]=gvguPermValor_(p&&p[k]));return o;}
+function gvguPermHeaders_(sh){
+  const h=sh.getRange(1,13,1,4).getValues()[0];
+  if(String(h[0])!=='Perm_Pedidos'||String(h[1])!=='Perm_Gastos'||String(h[2])!=='Perm_Fornecedores'||String(h[3])!=='Perm_Frotas')sh.getRange(1,13,1,4).setValues([['Perm_Pedidos','Perm_Gastos','Perm_Fornecedores','Perm_Frotas']]);
+}
 function gvguUsuarios_(){const ss=gvgPlanilha_();const existing=ss.getSheetByName('USUARIOS_GVG')||ss.getSheetByName('GVG_USUARIOS');return existing||gvguSheet_('GVG_USUARIOS',['ID','Nome','Login','WhatsApp','Salt','Senha_hash','Status','Data_cadastro','Data_status','E-mail','Perfil'])}
 function gvguSessoes_(){return gvguSheet_('SESSOES_GVG',['Token_hash','Usuario_ID','Expira_em','Revogada'])}
 function gvguVinculos_(){return gvguSheet_('PEDIDOS_USUARIOS',['Pedido_ID','Usuario_ID'])}
@@ -278,7 +286,7 @@ function gvguVerificarSessao_(token){
  const hash=gvguSHA_(token||'');if(!token||String(token).length<20)throw new Error('Entre na sua conta para solicitar materiais.');
  const sh=gvguUsuarios_(),fotoCol=gvguFotoCol_(sh);
  const ss=gvguSessoes_().getDataRange().getValues();const r=ss.find((x,i)=>i>0&&x[0]===hash&&x[3]!=='SIM'&&Number(x[2])>Date.now());if(!r)throw new Error('Sessão expirada. Entre novamente.');
- const users=sh.getDataRange().getValues();const user=users.find((x,i)=>i>0&&x[0]===r[1]&&x[6]==='ATIVO');if(!user)throw new Error('Acesso não autorizado ou bloqueado.');return {id:user[0],nome:user[1],login:user[2],email:String(user[9]||'').toLowerCase(),perfil:String(user[10]||'CONSULTA').toUpperCase(),foto:String(user[fotoCol-1]||'')};
+ const users=sh.getDataRange().getValues();const user=users.find((x,i)=>i>0&&x[0]===r[1]&&x[6]==='ATIVO');if(!user)throw new Error('Acesso não autorizado ou bloqueado.');return {id:user[0],nome:user[1],login:user[2],email:String(user[9]||'').toLowerCase(),perfil:String(user[10]||'CONSULTA').toUpperCase(),foto:String(user[fotoCol-1]||''),permissoes:gvguPermissoes_(user)};
 }
 function entrarFuncionario(login,password){
  const l=String(login||'').trim().toLowerCase(),p=String(password||'');
@@ -286,15 +294,15 @@ function entrarFuncionario(login,password){
  if(!r||gvguHash_(p,r[4])!==r[5])throw new Error('Usuário ou senha inválidos.');
  if(r[6]!=='ATIVO')throw new Error(r[6]==='PENDENTE'?'Cadastro aguardando aprovação.':'Acesso bloqueado.');
  const token=Utilities.getUuid()+Utilities.getUuid(),exp=Date.now()+GVGU_SESS_MILLIS;
- gvguSessoes_().appendRow([gvguSHA_(token),r[0],exp,'NÃO']);return {token,id:r[0],nome:r[1],login:r[2],email:String(r[9]||'').trim().toLowerCase(),perfil:String(r[10]||'CONSULTA').toUpperCase(),foto:String(r[fotoCol-1]||''),expira:exp};
+ gvguSessoes_().appendRow([gvguSHA_(token),r[0],exp,'NÃO']);return {token,id:r[0],nome:r[1],login:r[2],email:String(r[9]||'').trim().toLowerCase(),perfil:String(r[10]||'CONSULTA').toUpperCase(),foto:String(r[fotoCol-1]||''),permissoes:gvguPermissoes_(r),expira:exp};
 }
-function sessaoFuncionario(token){const u=gvguVerificarSessao_(token);return {nome:u.nome,login:u.login,email:u.email,perfil:u.perfil,foto:u.foto||''}}
+function sessaoFuncionario(token){const u=gvguVerificarSessao_(token);return {nome:u.nome,login:u.login,email:u.email,perfil:u.perfil,foto:u.foto||'',permissoes:u.permissoes||{}}}
 function sairFuncionario(token){const h=gvguSHA_(token),sh=gvguSessoes_(),v=sh.getDataRange().getValues();for(let i=1;i<v.length;i++)if(v[i][0]===h)sh.getRange(i+1,4).setValue('SIM');return true}
 function gvguVincularPedido_(ss,pedido,id){gvguVinculos_().appendRow([pedido,id])}
 function meusPedidos(token){const u=gvguVerificarSessao_(token),ss=abasGestao_(),linked=gvguVinculos_().getDataRange().getValues();const ids=new Set(linked.slice(1).filter(r=>String(r[1])===u.id).map(r=>String(r[0])));
  const pedidos=ss.getSheetByName('PEDIDOS').getDataRange().getValues().slice(1).filter(r=>ids.has(String(r[0]))).map(r=>({id:String(r[0]),data:r[1] instanceof Date?r[1].toISOString():'',obra:r[3],status:r[6]}));
  const itens=ss.getSheetByName('ITENS_PEDIDO').getDataRange().getValues().slice(1).filter(r=>ids.has(String(r[0]))).map(r=>({id:String(r[0]),nome:r[2],solicitado:Number(r[3])||0,unidade:String(r[4]),entregue:r[6]===''?null:Number(r[6]),nota:String(r[8]||'')}));return {pedidos,itens};}
-function adminUsuarios(pin){admin_(pin);return gvguUsuarios_().getDataRange().getValues().slice(1).map(r=>({id:r[0],nome:r[1],login:r[2],whatsapp:r[3],status:r[6],email:String(r[9]||''),perfil:String(r[10]||'CONSULTA').toUpperCase()}))}
+function adminUsuarios(pin){admin_(pin);const sh=gvguUsuarios_();gvguPermHeaders_(sh);return sh.getDataRange().getValues().slice(1).map(r=>({id:r[0],nome:r[1],login:r[2],whatsapp:r[3],status:r[6],email:String(r[9]||''),perfil:String(r[10]||'CONSULTA').toUpperCase(),foto:String(r[11]||''),permissoes:gvguPermissoes_(r)}))}
 // Uso interno, sempre sob o bloqueio de escrita de cadastro/gestão.
 function gvguExcluirCadastro_(sh,row,id){
  const sessions=gvguSessoes_(),values=sessions.getDataRange().getValues();
@@ -303,7 +311,7 @@ function gvguExcluirCadastro_(sh,row,id){
  // Pedidos, itens e vínculos históricos mantêm seus IDs originais.
  gvguAuditar_('CADASTRO_EXCLUIDO',id,'Cadastro e sessões removidos; histórico de pedidos preservado.');
 }
-function adminSituacaoUsuario(pin,id,status,perfil){
+function adminSituacaoUsuario(pin,id,status,perfil,permissoes){
  admin_(pin);status=String(status||'').toUpperCase();if(['ATIVO','BLOQUEADO','EXCLUIDO'].indexOf(status)<0)throw new Error('Status inválido.');
  const lock=LockService.getScriptLock();lock.waitLock(20000);try{
  const sh=gvguUsuarios_(),v=sh.getDataRange().getValues(),i=v.findIndex((r,n)=>n>0&&String(r[0])===String(id));
@@ -311,9 +319,15 @@ function adminSituacaoUsuario(pin,id,status,perfil){
  const adminUser=adminSessionUser_(pin),currentStatus=String(v[i][6]||'').toUpperCase(),currentPerfil=String(v[i][10]||'CONSULTA').toUpperCase();
  if(adminUser&&String(v[i][0])===String(adminUser.id)&&status!=='ATIVO')throw new Error('Você não pode bloquear ou excluir seu próprio usuário.');
  if(status!=='ATIVO'&&currentPerfil==='ADMIN'&&currentStatus==='ATIVO'&&activeAdminCount_()<=1)throw new Error('Não é permitido bloquear ou excluir o último administrador ativo.');
+ let perms=null;
  if(status==='ATIVO'&&currentStatus==='PENDENTE'){
-  const role=String(perfil||currentPerfil||'CONSULTA').toUpperCase()==='ADMIN'?'ADMIN':'CONSULTA';
+  perms=gvguPermObj_(permissoes||{pedidos:'OPERADOR'});
+  const role=perms.pedidos==='ADMIN'?'ADMIN':'CONSULTA';
   sh.getRange(i+1,11).setValue(role);
+  sh.getRange(i+1,13,1,4).setValues([[perms.pedidos,perms.gastos,perms.fornecedores,perms.frotas]]);
+ }else if(permissoes){
+  perms=gvguPermObj_(permissoes);
+  sh.getRange(i+1,13,1,4).setValues([[perms.pedidos,perms.gastos,perms.fornecedores,perms.frotas]]);
  }
  if(status==='EXCLUIDO'){
   gvguExcluirCadastro_(sh,i+1,id);
@@ -322,7 +336,23 @@ function adminSituacaoUsuario(pin,id,status,perfil){
  }
  sh.getRange(i+1,7).setValue(status);sh.getRange(i+1,9).setValue(new Date());
  if(status==='BLOQUEADO')revogarSessoesUsuario_(id);
- gvguAuditar_('STATUS_USUARIO',id,status+(perfil?' | '+perfil:''));return {status};
+ gvguAuditar_('STATUS_USUARIO',id,status+(perms?' | '+JSON.stringify(perms):''));
+ return {status,permissoes:perms};
+ }finally{lock.releaseLock()}
+}
+function adminDefinirPermissoes(pin,id,permissoes){
+ admin_(pin);const perms=gvguPermObj_(permissoes||{});
+ const lock=LockService.getScriptLock();lock.waitLock(20000);try{
+  const sh=gvguUsuarios_(),v=sh.getDataRange().getValues(),i=v.findIndex((r,n)=>n>0&&String(r[0])===String(id));
+  if(i<0)throw new Error('Usuário não encontrado. Atualize a lista.');
+  const adminUser=adminSessionUser_(pin),currentPerfil=String(v[i][10]||'CONSULTA').toUpperCase(),currentStatus=String(v[i][6]||'').toUpperCase();
+  if(adminUser&&String(v[i][0])===String(adminUser.id)&&perms.pedidos!=='ADMIN')throw new Error('Você não pode remover seu próprio acesso de administrador do Pedidos.');
+  if(currentPerfil==='ADMIN'&&perms.pedidos!=='ADMIN'&&currentStatus==='ATIVO'&&activeAdminCount_()<=1)throw new Error('Não é permitido rebaixar o último administrador ativo.');
+  sh.getRange(i+1,13,1,4).setValues([[perms.pedidos,perms.gastos,perms.fornecedores,perms.frotas]]);
+  const perfil=perms.pedidos==='ADMIN'?'ADMIN':'CONSULTA';
+  sh.getRange(i+1,11).setValue(perfil);sh.getRange(i+1,9).setValue(new Date());
+  gvguAuditar_('ALTERAR_PERMISSOES',id,JSON.stringify(perms));
+  return {ok:true,permissoes:perms,perfil};
  }finally{lock.releaseLock()}
 }
 function adminDefinirPerfil(pin,id,perfil){
@@ -375,7 +405,7 @@ function sairAdminGVG(token){
  return {ok:true};
 }
 function estadoSessaoFuncionarioGVG(token){
- try{const u=gvguVerificarSessao_(token);return {ok:true,id:u.id,nome:u.nome,login:u.login,email:u.email,perfil:u.perfil};}
+ try{const u=gvguVerificarSessao_(token);return {ok:true,id:u.id,nome:u.nome,login:u.login,email:u.email,perfil:u.perfil,foto:u.foto||'',permissoes:u.permissoes||{}};}
  catch(e){const message=String(e&&e.message||e);
   if(/^(Entre na sua conta para solicitar materiais\.|Sessão expirada\. Entre novamente\.|Acesso não autorizado ou bloqueado\.)$/.test(message))return {ok:false};
   throw e;
@@ -566,7 +596,7 @@ function getPainelInicial(sessao){
     ];
     return {
       ok:true,
-      usuario:{nome:usuario.nome,login:usuario.login,email:usuario.email,perfil:usuario.perfil,foto:usuario.foto||''},
+      usuario:{nome:usuario.nome,login:usuario.login,email:usuario.email,perfil:usuario.perfil,foto:usuario.foto||'',permissoes:usuario.permissoes||{}},
       ambiente:String(cfg('AMBIENTE')||'TESTE'),
       atualizadoEm:Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'dd/MM/yyyy HH:mm'),
       vazio:lista.length===0,

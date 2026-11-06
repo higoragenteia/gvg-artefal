@@ -51,6 +51,8 @@
   .gvgp-brand-text strong{display:block;font-size:16px;letter-spacing:.2px;line-height:1.15;white-space:nowrap}
   .gvgp-brand-text span{display:block;margin-top:4px;font-size:9px;text-transform:uppercase;letter-spacing:2.4px;color:#a9c9cf;font-weight:800}
   .gvgp-nav-label{font-size:9px;text-transform:uppercase;letter-spacing:2.2px;color:#86aab2;font-weight:800;padding:0 10px 9px}
+  .gvgp-nav-topic{margin:18px 10px 4px;padding-top:15px;border-top:1px solid rgba(255,255,255,.10);font-size:9px;text-transform:uppercase;letter-spacing:2.1px;color:#e3be6a;font-weight:900}
+  .gvgp-nav-topic:first-of-type{margin-top:10px;padding-top:0;border-top:0}
   .gvgp-nav{display:grid;gap:5px}
   .gvgp-nav-item{
     width:100%;display:flex;align-items:center;gap:11px;text-align:left;
@@ -504,21 +506,25 @@
         <span class="gvgp-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
         Visão geral
       </button>
+      <div class="gvgp-nav-topic" data-topic="pedidos">ALMOXARIFADO</div>
       <button type="button" class="gvgp-nav-item" data-view="pedidos">
         <span class="gvgp-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10l2 4v14H5V7l2-4Z"/><path d="M5 7h14"/><path d="M9 11h6"/><path d="M9 15h6"/></svg></span>
         Pedidos
         <span class="gvgp-pill">Ativo</span>
       </button>
+      <div class="gvgp-nav-topic" data-topic="gastos">FISCALIZAÇÃO</div>
       <button type="button" class="gvgp-nav-item" data-view="gastos">
         <span class="gvgp-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 19h16"/><path d="m7 15 4-5 3 3 5-7"/></svg></span>
         Controle de Gastos
         <span class="gvgp-pill gvgp-pill-soon">Em breve</span>
       </button>
+      <div class="gvgp-nav-topic" data-topic="fornecedores">PARCEIROS</div>
       <button type="button" class="gvgp-nav-item" data-view="fornecedores">
         <span class="gvgp-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M9 21v-5h6v5"/><path d="M9 10h1"/><path d="M14 10h1"/></svg></span>
         Fornecedores
         <span class="gvgp-pill gvgp-pill-soon">Em breve</span>
       </button>
+      <div class="gvgp-nav-topic" data-topic="frotas">VEÍCULOS</div>
       <button type="button" class="gvgp-nav-item" data-view="frotas">
         <span class="gvgp-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16V8h11l4 4h3v4"/><path d="M3 16h2"/><path d="M9 16h6"/><path d="M19 16h2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></span>
         Frotas
@@ -816,13 +822,28 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
     return '<span class="gvgp-user-chip"><span class="gvgp-user-avatar" role="button" tabindex="0" title="Alterar foto de perfil">'+avatar+'</span><span class="gvgp-user-meta"><strong>'+safe(user?user.nome:'')+'</strong><span>'+safe(role)+(user&&user.email?' · '+safe(user.email):'')+'</span></span></span>'+
       '<button type="button" class="gvgp-logout" id="gvgpLogoutBtn">Sair</button>';
   }
+  function applyMenuPermissions(){
+    const p=(state.user&&state.user.permissoes)||{};
+    ['pedidos','gastos','fornecedores','frotas'].forEach(k=>{
+      const allowed=String(p[k]||'').toUpperCase();
+      const btn=document.querySelector('.gvgp-nav-item[data-view="'+k+'"]');
+      const topic=document.querySelector('.gvgp-nav-topic[data-topic="'+k+'"]');
+      if(btn)btn.style.display=allowed?'':'none';
+      if(topic)topic.style.display=allowed?'':'none';
+    });
+    if(state.view!=='overview'){
+      const current=document.querySelector('.gvgp-nav-item[data-view="'+state.view+'"]');
+      if(current&&current.style.display==='none')setView('overview');
+    }
+  }
   function renderUser(){
     if(!state.user){ $('gvgpTopUser').innerHTML='<span class="gvgp-user-chip"><span class="gvgp-user-avatar">?</span><span class="gvgp-user-meta"><strong>Não autenticado</strong><span>Entre para acessar</span></span></span>'; return; }
     $('gvgpTopUser').innerHTML=userChip(state.user);
     const b=$('gvgpLogoutBtn'); if(b)b.onclick=logout;
+    applyMenuPermissions();
   }
   function renderDashboard(d){
-    state.data=d; state.user=d.usuario||null;
+    state.data=d; state.user=d.usuario||null; applyMenuPermissions();
     $('gvgpLoginCard').classList.add('gvgp-hidden');
     $('gvgpDashboard').classList.remove('gvgp-hidden');
     $('gvgpEmpty').classList.toggle('gvgp-hidden',!d.vazio);
@@ -946,7 +967,7 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
       if(String(d.perfil||'').toUpperCase()==='ADMIN'){state.adminToken=d.token;}
       else {state.adminToken='';}
       store.remove('gvgAdminToken');
-      state.token=d.token; state.user={nome:d.nome,login:d.login,email:d.email,perfil:d.perfil};
+      state.token=d.token; state.user={nome:d.nome,login:d.login,email:d.email,perfil:d.perfil,permissoes:d.permissoes||{}};
       $('gvgpLoginPass').value='';
       msg.style.color='#0f766e'; msg.textContent='Acesso autorizado.';
       loadDashboard();
