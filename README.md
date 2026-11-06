@@ -11,6 +11,16 @@ Painel interno acessível por um único link, com o módulo **Pedidos** integrad
 - O módulo Pedidos é aberto pelo menu lateral **Pedidos**, dentro do mesmo painel.
 - O acesso à **Gestão** continua restrito ao perfil ADMIN, validado no servidor.
 
+## Links do projeto
+
+| Item | Link |
+|---|---|
+| Painel publicado (versão 32) | https://script.google.com/macros/s/AKfycby35-KiTddoqhEuo9zalGkVC2Wfspw5lG7i9Vt-_qJXZBa_wqeyiV51_42xh4ITtHhL/exec |
+| Código completo do app Pedidos | [`src/index.html`](src/index.html) — 199 KB, 983 linhas, catálogo/carrinho/gestão completos |
+| Shell do painel | [`src/Painel.html`](src/Painel.html) |
+| Backend Apps Script | [`src/Code.gs`](src/Code.gs) |
+| Repositório | https://github.com/higoragenteia/gvg-artefal |
+
 ## Recursos novos
 
 | Recurso | Referência |
@@ -19,6 +29,8 @@ Painel interno acessível por um único link, com o módulo **Pedidos** integrad
 | Planilha ativa (cópia de teste do app oficial) | [APLICATIVO DE PEDIDOS - CÓPIA TESTE](https://docs.google.com/spreadsheets/d/19bO6gkJX9yre2a3Qzt5EUxsNacj_-sR9C6hrz-UhBG4/edit) |
 | Pasta do app oficial copiado | [07 - App Pedidos Oficial (teste)](https://drive.google.com/drive/folders/1L5L4vFmlyaMMTIcVwEeGnnpqrT9CoXgI) |
 | Planilha de teste anterior (backup) | [GVG&ARTEFAL - Base de Dados](https://docs.google.com/spreadsheets/d/1i_P-BGv3GROHrVCUh8ifHxOk6gpi5rucLADvAOzgOrA/edit) |
+| Origem oficial (intacta) | [PLANILHA DE PEDIDOS](https://drive.google.com/drive/folders/1IZ05GppQ5XkipMGPJo95M6TiznLq5VIq) |
+| Fotos oficiais originais (intactas) | [GVG CATALOGO - FOTOS DOS PRODUTOS](https://drive.google.com/drive/folders/1Rg8aAL7RI--SVqYIymFs3G-GHn06ryIF) |
 | Apps Script novo (vinculado à planilha) | [Editor do projeto](https://script.google.com/d/1E98hK1UhabSftMUnCR1j1Jm_XHfQZeTqv96PfqT9h26HND-Zyw1bOBfS/edit) |
 | Script ID | `1E98hK1UhabSftMUnCR1j1Jm_XHfQZeTqv96PfqT9h26HND-Zyw1bOBfS` |
 | Implantação web | `AKfycby35-KiTddoqhEuo9zalGkVC2Wfspw5lG7i9Vt-_qJXZBa_wqeyiV51_42xh4ITtHhL` |
