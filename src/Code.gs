@@ -57,13 +57,19 @@ function fatorEmbalagemGVG_(r){
 }
 
 function getCatalogo(){
+  const cache=CacheService.getScriptCache();
+  const cacheKey='gvg_catalogo_v1';
+  const cached=cache.get(cacheKey);
+  if(cached){try{return JSON.parse(cached);}catch(e){}}
   const ss = gvgPlanilha_();
   const values = ss.getSheetByName('PRODUTOS').getDataRange().getDisplayValues();
   const produtos = values.slice(1).filter(r=>r[0]&&r[1]&&String(r[6]).toUpperCase()!=='NÃO'&&String(r[6]).toUpperCase()!=='NAO').map(r=>({id:r[0],nome:r[1],categoria:r[2],unidade:r[3],descricao:r[4],porCaixa:fatorEmbalagemGVG_(r),imagem:r[7]||'',ativo:String(r[6]||'SIM').toUpperCase()}));
   const obras = ss.getSheetByName('OBRAS').getDataRange().getDisplayValues().slice(1).filter(r=>r[0]&&String(r[1]).toUpperCase()!=='NÃO'&&String(r[1]).toUpperCase()!=='NAO').map(r=>r[0]);
   const configs = ss.getSheetByName('CONFIG').getDataRange().getDisplayValues();
   const get=(key)=>{const row=configs.find(r=>r[0]===key);return row?row[1]:''};
-  return {produtos,obras,whatsapp:String(get('WHATSAPP_DESTINO')).replace(/\D/g,''),titulo:get('TITULO_APP')||'GVG • Catálogo de Materiais'};
+  const out={produtos,obras,whatsapp:String(get('WHATSAPP_DESTINO')).replace(/\D/g,''),titulo:get('TITULO_APP')||'GVG • Catálogo de Materiais'};
+  try{cache.put(cacheKey,JSON.stringify(out),60);}catch(e){}
+  return out;
 }
 
 function testarCatalogo(){ const c=getCatalogo(); Logger.log('Produtos: '+c.produtos.length+' | Obras: '+c.obras.length+' | WhatsApp configurado: '+Boolean(c.whatsapp)); return {produtos:c.produtos.length, obras:c.obras.length, whatsappConfigurado:Boolean(c.whatsapp)}; }
@@ -112,10 +118,11 @@ function salvarProduto(pin,d){
   const values=[id,textoSeguro_(String(d.nome).trim(),180),textoSeguro_(String(d.categoria).trim(),80),textoSeguro_(unit,50),textoSeguro_(d.descricao,350),q,ativo,img];
   if(row)sh.getRange(row,1,1,8).setValues([values]);else sh.appendRow(values);
   ss.getSheetByName('AUDITORIA').appendRow([new Date(),row?'EDITAR':'CRIAR',id,values[1],ativo]);
-  return {id};
+  try{CacheService.getScriptCache().remove('gvg_catalogo_v1');}catch(e){}
+   return {id};
  }finally{lock.releaseLock()}
 }
-function alterarDisponibilidade(pin,id,novo){admin_(pin);if(!['SIM','NÃO','EM FALTA'].includes(novo))throw new Error('Situação inválida.');const lock=LockService.getScriptLock();lock.waitLock(20000);try{const ss=abasGestao_(),sh=ss.getSheetByName('PRODUTOS'),v=sh.getDataRange().getValues();const idx=v.findIndex((r,i)=>i>0&&String(r[0])===String(id));if(idx<0)throw new Error('Produto não encontrado.');sh.getRange(idx+1,7).setValue(novo);ss.getSheetByName('AUDITORIA').appendRow([new Date(),'DISPONIBILIDADE',id,v[idx][1],novo]);return true}finally{lock.releaseLock()}}
+function alterarDisponibilidade(pin,id,novo){admin_(pin);if(!['SIM','NÃO','EM FALTA'].includes(novo))throw new Error('Situação inválida.');const lock=LockService.getScriptLock();lock.waitLock(20000);try{const ss=abasGestao_(),sh=ss.getSheetByName('PRODUTOS'),v=sh.getDataRange().getValues();const idx=v.findIndex((r,i)=>i>0&&String(r[0])===String(id));if(idx<0)throw new Error('Produto não encontrado.');sh.getRange(idx+1,7).setValue(novo);try{CacheService.getScriptCache().remove('gvg_catalogo_v1');}catch(e){}ss.getSheetByName('AUDITORIA').appendRow([new Date(),'DISPONIBILIDADE',id,v[idx][1],novo]);return true}finally{lock.releaseLock()}}
 // Registra SOLICITAÇÃO, não comprova envio no WhatsApp nem entrega de materiais.
 function registrarSolicitacao(d){
  const auth=gvguVerificarSessao_(d&&d.sessao); d.nome=auth.nome; d.usuarioId=auth.id;

@@ -203,7 +203,14 @@
   .gvgp-frame-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
   .gvgp-frame-head h2{margin:0;font-size:16px;letter-spacing:-.3px}
   .gvgp-frame-head p{margin:3px 0 0;font-size:10.5px;color:var(--gvgp-muted)}
-  .gvgp-frame{width:100%;height:calc(100vh - 150px);min-height:640px;border:1px solid var(--gvgp-line);border-radius:18px;background:#f2f6f8;box-shadow:var(--gvgp-shadow)}
+  .gvgp-frame-wrap{position:relative;border-radius:18px;overflow:hidden}
+  .gvgp-frame{width:100%;height:calc(100vh - 150px);min-height:640px;border:1px solid rgba(201,154,46,.22);border-radius:18px;background:#0a1014;box-shadow:0 22px 52px rgba(8,20,26,.24)}
+  .gvgp-frame-loading{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;border-radius:18px;background:radial-gradient(60% 55% at 50% 0%,rgba(201,154,46,.12),transparent 62%),radial-gradient(50% 55% at 100% 100%,rgba(15,118,110,.12),transparent 62%),linear-gradient(160deg,#121b21,#080c10);color:#f6f6f6;transition:opacity .3s ease;pointer-events:none}
+  .gvgp-frame-loading.gvgp-hidden{display:none}
+  .gvgp-frame-loading strong{font-size:14px;letter-spacing:-.2px}
+  .gvgp-frame-loading span{font-size:10px;color:#9fb2b8}
+  .gvgp-frame-spinner{width:34px;height:34px;border-radius:50%;border:2px solid rgba(241,210,124,.2);border-top-color:#f1d27c;animation:gvgpSpin .9s linear infinite;margin-bottom:4px}
+  @keyframes gvgpSpin{to{transform:rotate(360deg)}}
   .gvgp-future-card{max-width:760px;margin:0 auto;padding:34px 28px;border-radius:24px;background:linear-gradient(180deg,#fff,#fbfdfd);border:1px solid var(--gvgp-line);box-shadow:var(--gvgp-shadow);text-align:center}
   .gvgp-future-icon{width:64px;height:64px;margin:0 auto 14px;border-radius:20px;display:grid;place-items:center;background:linear-gradient(145deg,#e8f5f2,#cfe9e3);color:#0b5e57;border:1px solid #c8e3dd;box-shadow:0 12px 24px rgba(11,94,87,.12),inset 0 2px 0 #fff,inset 0 -5px 9px rgba(11,94,87,.07);transform:perspective(300px) rotateX(5deg)}
   .gvgp-future-icon svg{width:30px;height:30px}
@@ -670,7 +677,14 @@
           <div><h2>Pedidos</h2><p>Módulo original preservado, com catálogo, carrinho, histórico e Gestão.</p></div>
           <button type="button" class="gvgp-btn gvgp-btn-ghost" style="color:#0b4a5a;border-color:#c9dce2;background:#fff" data-go="overview">← Voltar à visão geral</button>
         </div>
-        <iframe id="gvgpPedidosFrame" class="gvgp-frame" title="Módulo Pedidos" src="about:blank"></iframe>
+        <div class="gvgp-frame-wrap">
+          <div id="gvgpFrameLoading" class="gvgp-frame-loading">
+            <span class="gvgp-frame-spinner" aria-hidden="true"></span>
+            <strong>Carregando Pedidos…</strong>
+            <span>Conectando ao backend da base nova</span>
+          </div>
+          <iframe id="gvgpPedidosFrame" class="gvgp-frame" title="Módulo Pedidos" src="about:blank" loading="eager"></iframe>
+        </div>
       </section>
 
       <section id="gvgpViewFuture" class="gvgp-view gvgp-hidden">
@@ -877,6 +891,9 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
     const token=store.get('gvgUsrToken');
     if(!token){ renderLoggedOut(); return; }
     state.token=token;
+    // No site/desktop o módulo é pré-carregado para abrir instantaneamente.
+    // No celular/app não pré-carrega, preservando dados e bateria.
+    if(window.innerWidth>980)setTimeout(loadFrame,350);
     $('gvgpLoginCard').classList.add('gvgp-hidden');
     $('gvgpDashboard').classList.remove('gvgp-hidden');
     $('gvgpEmpty').classList.add('gvgp-hidden');
@@ -897,7 +914,7 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
       startRotation();
       if(state.frameLoaded){
         const f=$('gvgpPedidosFrame');
-        if(f){try{f.contentWindow.location.reload()}catch(e){f.src=PEDIDOS_URL;}}
+        if(f){showFrameLoading();try{f.contentWindow.location.reload()}catch(e){f.src=PEDIDOS_URL;}setTimeout(hideFrameLoading,18000);}
       }
     }).catch(err=>{
       console.warn(err);
@@ -972,10 +989,22 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
     setSidebar(false);
     window.scrollTo({top:0,behavior:'smooth'});
   }
+  function showFrameLoading(){
+    const l=$('gvgpFrameLoading');if(l)l.classList.remove('gvgp-hidden');
+  }
+  function hideFrameLoading(){
+    const l=$('gvgpFrameLoading');if(l)l.classList.add('gvgp-hidden');
+  }
   function loadFrame(){
     const f=$('gvgpPedidosFrame');
     if(!f)return;
-    if(!state.frameLoaded||f.src==='about:blank'||!f.getAttribute('src')){f.src=PEDIDOS_URL;state.frameLoaded=true;}
+    if(!state.frameLoaded||f.src==='about:blank'||!f.getAttribute('src')){
+      showFrameLoading();
+      f.src=PEDIDOS_URL;
+      state.frameLoaded=true;
+      clearTimeout(loadFrame._fallback);
+      loadFrame._fallback=setTimeout(hideFrameLoading,18000);
+    }
   }
   function refresh(){
     if(!store.get('gvgUsrToken')){ toast('Entre no painel para atualizar os indicadores.'); return; }
@@ -990,6 +1019,8 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
   $('gvgpLoginForm').addEventListener('submit',login);
   $('gvgpRefreshBtn') && $('gvgpRefreshBtn').addEventListener('click',refresh);
   $('gvgpRotateBtn').addEventListener('click',toggleRotation);
+  const pedidosFrame=$('gvgpPedidosFrame');
+  if(pedidosFrame)pedidosFrame.addEventListener('load',()=>{hideFrameLoading();clearTimeout(loadFrame._fallback);});
   window.addEventListener('storage',e=>{
     if(e.key==='gvgUsrToken'){
       if(e.newValue){state.user=null;loadDashboard();}
