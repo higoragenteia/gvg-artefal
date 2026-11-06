@@ -413,7 +413,10 @@
     .gvgp-dark-head h2{font-size:26px}
   }
   @media (max-width:640px){
-    .gvgp-top-clock{display:none}
+    .gvgp-top-clock{display:flex;min-width:34px;padding:3px 5px}
+    .gvgp-top-clock span{display:none}
+    .gvgp-top-clock strong{font-size:10.5px;letter-spacing:-.2px}
+    .gvgp-user-chip{max-width:116px}
     .gvgp-module-card,.gvgp-dark-card{min-height:215px;padding:13px 12px}
     .gvgp-module-icon,.gvgp-dark-icon{width:66px;height:66px}
     .gvgp-app-icon{width:48px;height:48px}
@@ -549,7 +552,6 @@
                 <h2>Visão geral</h2>
                 <p>Gestão integrada de pedidos, gastos, fornecedores e frotas.</p>
               </div>
-              <div class="gvgp-clean-clock"><strong id="gvgpCleanTime">--:--:--</strong><span id="gvgpCleanDate">--/--/----</span></div>
             </div>
             <div id="gvgpLoginCard" class="gvgp-login-card">
           <div class="gvgp-login-copy">
@@ -622,7 +624,6 @@
                 <h2>Visão geral</h2>
                 <p>Acompanhamento em tempo real das operações da empresa.</p>
               </div>
-              <div class="gvgp-dark-clock"><strong id="gvgpDarkTime">--:--:--</strong><span id="gvgpDarkDate">--/--/----</span></div>
             </div>
             <div class="gvgp-dark-activity">
               <div class="gvgp-dark-activity-title"><span class="gvgp-live-dot" aria-hidden="true"></span> Atividades recentes</div>
@@ -759,7 +760,7 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
     const now=new Date();
     const time=now.toLocaleTimeString('pt-BR',{hour12:false});
     const date=now.toLocaleDateString('pt-BR');
-    [['gvgpTopTime',time],['gvgpCleanTime',time],['gvgpDarkTime',time],['gvgpTopDate',date],['gvgpCleanDate',date],['gvgpDarkDate',date]].forEach(pair=>{const n=$(pair[0]);if(n)n.textContent=pair[1];});
+    [['gvgpTopTime',time],['gvgpTopDate',date]].forEach(pair=>{const n=$(pair[0]);if(n)n.textContent=pair[1];});
   }
   function emptyDashboard(){
     const e={valor:'—',label:''};
