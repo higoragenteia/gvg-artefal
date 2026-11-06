@@ -152,6 +152,13 @@
   .gvgp-field input:focus{border-color:#78b7ae;box-shadow:0 0 0 3px rgba(15,118,110,.12)}
   .gvgp-login-form .gvgp-btn{justify-content:center;margin-top:2px}
   .gvgp-login-msg{min-height:18px;margin:0;font-size:10.5px;color:var(--gvgp-danger);font-weight:700}
+  .gvgp-signup{margin-top:4px;padding-top:9px;border-top:1px solid #e3ecef}
+  .gvgp-signup-toggle{border:0;background:none;color:#0b6b63;font-size:10.5px;font-weight:900;text-align:left;text-decoration:underline;text-underline-offset:3px;padding:0}
+  .gvgp-signup-box{display:grid;gap:7px;margin-top:8px}
+  .gvgp-signup-box .gvgp-field{gap:4px}
+  .gvgp-signup-box .gvgp-field label{font-size:9px}
+  .gvgp-signup-msg{min-height:15px;margin:0;font-size:10px;color:var(--gvgp-danger);font-weight:700}
+  .gvgp-signup-note{font-size:9px;color:#7c7264;line-height:1.4;margin:0}
   .gvgp-dashboard{margin-top:18px}
   .gvgp-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
   .gvgp-kpi{
@@ -607,6 +614,22 @@
             </div>
             <button type="submit" class="gvgp-btn gvgp-btn-teal" id="gvgpLoginBtn">Entrar no painel</button>
             <p id="gvgpLoginMsg" class="gvgp-login-msg" role="status" aria-live="polite"></p>
+            <div class="gvgp-signup">
+              <button type="button" class="gvgp-signup-toggle" id="gvgpSignupToggle" aria-expanded="false" aria-controls="gvgpSignupBox">Criar cadastro</button>
+              <div id="gvgpSignupBox" class="gvgp-signup-box gvgp-hidden">
+                <div class="gvgp-field">
+                  <label for="gvgpSignupUser">Usuário para cadastro</label>
+                  <input id="gvgpSignupUser" autocomplete="username" placeholder="Escolha um usuário">
+                </div>
+                <div class="gvgp-field">
+                  <label for="gvgpSignupPass">Senha</label>
+                  <input id="gvgpSignupPass" type="password" autocomplete="new-password" placeholder="Pode ser simples, ex.: 12345">
+                </div>
+                <button type="button" class="gvgp-btn gvgp-btn-gold" id="gvgpSignupBtn">Solicitar cadastro</button>
+                <p id="gvgpSignupMsg" class="gvgp-signup-msg" role="status" aria-live="polite"></p>
+                <p class="gvgp-signup-note">O cadastro fica pendente até a aprovação do administrador. A senha pode ser simples, como 12345.</p>
+              </div>
+            </div>
           </form>
         </div>
             <div id="gvgpDashboard" class="gvgp-module-grid gvgp-hidden">
@@ -1053,6 +1076,23 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
   document.querySelectorAll('[data-module]').forEach(b=>b.addEventListener('click',()=>setView(b.getAttribute('data-module'))));
   $('gvgpMenuBtn').addEventListener('click',()=>setSidebar(!$('gvgpApp').classList.contains('gvgp-sidebar-open')));
   $('gvgpBackdrop').addEventListener('click',()=>setSidebar(false));
+  $('gvgpSignupToggle').addEventListener('click',()=>{
+    const box=$('gvgpSignupBox'),btn=$('gvgpSignupToggle'),hidden=box.classList.contains('gvgp-hidden');
+    box.classList.toggle('gvgp-hidden',!hidden);btn.setAttribute('aria-expanded',String(hidden));
+  });
+  $('gvgpSignupBtn').addEventListener('click',async()=>{
+    const user=$('gvgpSignupUser').value.trim(),pass=$('gvgpSignupPass').value,msg=$('gvgpSignupMsg'),btn=$('gvgpSignupBtn');
+    msg.textContent='';msg.style.color='#b42318';
+    if(!user||!pass){msg.textContent='Informe usuário e senha para o cadastro.';return;}
+    btn.disabled=true;btn.textContent='Enviando…';
+    try{
+      const d=await run('cadastrarFuncionario',{login:user,senha:pass});
+      if(!d||d.status!=='PENDENTE')throw new Error('O servidor não confirmou o cadastro.');
+      msg.style.color='#0f766e';msg.textContent='Cadastro enviado. Aguarde a aprovação do administrador.';
+      $('gvgpSignupPass').value='';
+    }catch(err){msg.textContent=err.message||String(err);}
+    finally{btn.disabled=false;btn.textContent='Solicitar cadastro';}
+  });
   $('gvgpLoginForm').addEventListener('submit',login);
   $('gvgpRefreshBtn') && $('gvgpRefreshBtn').addEventListener('click',refresh);
   $('gvgpRotateBtn').addEventListener('click',toggleRotation);
