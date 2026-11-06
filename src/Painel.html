@@ -987,7 +987,7 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
       $('gvgpFutureTitle').textContent=future.title;
     }
     setSidebar(false);
-    window.scrollTo({top:0,behavior:'smooth'});
+    window.scrollTo({top:0,behavior:'auto'});
   }
   function showFrameLoading(){
     const l=$('gvgpFrameLoading');if(l)l.classList.remove('gvgp-hidden');
