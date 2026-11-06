@@ -284,6 +284,141 @@
     .gvgp-tv-order{grid-template-columns:1fr auto}
     .gvgp-tv-order .gvgp-tv-obra{display:none}
   }
+  /* ===== Temas e dois layouts de referência (2 e 8) ===== */
+  .gvgp-app{background:var(--gvgp-bg);transition:background .5s ease}
+  .gvgp-main,.gvgp-topbar,.gvgp-sidebar{transition:background .5s ease,color .35s ease,border-color .35s ease}
+  .gvgp-top-clock{display:flex;flex-direction:column;align-items:flex-end;gap:1px;padding:5px 10px;border-radius:10px;background:rgba(255,255,255,.45);border:1px solid rgba(219,230,234,.8);min-width:92px}
+  .gvgp-top-clock span{font-size:8.5px;text-transform:uppercase;letter-spacing:1px;color:#6b828c;font-weight:800;white-space:nowrap}
+  .gvgp-top-clock strong{font-size:13px;line-height:1;letter-spacing:-.3px;font-variant-numeric:tabular-nums;color:var(--gvgp-ink);font-weight:950}
+  #gvgpApp.gvgp-theme-clean{--gvgp-bg:#efe9df;--gvgp-ink:#3c372e;--gvgp-muted:#7c7264}
+  #gvgpApp.gvgp-theme-clean .gvgp-main{background:radial-gradient(80% 60% at 90% 0%,rgba(255,255,255,.7),transparent 60%),linear-gradient(150deg,#f2ece2,#eae2d5)}
+  #gvgpApp.gvgp-theme-clean .gvgp-topbar{background:rgba(239,233,223,.9);border-bottom-color:#ded4c5}
+  #gvgpApp.gvgp-theme-clean .gvgp-topbar-title h1{color:#3c372e}
+  #gvgpApp.gvgp-theme-clean .gvgp-topbar-title p{color:#7c7264}
+  #gvgpApp.gvgp-theme-clean .gvgp-top-clock{background:rgba(255,255,255,.42);border-color:#ded4c5}
+  #gvgpApp.gvgp-theme-clean .gvgp-top-clock span{color:#7c7264}
+  #gvgpApp.gvgp-theme-clean .gvgp-top-clock strong{color:#3c372e}
+  #gvgpApp.gvgp-theme-clean .gvgp-menu-btn{background:#f7f2e9;border-color:#ded4c5;color:#3c372e;box-shadow:5px 5px 14px rgba(121,103,74,.14),-4px -4px 10px #fff}
+  #gvgpApp.gvgp-theme-clean .gvgp-sidebar{background:radial-gradient(90% 65% at 15% 0%,rgba(255,255,255,.7),transparent 62%),linear-gradient(165deg,#f4eee4 0%,#ebe3d6 55%,#e5dccd 100%);color:#3c372e;border-right-color:#dcd1c0;box-shadow:12px 0 38px rgba(88,68,40,.10)}
+  #gvgpApp.gvgp-theme-clean .gvgp-brand-text strong{color:#3c372e}
+  #gvgpApp.gvgp-theme-clean .gvgp-brand-text span{color:#8b7d6a}
+  #gvgpApp.gvgp-theme-clean .gvgp-brand-mark{box-shadow:7px 7px 16px rgba(120,92,38,.18),-4px -4px 12px rgba(255,255,255,.9),inset 0 1px 0 rgba(255,255,255,.8)}
+  #gvgpApp.gvgp-theme-clean .gvgp-nav-label{color:#9a8c78}
+  #gvgpApp.gvgp-theme-clean .gvgp-nav-item{color:#5f574b}
+  #gvgpApp.gvgp-theme-clean .gvgp-nav-item:hover{background:rgba(255,255,255,.45);color:#2f2a23}
+  #gvgpApp.gvgp-theme-clean .gvgp-nav-item.is-active{background:linear-gradient(90deg,#e6dccb,#f1e9dd);border-color:#d7c8ad;color:#2f2a23;box-shadow:inset 0 1px 0 #fff,0 7px 16px rgba(121,103,74,.10)}
+  #gvgpApp.gvgp-theme-clean .gvgp-nav-icon{color:#9b772f}
+  #gvgpApp.gvgp-theme-clean .gvgp-pill{background:rgba(15,118,110,.10);color:#0b6b63;border-color:rgba(15,118,110,.16)}
+  #gvgpApp.gvgp-theme-clean .gvgp-pill-soon{background:rgba(155,119,47,.10);color:#8a6626;border-color:rgba(155,119,47,.18)}
+  #gvgpApp.gvgp-theme-clean .gvgp-sidebar-footer{background:rgba(255,255,255,.35);border-color:#ddd2c1}
+  #gvgpApp.gvgp-theme-clean .gvgp-sidebar-footer strong{color:#3c372e}
+  #gvgpApp.gvgp-theme-clean .gvgp-sidebar-footer span{color:#8b7d6a}
+  #gvgpApp.gvgp-theme-clean .gvgp-user-chip{background:#f7f2e9;border-color:#ded4c5;box-shadow:6px 6px 16px rgba(121,103,74,.12),-4px -4px 12px #fff}
+  #gvgpApp.gvgp-theme-clean .gvgp-user-avatar{background:linear-gradient(145deg,#d7a93e,#8a5d0b)}
+  #gvgpApp.gvgp-theme-clean .gvgp-user-meta strong{color:#3c372e}
+  #gvgpApp.gvgp-theme-clean .gvgp-user-meta span{color:#7c7264}
+  #gvgpApp.gvgp-theme-clean .gvgp-logout{background:#fbf7ef;border-color:#d9c9ab;color:#7a5a10}
+  #gvgpApp.gvgp-theme-dark{--gvgp-bg:#0f141a;--gvgp-ink:#eef4f6;--gvgp-muted:#9fb2b8}
+  #gvgpApp.gvgp-theme-dark .gvgp-main{background:radial-gradient(75% 55% at 92% 0%,rgba(241,210,124,.08),transparent 58%),linear-gradient(150deg,#121820,#0d1117)}
+  #gvgpApp.gvgp-theme-dark .gvgp-topbar{background:rgba(15,20,26,.9);border-bottom-color:rgba(255,255,255,.08)}
+  #gvgpApp.gvgp-theme-dark .gvgp-topbar-title h1{color:#fff}
+  #gvgpApp.gvgp-theme-dark .gvgp-topbar-title p{color:#9fb2b8}
+  #gvgpApp.gvgp-theme-dark .gvgp-top-clock{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.10)}
+  #gvgpApp.gvgp-theme-dark .gvgp-top-clock span{color:#9fb2b8}
+  #gvgpApp.gvgp-theme-dark .gvgp-top-clock strong{color:#fff}
+  #gvgpApp.gvgp-theme-dark .gvgp-menu-btn{background:#1a222c;border-color:#2b3642;color:#fff;box-shadow:0 8px 18px rgba(0,0,0,.25)}
+  #gvgpApp.gvgp-theme-dark .gvgp-sidebar{background:radial-gradient(90% 65% at 15% 0%,rgba(241,210,124,.10),transparent 62%),linear-gradient(165deg,#182028 0%,#11171e 55%,#0b1117 100%);border-right-color:rgba(255,255,255,.07);box-shadow:12px 0 38px rgba(0,0,0,.25)}
+  #gvgpApp.gvgp-theme-dark .gvgp-user-chip{background:#1a222c;border-color:#2b3642;box-shadow:0 8px 18px rgba(0,0,0,.25)}
+  #gvgpApp.gvgp-theme-dark .gvgp-user-meta strong{color:#fff}
+  #gvgpApp.gvgp-theme-dark .gvgp-user-meta span{color:#9fb2b8}
+  #gvgpApp.gvgp-theme-dark .gvgp-logout{background:#2a2417;border-color:#5b4a1e;color:#f1d27c}
+  /* Layout 8 — minimalista off-white em relevo */
+  .gvgp-clean{position:relative;overflow:hidden;border-radius:28px;padding:26px 26px 18px;background:radial-gradient(80% 70% at 80% 0%,rgba(255,255,255,.75),transparent 62%),linear-gradient(145deg,#f2ece2,#eae2d5);border:1px solid #e0d6c7;box-shadow:20px 24px 54px rgba(96,76,44,.13),-10px -10px 28px rgba(255,255,255,.65),inset 0 1px 0 rgba(255,255,255,.8);color:#3c372e}
+  .gvgp-clean:before{content:"";position:absolute;right:-90px;top:-120px;width:360px;height:360px;border-radius:50%;border:1px solid rgba(255,255,255,.5);box-shadow:0 0 0 30px rgba(255,255,255,.12),0 0 0 62px rgba(255,255,255,.07);pointer-events:none}
+  .gvgp-clean-head{position:relative;z-index:1;display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
+  .gvgp-clean-kicker{display:inline-flex;align-items:center;gap:7px;font-size:8.5px;text-transform:uppercase;letter-spacing:2.2px;font-weight:900;color:#9b772f;background:rgba(201,154,46,.08);border:1px solid rgba(201,154,46,.18);padding:6px 9px;border-radius:999px}
+  .gvgp-clean-head h2{margin:13px 0 5px;font-size:32px;line-height:1.04;letter-spacing:-1.4px;color:#3c372e}
+  .gvgp-clean-head p{margin:0;font-size:12px;color:#7c7264;line-height:1.55}
+  .gvgp-clean-clock{flex:0 0 auto;text-align:right;padding:9px 13px;border-radius:15px;background:linear-gradient(145deg,#f8f3ea,#e9e0d2);box-shadow:6px 6px 14px rgba(121,103,74,.13),-5px -5px 12px rgba(255,255,255,.9),inset 0 1px 0 #fff}
+  .gvgp-clean-clock strong{display:block;font-size:22px;line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums;color:#3c372e}
+  .gvgp-clean-clock span{display:block;margin-top:4px;font-size:8px;text-transform:uppercase;letter-spacing:1.1px;color:#8b7d6a;font-weight:800}
+  .gvgp-module-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:20px}
+  .gvgp-module-card{position:relative;text-align:left;border:1px solid #e2d8c8;background:linear-gradient(145deg,#f8f3ea,#ebe3d6);border-radius:22px;padding:16px 15px 16px;min-height:252px;display:flex;flex-direction:column;align-items:flex-start;gap:7px;color:#3c372e;overflow:hidden;box-shadow:11px 12px 26px rgba(121,103,74,.14),-7px -7px 18px rgba(255,255,255,.92),inset 0 1px 0 rgba(255,255,255,.8);transition:transform .2s ease,box-shadow .2s ease}
+  .gvgp-module-card:hover{transform:translateY(-3px);box-shadow:14px 17px 32px rgba(121,103,74,.18),-8px -8px 20px rgba(255,255,255,.95),inset 0 1px 0 #fff}
+  .gvgp-module-card:after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:var(--accent);opacity:.95}
+  .gvgp-module-icon{width:82px;height:82px;border-radius:22px;display:grid;place-items:center;background:linear-gradient(145deg,#fbf7f0,#e6ddcf);box-shadow:7px 8px 16px rgba(121,103,74,.15),-5px -5px 13px rgba(255,255,255,.95),inset 0 1px 0 #fff;margin-bottom:4px}
+  .gvgp-app-icon{width:58px;height:58px;display:block}
+  .gvgp-module-copy h3{margin:0;font-size:15px;letter-spacing:-.3px;color:#3c372e;line-height:1.15}
+  .gvgp-module-copy p{margin:3px 0 0;font-size:9.5px;color:#8b7d6a;line-height:1.35}
+  .gvgp-module-metric{margin-top:auto;display:grid;gap:1px}
+  .gvgp-module-metric strong{font-size:28px;line-height:1;letter-spacing:-1.2px;color:#3c372e;font-variant-numeric:tabular-nums;font-weight:950}
+  .gvgp-module-metric strong.is-money{font-size:19px;letter-spacing:-.5px}
+  .gvgp-module-metric span{font-size:8.5px;color:#8b7d6a;font-weight:750;line-height:1.3}
+  .gvgp-module-arrow{position:absolute;right:13px;bottom:13px;width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#f8f3ea;color:#8a6626;border:1px solid #e3d8c8;box-shadow:3px 3px 8px rgba(121,103,74,.12),-2px -2px 6px #fff;font-size:13px;font-weight:900;transition:transform .18s ease}
+  .gvgp-module-card:hover .gvgp-module-arrow{transform:translateX(2px)}
+  .gvgp-clean-empty{margin-top:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:13px 15px;border-radius:14px;border:1px dashed #cdbfa8;background:rgba(255,255,255,.35);font-size:10.5px;color:#7c7264}
+  .gvgp-clean-empty strong{color:#3c372e}
+  .gvgp-module-arrow-link{margin-left:auto;border:0;background:none;color:#8a6626;font-size:10px;font-weight:900;text-decoration:underline;text-underline-offset:3px}
+  .gvgp-clean-foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:14px;padding-top:11px;border-top:1px solid #ded3c3;font-size:8.5px;color:#8b7d6a;font-weight:700}
+  /* Layout 2 — central dark graphite com faixa de atividades */
+  .gvgp-dark{position:relative;overflow:hidden;border-radius:28px;padding:24px 24px 17px;background:radial-gradient(75% 60% at 92% 0%,rgba(241,210,124,.10),transparent 58%),radial-gradient(60% 80% at 8% 100%,rgba(47,168,155,.14),transparent 58%),linear-gradient(135deg,#171d24 0%,#0f141a 55%,#0a0e13 100%);border:1px solid rgba(255,255,255,.08);box-shadow:0 26px 56px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.06);color:#fff}
+  .gvgp-dark:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:40px 40px;mask-image:linear-gradient(90deg,#000,transparent 82%);pointer-events:none}
+  .gvgp-dark-head{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+  .gvgp-dark-kicker{display:inline-flex;align-items:center;gap:7px;font-size:8.5px;text-transform:uppercase;letter-spacing:2.2px;font-weight:900;color:#f1d27c;background:rgba(241,210,124,.09);border:1px solid rgba(241,210,124,.17);padding:6px 9px;border-radius:999px}
+  .gvgp-dark-head h2{margin:13px 0 5px;font-size:31px;line-height:1.04;letter-spacing:-1.3px;color:#fff}
+  .gvgp-dark-head p{margin:0;font-size:11.5px;color:#9fb2b8;line-height:1.55}
+  .gvgp-dark-clock{flex:0 0 auto;text-align:right;padding:4px 0 0 14px;border-left:1px solid rgba(255,255,255,.12)}
+  .gvgp-dark-clock strong{display:block;font-size:27px;line-height:1;letter-spacing:-1.4px;font-variant-numeric:tabular-nums;color:#fff}
+  .gvgp-dark-clock span{display:block;margin-top:5px;font-size:8.5px;letter-spacing:1.1px;text-transform:uppercase;color:#9fc2c9;font-weight:800}
+  .gvgp-dark-activity{position:relative;z-index:1;display:flex;align-items:center;gap:14px;margin-top:17px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);overflow:auto;scrollbar-width:thin}
+  .gvgp-dark-activity-title{display:flex;align-items:center;gap:7px;font-size:9px;text-transform:uppercase;letter-spacing:1.2px;color:#f1d27c;font-weight:900;white-space:nowrap;padding-right:12px;border-right:1px solid rgba(255,255,255,.10)}
+  .gvgp-dark-activity-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;flex:1;min-width:0}
+  .gvgp-activity-item{display:flex;align-items:center;gap:7px;min-width:0;padding:5px 7px;border-radius:9px}
+  .gvgp-activity-item:hover{background:rgba(255,255,255,.05)}
+  .gvgp-activity-icon{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;flex:0 0 auto;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10)}
+  .gvgp-activity-icon svg{width:18px;height:18px}
+  .gvgp-activity-item b{display:block;font-size:8.8px;color:#eaf4f6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+  .gvgp-activity-item span{display:block;margin-top:2px;font-size:7.5px;color:#8fb2ba;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+  .gvgp-dark-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-top:14px}
+  .gvgp-dark-card{position:relative;text-align:left;border:1px solid rgba(255,255,255,.09);background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.035));border-radius:18px;padding:15px 14px 14px;min-height:238px;display:flex;flex-direction:column;align-items:flex-start;gap:6px;color:#fff;overflow:hidden;box-shadow:0 12px 26px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.06);transition:transform .2s ease,background .2s ease,border-color .2s ease}
+  .gvgp-dark-card:hover{transform:translateY(-3px);background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.045));border-color:rgba(241,210,124,.22)}
+  .gvgp-dark-card:after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--accent);opacity:.95}
+  .gvgp-dark-icon{width:78px;height:78px;border-radius:20px;display:grid;place-items:center;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 9px 18px rgba(0,0,0,.13);margin-bottom:4px}
+  .gvgp-dark-card h3{margin:0;font-size:14px;letter-spacing:-.2px;color:#fff;line-height:1.15}
+  .gvgp-dark-card p{margin:3px 0 0;font-size:9px;color:#9fb2b8;line-height:1.35}
+  .gvgp-dark-metric{margin-top:auto;display:grid;gap:1px}
+  .gvgp-dark-metric strong{font-size:27px;line-height:1;letter-spacing:-1.2px;color:#fff;font-variant-numeric:tabular-nums;font-weight:950}
+  .gvgp-dark-metric strong.is-money{font-size:18px;letter-spacing:-.5px}
+  .gvgp-dark-metric span{font-size:8.5px;color:#9fb2b8;font-weight:750;line-height:1.3}
+  .gvgp-dark-foot{position:relative;z-index:1;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:13px;padding-top:11px;border-top:1px solid rgba(255,255,255,.09);font-size:8.5px;color:#9fc2c9;font-weight:700}
+  .gvgp-dark-foot b{color:#f1d27c;font-weight:900}
+  @media (max-width:1100px){
+    .gvgp-module-grid,.gvgp-dark-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .gvgp-dark-activity{flex-direction:column;align-items:stretch}
+    .gvgp-dark-activity-title{border-right:0;border-bottom:1px solid rgba(255,255,255,.10);padding:0 0 8px}
+    .gvgp-dark-activity-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+  @media (max-width:980px){
+    .gvgp-clean{padding:20px 17px 15px;border-radius:22px}
+    .gvgp-clean-head{flex-direction:column;gap:12px}
+    .gvgp-clean-clock{text-align:left;padding:8px 11px}
+    .gvgp-clean-head h2{font-size:27px}
+    .gvgp-dark{padding:20px 17px 15px;border-radius:22px}
+    .gvgp-dark-head{flex-direction:column;gap:12px}
+    .gvgp-dark-clock{text-align:left;border-left:0;padding:0}
+    .gvgp-dark-head h2{font-size:26px}
+  }
+  @media (max-width:640px){
+    .gvgp-top-clock{display:none}
+    .gvgp-module-card,.gvgp-dark-card{min-height:215px;padding:13px 12px}
+    .gvgp-module-icon,.gvgp-dark-icon{width:66px;height:66px}
+    .gvgp-app-icon{width:48px;height:48px}
+    .gvgp-module-metric strong,.gvgp-dark-metric strong{font-size:23px}
+    .gvgp-module-metric strong.is-money,.gvgp-dark-metric strong.is-money{font-size:16px}
+    .gvgp-module-copy h3,.gvgp-dark-card h3{font-size:12.5px}
+    .gvgp-dark-activity-list{grid-template-columns:1fr}
+    .gvgp-clean-foot,.gvgp-dark-foot{font-size:7.5px}
+  }
   @media (max-width:1100px){
     .gvgp-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
     .gvgp-grid-2{grid-template-columns:1fr}
@@ -376,6 +511,7 @@
         <h1 id="gvgpPageTitle">Visão geral</h1>
         <p id="gvgpPageSubtitle">Indicadores do módulo Pedidos</p>
       </div>
+      <div class="gvgp-top-clock" aria-live="off"><span id="gvgpTopDate">--/--/----</span><strong id="gvgpTopTime">--:--:--</strong></div>
       <div id="gvgpTopUser" class="gvgp-top-user"></div>
     </header>
 
@@ -383,29 +519,35 @@
       <section id="gvgpViewOverview" class="gvgp-view">
         <div id="gvgpLayoutBar" class="gvgp-layout-bar gvgp-hidden" aria-live="polite">
           <span class="gvgp-live-dot" aria-hidden="true"></span>
-          <span>Rotação automática · <b id="gvgpBarCountdown">10</b>s</span>
+          <span>Rotação automática · <b id="gvgpBarCountdown">30</b>s</span>
           <button type="button" id="gvgpRotateBtn">Pausar</button>
         </div>
+        <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="gvgpGold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f8e6ae"/><stop offset=".48" stop-color="#d9ab3e"/><stop offset="1" stop-color="#9b6a12"/></linearGradient>
+    <linearGradient id="gvgpPaper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffdf8"/><stop offset="1" stop-color="#dfd5c5"/></linearGradient>
+    <linearGradient id="gvgpTeal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#6ed3c6"/><stop offset="1" stop-color="#0f766e"/></linearGradient>
+    <linearGradient id="gvgpBlue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d7e6f7"/><stop offset="1" stop-color="#5d86b5"/></linearGradient>
+    <linearGradient id="gvgpPurple" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e3d8f5"/><stop offset="1" stop-color="#7d5fb0"/></linearGradient>
+    <filter id="gvgpShadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#2b1d08" flood-opacity=".28"/></filter>
+    <filter id="gvgpShadowSoft" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#2b1d08" flood-opacity=".18"/></filter>
+  </defs>
+  <symbol id="gvgpIconBox" viewBox="0 0 64 64"><g filter="url(#gvgpShadow)"><path d="M32 5 58 18 32 31 6 18Z" fill="url(#gvgpGold)"/><path d="M6 18 32 31v27L6 45Z" fill="#c99a3d"/><path d="M58 18 32 31v27l26-13Z" fill="#a9731e"/><path d="M32 5 43 10.5 32 16 21 10.5Z" fill="#fff1c2" opacity=".72"/><path d="M19 12.5 45 25.5" stroke="#fff5cf" stroke-width="3" opacity=".8"/><path d="M32 31v27" stroke="#7c4e0c" stroke-width="1" opacity=".35"/></g></symbol>
+  <symbol id="gvgpIconCalc" viewBox="0 0 64 64"><g filter="url(#gvgpShadow)"><rect x="14" y="5" width="36" height="54" rx="7" fill="#242a32"/><rect x="19" y="11" width="26" height="13" rx="3" fill="#b9d7c0"/><rect x="20" y="30" width="6" height="6" rx="1.5" fill="#8b98a3"/><rect x="29" y="30" width="6" height="6" rx="1.5" fill="#8b98a3"/><rect x="38" y="30" width="6" height="6" rx="1.5" fill="#8b98a3"/><rect x="20" y="39" width="6" height="6" rx="1.5" fill="#8b98a3"/><rect x="29" y="39" width="6" height="6" rx="1.5" fill="#8b98a3"/><rect x="38" y="39" width="6" height="6" rx="1.5" fill="#f1c34a"/><rect x="20" y="48" width="15" height="5" rx="1.5" fill="#8b98a3"/><rect x="38" y="48" width="6" height="5" rx="1.5" fill="#f1c34a"/></g></symbol>
+  <symbol id="gvgpIconBinders" viewBox="0 0 64 64"><g filter="url(#gvgpShadow)"><rect x="7" y="12" width="17" height="45" rx="3" fill="#3d6b58"/><rect x="10" y="9" width="17" height="45" rx="3" fill="#4f8a72"/><rect x="24" y="12" width="17" height="45" rx="3" fill="#b8a77f"/><rect x="27" y="9" width="17" height="45" rx="3" fill="#d8c69a"/><rect x="41" y="12" width="16" height="45" rx="3" fill="#7e6a45"/><rect x="44" y="9" width="16" height="45" rx="3" fill="#a88f5e"/><circle cx="15" cy="22" r="2.4" fill="#f7f0df"/><circle cx="32" cy="22" r="2.4" fill="#f7f0df"/><circle cx="49" cy="22" r="2.4" fill="#f7f0df"/><path d="M15 26v20M32 26v20M49 26v20" stroke="#f7f0df" stroke-width="1" opacity=".5"/></g></symbol>
+  <symbol id="gvgpIconVan" viewBox="0 0 64 64"><g filter="url(#gvgpShadow)"><path d="M5 22h33l7 9h10c2 0 4 2 4 4v9H5Z" fill="#f6f4ef"/><path d="M10 26h12v12H10Z" fill="#b9d9e0"/><path d="M25 26h13l5 7H25Z" fill="#b9d9e0"/><path d="M5 39h54v5H5Z" fill="#d8d2c6"/><path d="M6 37h52" stroke="#c99a2e" stroke-width="2"/><circle cx="17" cy="45" r="6" fill="#2d3138"/><circle cx="17" cy="45" r="2.6" fill="#b9c4c9"/><circle cx="49" cy="45" r="6" fill="#2d3138"/><circle cx="49" cy="45" r="2.6" fill="#b9c4c9"/><text x="38" y="35" text-anchor="middle" font-family="Arial" font-size="5" font-weight="700" fill="#0f766e">GVG</text></g></symbol>
+</svg>
         <div id="gvgpLayoutA" class="gvgp-layout gvgp-layout-a">
-        <div class="gvgp-hero">
-          <div class="gvgp-hero-copy">
-            <span class="gvgp-eyebrow">GVG&amp;ARTEFAL · operação interna</span>
-            <h2>Visão geral da operação</h2>
-            <p>Pedidos, itens e indicadores calculados em tempo real a partir da base nova. Acesse o módulo Pedidos pelo menu lateral ou pelo atalho abaixo.</p>
-            <div class="gvgp-hero-actions">
-              <button type="button" class="gvgp-btn gvgp-btn-gold" data-go="pedidos">Abrir Pedidos <span aria-hidden="true">→</span></button>
-              <button type="button" class="gvgp-btn gvgp-btn-ghost" id="gvgpRefreshBtn">Atualizar indicadores</button>
+          <div class="gvgp-clean">
+            <div class="gvgp-clean-head">
+              <div>
+                <span class="gvgp-clean-kicker">GVG&amp;ARTEFAL · central de operações</span>
+                <h2>Visão geral</h2>
+                <p>Gestão integrada de pedidos, gastos, fornecedores e frotas.</p>
+              </div>
+              <div class="gvgp-clean-clock"><strong id="gvgpCleanTime">--:--:--</strong><span id="gvgpCleanDate">--/--/----</span></div>
             </div>
-          </div>
-          <div class="gvgp-hero-art" aria-hidden="true">
-            <span class="gvgp-orbit o1"></span>
-            <span class="gvgp-orbit o2"></span>
-            <span class="gvgp-orb"></span>
-            <span class="gvgp-art-label">GVG&amp;ARTEFAL</span>
-          </div>
-        </div>
-
-        <div id="gvgpLoginCard" class="gvgp-login-card">
+            <div id="gvgpLoginCard" class="gvgp-login-card">
           <div class="gvgp-login-copy">
             <div class="gvgp-lock-3d" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="M12 14v3"/></svg>
@@ -428,120 +570,87 @@
             <p id="gvgpLoginMsg" class="gvgp-login-msg" role="status" aria-live="polite"></p>
           </form>
         </div>
-
-        <div id="gvgpDashboard" class="gvgp-dashboard gvgp-hidden">
-          <div class="gvgp-kpis">
-            <article class="gvgp-kpi">
-              <div class="gvgp-kpi-top">
-                <div class="gvgp-kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10l2 4v14H5V7l2-4Z"/><path d="M5 7h14"/><path d="M9 11h6"/><path d="M9 15h6"/></svg></div>
-              </div>
-              <div class="gvgp-kpi-label">Pedidos registrados</div>
-              <div class="gvgp-kpi-value" id="gvgpKpiTotal">—</div>
-              <div class="gvgp-kpi-sub">Total de solicitações na base</div>
-            </article>
-            <article class="gvgp-kpi">
-              <div class="gvgp-kpi-top">
-                <div class="gvgp-kpi-icon gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
-              </div>
-              <div class="gvgp-kpi-label">Em andamento</div>
-              <div class="gvgp-kpi-value" id="gvgpKpiOpen">—</div>
-              <div class="gvgp-kpi-sub">Aguardando separação ou entrega</div>
-            </article>
-            <article class="gvgp-kpi">
-              <div class="gvgp-kpi-top">
-                <div class="gvgp-kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg></div>
-              </div>
-              <div class="gvgp-kpi-label">Entregues</div>
-              <div class="gvgp-kpi-value" id="gvgpKpiDone">—</div>
-              <div class="gvgp-kpi-sub">Entregues e entregues parciais</div>
-            </article>
-            <article class="gvgp-kpi">
-              <div class="gvgp-kpi-top">
-                <div class="gvgp-kpi-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h10"/></svg></div>
-              </div>
-              <div class="gvgp-kpi-label">Itens solicitados</div>
-              <div class="gvgp-kpi-value" id="gvgpKpiItems">—</div>
-              <div class="gvgp-kpi-sub">Linhas de itens vinculadas aos pedidos</div>
-            </article>
-          </div>
-
-          <div class="gvgp-grid-2">
-            <div class="gvgp-card">
-              <div class="gvgp-card-head">
-                <h3>Pedidos recentes</h3>
-                <span id="gvgpUpdatedAt">—</span>
-              </div>
-              <div class="gvgp-table-wrap">
-                <table class="gvgp-table">
-                  <thead><tr><th>Pedido</th><th>Obra</th><th>Solicitante</th><th>Situação</th><th>Data</th></tr></thead>
-                  <tbody id="gvgpRecentBody"><tr><td colspan="5" class="gvgp-empty-row">Carregando pedidos…</td></tr></tbody>
-                </table>
-              </div>
+            <div id="gvgpDashboard" class="gvgp-module-grid gvgp-hidden">
+              <button type="button" class="gvgp-module-card" data-module="pedidos" style="--accent:#c99a2e">
+                <span class="gvgp-module-icon"><svg class="gvgp-app-icon"><use href="#gvgpIconBox"/></svg></span>
+                <div class="gvgp-module-copy"><h3>Pedidos</h3><p>Solicitações e acompanhamento.</p></div>
+                <div class="gvgp-module-metric"><strong id="gvgpAppPedidos">—</strong><span id="gvgpAppPedidosLabel">pedidos registrados</span></div>
+                <span class="gvgp-module-arrow" aria-hidden="true">→</span>
+              </button>
+              <button type="button" class="gvgp-module-card" data-module="gastos" style="--accent:#0f766e">
+                <span class="gvgp-module-icon"><svg class="gvgp-app-icon"><use href="#gvgpIconCalc"/></svg></span>
+                <div class="gvgp-module-copy"><h3>Controle de Gastos</h3><p>Despesas e orçamento.</p></div>
+                <div class="gvgp-module-metric"><strong id="gvgpAppGastos">—</strong><span id="gvgpAppGastosLabel">gastos no mês</span></div>
+                <span class="gvgp-module-arrow" aria-hidden="true">→</span>
+              </button>
+              <button type="button" class="gvgp-module-card" data-module="fornecedores" style="--accent:#7d5fb0">
+                <span class="gvgp-module-icon"><svg class="gvgp-app-icon"><use href="#gvgpIconBinders"/></svg></span>
+                <div class="gvgp-module-copy"><h3>Fornecedores</h3><p>Cadastro e contratos.</p></div>
+                <div class="gvgp-module-metric"><strong id="gvgpAppFornecedores">—</strong><span id="gvgpAppFornecedoresLabel">fornecedores ativos</span></div>
+                <span class="gvgp-module-arrow" aria-hidden="true">→</span>
+              </button>
+              <button type="button" class="gvgp-module-card" data-module="frotas" style="--accent:#4f7fb5">
+                <span class="gvgp-module-icon"><svg class="gvgp-app-icon"><use href="#gvgpIconVan"/></svg></span>
+                <div class="gvgp-module-copy"><h3>Frotas</h3><p>Veículos e manutenção.</p></div>
+                <div class="gvgp-module-metric"><strong id="gvgpAppFrotas">—</strong><span id="gvgpAppFrotasLabel">veículos na frota</span></div>
+                <span class="gvgp-module-arrow" aria-hidden="true">→</span>
+              </button>
             </div>
-            <div class="gvgp-card">
-              <div class="gvgp-card-head"><h3>Mais solicitados</h3><span>por unidade equiv.</span></div>
-              <div id="gvgpTopList" class="gvgp-top-list"><p class="gvgp-empty-row">Carregando…</p></div>
+            <div id="gvgpEmpty" class="gvgp-clean-empty gvgp-hidden">
+              <strong>A base ainda não tem pedidos.</strong>
+              <span>Cadastre o primeiro pedido para começar a acompanhar a operação.</span>
+              <button type="button" class="gvgp-module-arrow-link" data-module="pedidos">Abrir Pedidos →</button>
+            </div>
+            <div class="gvgp-clean-foot">
+              <span id="gvgpCleanUpdated">Atualizado agora</span>
+              <span>Uma informação de cada aplicativo · rotação a cada 30s</span>
             </div>
           </div>
-
-          <div class="gvgp-mini-grid">
-            <div class="gvgp-mini">
-              <div class="gvgp-mini-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h10"/></svg></div>
-              <div><strong id="gvgpMiniProducts">—</strong><span>Produtos ativos no catálogo</span></div>
-            </div>
-            <div class="gvgp-mini">
-              <div class="gvgp-mini-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M9 21v-5h6v5"/></svg></div>
-              <div><strong id="gvgpMiniWorks">—</strong><span>Obras ativas cadastradas</span></div>
-            </div>
-            <div class="gvgp-mini">
-              <div class="gvgp-mini-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></div>
-              <div><strong id="gvgpMiniEnv">—</strong><span>Ambiente da base</span></div>
-            </div>
-          </div>
-        </div>
-
-        <div id="gvgpEmpty" class="gvgp-empty gvgp-hidden">
-          <div class="gvgp-empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10l2 4v14H5V7l2-4Z"/><path d="M5 7h14"/><path d="M9 11h6"/><path d="M9 15h6"/></svg></div>
-          <h3>A base ainda não tem pedidos</h3>
-          <p>Os indicadores aparecerão aqui assim que o primeiro pedido for registrado no módulo Pedidos. Você pode abrir o módulo agora e cadastrar um pedido de teste.</p>
-          <button type="button" class="gvgp-btn gvgp-btn-gold" data-go="pedidos">Cadastrar primeiro pedido</button>
-        </div>
         </div>
 
         <div id="gvgpLayoutB" class="gvgp-layout gvgp-layout-b gvgp-hidden">
-          <div class="gvgp-tv">
-            <div class="gvgp-tv-head">
+          <div class="gvgp-dark">
+            <div class="gvgp-dark-head">
               <div>
-                <span class="gvgp-tv-eyebrow">GVG&amp;ARTEFAL · monitor operacional</span>
-                <h2>Pedidos em tempo real</h2>
-                <p>Segundo layout da visão geral. Ele alterna automaticamente com o layout executivo a cada 10 segundos, mantendo os mesmos indicadores da base nova.</p>
+                <span class="gvgp-dark-kicker">GVG&amp;ARTEFAL · central de operações</span>
+                <h2>Visão geral</h2>
+                <p>Acompanhamento em tempo real das operações da empresa.</p>
               </div>
-              <div class="gvgp-tv-clock">
-                <strong id="gvgpTvClock">--:--:--</strong>
-                <span id="gvgpTvDate">--/--/----</span>
-              </div>
+              <div class="gvgp-dark-clock"><strong id="gvgpDarkTime">--:--:--</strong><span id="gvgpDarkDate">--/--/----</span></div>
             </div>
-            <div class="gvgp-tv-kpis">
-              <div class="gvgp-tv-kpi"><span>Pedidos</span><strong id="gvgpTvTotal">—</strong><small>registrados na base</small></div>
-              <div class="gvgp-tv-kpi"><span>Em andamento</span><strong id="gvgpTvOpen">—</strong><small>aguardando entrega</small></div>
-              <div class="gvgp-tv-kpi"><span>Entregues</span><strong id="gvgpTvDone">—</strong><small>ou entregues parciais</small></div>
-              <div class="gvgp-tv-kpi"><span>Itens</span><strong id="gvgpTvItems">—</strong><small>linhas solicitadas</small></div>
+            <div class="gvgp-dark-activity">
+              <div class="gvgp-dark-activity-title"><span class="gvgp-live-dot" aria-hidden="true"></span> Atividades recentes</div>
+              <div id="gvgpActivityList" class="gvgp-dark-activity-list"></div>
             </div>
-            <div class="gvgp-tv-grid">
-              <div class="gvgp-tv-card">
-                <div class="gvgp-tv-card-head"><h3>Últimas solicitações</h3><span id="gvgpTvUpdated">—</span></div>
-                <div id="gvgpTvRecent" class="gvgp-tv-recent"><p class="gvgp-tv-empty">Carregando pedidos…</p></div>
-              </div>
-              <div class="gvgp-tv-card">
-                <div class="gvgp-tv-card-head"><h3>Ranking de materiais</h3><span>un. equivalentes</span></div>
-                <div id="gvgpTvTop" class="gvgp-tv-top"><p class="gvgp-tv-empty">Carregando…</p></div>
-              </div>
+            <div class="gvgp-dark-grid">
+              <button type="button" class="gvgp-dark-card" data-module="pedidos" style="--accent:#f1d27c">
+                <span class="gvgp-dark-icon"><svg class="gvgp-app-icon"><use href="#gvgpIconBox"/></svg></span>
+                <h3>Pedidos</h3><p>Solicitações e acompanhamento.</p>
+                <div class="gvgp-dark-metric"><strong id="gvgpDarkPedidos">—</strong><span id="gvgpDarkPedidosLabel">pedidos registrados</span></div>
+                <span class="gvgp-module-arrow" aria-hidden="true">→</span>
+              </button>
+              <button type="button" class="gvgp-dark-card" data-module="gastos" style="--accent:#54d6a0">
+                <span class="gvgp-dark-icon"><svg class="gvgp-app-icon"><use href="#gvgpIconCalc"/></svg></span>
+                <h3>Controle de Gastos</h3><p>Despesas e orçamento.</p>
+                <div class="gvgp-dark-metric"><strong id="gvgpDarkGastos">—</strong><span id="gvgpDarkGastosLabel">gastos no mês</span></div>
+                <span class="gvgp-module-arrow" aria-hidden="true">→</span>
+              </button>
+              <button type="button" class="gvgp-dark-card" data-module="fornecedores" style="--accent:#b99af0">
+                <span class="gvgp-dark-icon"><svg class="gvgp-app-icon"><use href="#gvgpIconBinders"/></svg></span>
+                <h3>Fornecedores</h3><p>Cadastro e contratos.</p>
+                <div class="gvgp-dark-metric"><strong id="gvgpDarkFornecedores">—</strong><span id="gvgpDarkFornecedoresLabel">fornecedores ativos</span></div>
+                <span class="gvgp-module-arrow" aria-hidden="true">→</span>
+              </button>
+              <button type="button" class="gvgp-dark-card" data-module="frotas" style="--accent:#6fb4ef">
+                <span class="gvgp-dark-icon"><svg class="gvgp-app-icon"><use href="#gvgpIconVan"/></svg></span>
+                <h3>Frotas</h3><p>Veículos e manutenção.</p>
+                <div class="gvgp-dark-metric"><strong id="gvgpDarkFrotas">—</strong><span id="gvgpDarkFrotasLabel">veículos na frota</span></div>
+                <span class="gvgp-module-arrow" aria-hidden="true">→</span>
+              </button>
             </div>
-            <div class="gvgp-tv-foot">
-              <span>Produtos ativos: <b id="gvgpTvProducts">—</b></span>
-              <span>Obras ativas: <b id="gvgpTvWorks">—</b></span>
-              <span>Ambiente: <b id="gvgpTvEnv">—</b></span>
-              <span class="gvgp-tv-rot">Próxima troca em <b id="gvgpTvCountdown">10</b>s</span>
+            <div class="gvgp-dark-foot">
+              <span>Atualizado em <b id="gvgpDarkUpdated">—</b></span>
+              <span>Próxima troca em <b id="gvgpTvCountdown">30</b>s</span>
             </div>
           </div>
         </div>
@@ -578,7 +687,7 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
-  const state = { token:'', adminToken:'', user:null, data:null, view:'overview', frameLoaded:false, layout:1, rotation:true, rotationTimer:null, countdown:10 };
+  const state = { token:'', adminToken:'', user:null, data:null, view:'overview', frameLoaded:false, layout:1, rotation:true, rotationTimer:null, countdown:30 };
   const FUTURE = {
     gastos:{title:'Controle de Gastos', subtitle:'Integração futura'},
     fornecedores:{title:'Fornecedores', subtitle:'Integração futura'},
@@ -605,35 +714,59 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
     btn.setAttribute('aria-expanded',String(!!open));
     btn.setAttribute('aria-label',open?'Fechar menu':'Abrir menu');
   }
-  function statusClass(status){
-    const s=String(status||'').toUpperCase();
-    if(s==='ENTREGUE') return 'is-ok';
-    if(s==='ENTREGUE PARCIAL') return 'is-info';
-    if(s==='NÃO ENTREGUE') return 'is-danger';
-    if(s==='CANCELADO') return 'is-muted';
-    if(s==='EM SEPARAÇÃO') return 'is-info';
-    return 'is-warn';
+  function setTheme(theme){
+    const app=$('gvgpApp');
+    app.classList.toggle('gvgp-theme-clean',theme==='clean');
+    app.classList.toggle('gvgp-theme-dark',theme==='dark');
+  }
+  function iconFor(app){
+    const id={Pedidos:'gvgpIconBox','Controle de Gastos':'gvgpIconCalc',Fornecedores:'gvgpIconBinders',Frotas:'gvgpIconVan'}[app]||'gvgpIconBox';
+    return '<svg viewBox="0 0 64 64" class="gvgp-app-icon"><use href="#'+id+'"/></svg>';
+  }
+  function setMetric(id,labelId,app,money){
+    const v=app&&app.valor!=null?app.valor:'—';
+    const l=app&&app.label?app.label:'';
+    const n=$(id); if(n){n.textContent=v; n.classList.toggle('is-money',!!money||String(v).indexOf('R$')>=0);}
+    const ln=$(labelId); if(ln)ln.textContent=l;
+  }
+  function renderApps(d){
+    const a=(d&&d.apps)||{};
+    setMetric('gvgpAppPedidos','gvgpAppPedidosLabel',a.pedidos,false);
+    setMetric('gvgpAppGastos','gvgpAppGastosLabel',a.gastos,true);
+    setMetric('gvgpAppFornecedores','gvgpAppFornecedoresLabel',a.fornecedores,false);
+    setMetric('gvgpAppFrotas','gvgpAppFrotasLabel',a.frotas,false);
+    setMetric('gvgpDarkPedidos','gvgpDarkPedidosLabel',a.pedidos,false);
+    setMetric('gvgpDarkGastos','gvgpDarkGastosLabel',a.gastos,true);
+    setMetric('gvgpDarkFornecedores','gvgpDarkFornecedoresLabel',a.fornecedores,false);
+    setMetric('gvgpDarkFrotas','gvgpDarkFrotasLabel',a.frotas,false);
+    const cupdated=d&&d.atualizadoEm?'Atualizado em '+d.atualizadoEm:'Atualizado agora';
+    const cu=$('gvgpCleanUpdated');if(cu)cu.textContent=cupdated;
+    const du=$('gvgpDarkUpdated');if(du)du.textContent=(d&&d.atualizadoEm)||'—';
+  }
+  function renderActivities(d){
+    const list=(d&&d.atividades)||[];
+    const box=$('gvgpActivityList');
+    if(!box)return;
+    box.innerHTML=list.length?list.map(x=>'<div class="gvgp-activity-item"><span class="gvgp-activity-icon">'+iconFor(x.app)+'</span><div><b>'+safe(x.titulo)+'</b><span>'+safe(x.app)+(x.detalhe?' · '+safe(x.detalhe):'')+(x.data?' · '+safe(x.data):'')+'</span></div></div>').join(''):'<p class="gvgp-tv-empty">Sem atividades recentes.</p>';
+  }
+  function tickClock(){
+    const now=new Date();
+    const time=now.toLocaleTimeString('pt-BR',{hour12:false});
+    const date=now.toLocaleDateString('pt-BR');
+    [['gvgpTopTime',time],['gvgpCleanTime',time],['gvgpDarkTime',time],['gvgpTopDate',date],['gvgpCleanDate',date],['gvgpDarkDate',date]].forEach(pair=>{const n=$(pair[0]);if(n)n.textContent=pair[1];});
   }
   function emptyDashboard(){
-    $('gvgpKpiTotal').textContent='—';
-    $('gvgpKpiOpen').textContent='—';
-    $('gvgpKpiDone').textContent='—';
-    $('gvgpKpiItems').textContent='—';
-    $('gvgpMiniProducts').textContent='—';
-    $('gvgpMiniWorks').textContent='—';
-    $('gvgpMiniEnv').textContent='—';
-    $('gvgpRecentBody').innerHTML='<tr><td colspan="5" class="gvgp-empty-row">Entre no painel para ver os pedidos.</td></tr>';
-    $('gvgpTopList').innerHTML='<p class="gvgp-empty-row">Entre no painel para ver os produtos mais solicitados.</p>';
-    $('gvgpUpdatedAt').textContent='—';
-    ['gvgpTvTotal','gvgpTvOpen','gvgpTvDone','gvgpTvItems','gvgpTvProducts','gvgpTvWorks','gvgpTvEnv'].forEach(id=>{const n=$(id);if(n)n.textContent='—';});
-    const tr=$('gvgpTvRecent');if(tr)tr.innerHTML='<p class="gvgp-tv-empty">Entre no painel para ver os pedidos.</p>';
-    const tt=$('gvgpTvTop');if(tt)tt.innerHTML='<p class="gvgp-tv-empty">Entre no painel para ver o ranking.</p>';
-    const tu=$('gvgpTvUpdated');if(tu)tu.textContent='—';
+    const e={valor:'—',label:''};
+    renderApps({apps:{pedidos:e,gastos:e,fornecedores:e,frotas:e},atualizadoEm:''});
+    const cu=$('gvgpCleanUpdated');if(cu)cu.textContent='Entre no painel para atualizar';
+    const du=$('gvgpDarkUpdated');if(du)du.textContent='—';
+    const box=$('gvgpActivityList');if(box)box.innerHTML='<p class="gvgp-tv-empty">Entre no painel para ver as atividades.</p>';
   }
   function renderLoggedOut(){
     state.token=''; state.adminToken=''; state.user=null; state.data=null;
     stopRotation();
     switchLayout(1,false);
+    setTheme('clean');
     $('gvgpLayoutBar').classList.add('gvgp-hidden');
     $('gvgpLoginCard').classList.remove('gvgp-hidden');
     $('gvgpDashboard').classList.add('gvgp-hidden');
@@ -655,63 +788,14 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
     $('gvgpTopUser').innerHTML=userChip(state.user);
     const b=$('gvgpLogoutBtn'); if(b)b.onclick=logout;
   }
-  function renderKpis(d){
-    const i=d.indicadores||{};
-    $('gvgpKpiTotal').textContent=Number(i.totalPedidos||0).toLocaleString('pt-BR');
-    $('gvgpKpiOpen').textContent=Number(i.abertos||0).toLocaleString('pt-BR');
-    $('gvgpKpiDone').textContent=Number(i.entregues||0).toLocaleString('pt-BR');
-    $('gvgpKpiItems').textContent=Number(i.itens||0).toLocaleString('pt-BR');
-    $('gvgpMiniProducts').textContent=Number(i.produtosAtivos||0).toLocaleString('pt-BR');
-    $('gvgpMiniWorks').textContent=Number(i.obrasAtivas||0).toLocaleString('pt-BR');
-    $('gvgpMiniEnv').textContent=String(d.ambiente||'TESTE');
-    $('gvgpUpdatedAt').textContent=d.atualizadoEm?'Atualizado em '+d.atualizadoEm:'—';
-    $('gvgpEnvLabel').textContent=d.ambiente?('Base '+d.ambiente):'Base independente';
-  }
-  function renderRecent(list){
-    const body=$('gvgpRecentBody');
-    if(!list||!list.length){ body.innerHTML='<tr><td colspan="5" class="gvgp-empty-row">Nenhum pedido registrado ainda.</td></tr>'; return; }
-    body.innerHTML=list.map(p=>'<tr><td class="gvgp-id">'+safe(p.id)+'</td><td>'+safe(p.obra||'—')+'</td><td>'+safe(p.solicitante||'—')+'</td><td><span class="gvgp-status '+statusClass(p.status)+'">'+safe(p.status||'—')+'</span></td><td>'+safe(p.data||'—')+'</td></tr>').join('');
-  }
-  function renderTop(list){
-    const box=$('gvgpTopList');
-    if(!list||!list.length){ box.innerHTML='<p class="gvgp-empty-row">Nenhum item registrado ainda.</p>'; return; }
-    const max=Math.max.apply(null,list.map(x=>Number(x.quantidade)||0))||1;
-    box.innerHTML=list.map(x=>{
-      const q=Number(x.quantidade)||0, pct=Math.max(4,Math.round(q/max*100));
-      return '<div class="gvgp-top-item"><div class="gvgp-top-line"><b>'+safe(x.nome)+'</b><span>'+q.toLocaleString('pt-BR')+' un.</span></div><div class="gvgp-bar"><i style="width:'+pct+'%"></i></div></div>';
-    }).join('');
-  }
-  function tickClock(){
-    const now=new Date();
-    const clock=$('gvgpTvClock'), date=$('gvgpTvDate');
-    if(clock)clock.textContent=now.toLocaleTimeString('pt-BR',{hour12:false});
-    if(date)date.textContent=now.toLocaleDateString('pt-BR');
-  }
-  function renderTv(d){
-    const i=(d&&d.indicadores)||{};
-    const set=(id,v)=>{const n=$(id);if(n)n.textContent=v;};
-    set('gvgpTvTotal',Number(i.totalPedidos||0).toLocaleString('pt-BR'));
-    set('gvgpTvOpen',Number(i.abertos||0).toLocaleString('pt-BR'));
-    set('gvgpTvDone',Number(i.entregues||0).toLocaleString('pt-BR'));
-    set('gvgpTvItems',Number(i.itens||0).toLocaleString('pt-BR'));
-    set('gvgpTvProducts',Number(i.produtosAtivos||0).toLocaleString('pt-BR'));
-    set('gvgpTvWorks',Number(i.obrasAtivas||0).toLocaleString('pt-BR'));
-    set('gvgpTvEnv',String(d&&d.ambiente||'TESTE'));
-    set('gvgpTvUpdated',d&&d.atualizadoEm?'Atualizado '+d.atualizadoEm:'—');
-    const recent=(d&&d.recentes)||[];
-    const rb=$('gvgpTvRecent');
-    if(rb){
-      rb.innerHTML=recent.length?recent.map(p=>'<div class="gvgp-tv-order"><b>'+safe(p.id)+'</b><span class="gvgp-tv-obra">'+safe(p.obra||'—')+'</span><span class="gvgp-status '+statusClass(p.status)+'">'+safe(p.status||'—')+'</span><span class="gvgp-tv-date">'+safe(p.data||'—')+'</span></div>').join(''):'<p class="gvgp-tv-empty">Nenhum pedido registrado ainda.</p>';
-    }
-    const top=(d&&d.topProdutos)||[];
-    const tb=$('gvgpTvTop');
-    if(tb){
-      if(!top.length){tb.innerHTML='<p class="gvgp-tv-empty">Nenhum item registrado ainda.</p>';}
-      else{
-        const max=Math.max.apply(null,top.map(x=>Number(x.quantidade)||0))||1;
-        tb.innerHTML=top.map(x=>{const q=Number(x.quantidade)||0,pct=Math.max(4,Math.round(q/max*100));return '<div class="gvgp-tv-top-item"><div class="gvgp-tv-top-line"><b>'+safe(x.nome)+'</b><span>'+q.toLocaleString('pt-BR')+' un.</span></div><div class="gvgp-tv-bar"><i style="width:'+pct+'%"></i></div></div>';}).join('');
-      }
-    }
+  function renderDashboard(d){
+    state.data=d; state.user=d.usuario||null;
+    $('gvgpLoginCard').classList.add('gvgp-hidden');
+    $('gvgpDashboard').classList.remove('gvgp-hidden');
+    $('gvgpEmpty').classList.toggle('gvgp-hidden',!d.vazio);
+    renderUser();
+    renderApps(d);
+    renderActivities(d);
   }
   function updateRotationUI(){
     const bar=$('gvgpLayoutBar');
@@ -729,13 +813,13 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
     if(!state.data||state.view!=='overview')return;
     $('gvgpLayoutBar').classList.remove('gvgp-hidden');
     state.rotation=true;
-    state.countdown=10;
+    state.countdown=30;
     updateRotationUI();
     state.rotationTimer=setInterval(()=>{
       if(!state.rotation||state.view!=='overview'||document.hidden)return;
       state.countdown--;
       if(state.countdown<=0){
-        state.countdown=10;
+        state.countdown=30;
         updateRotationUI();
         switchLayout(state.layout===1?2:1);
         refreshDataSilently();
@@ -744,18 +828,21 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
   }
   function switchLayout(next,animate){
     const view=$('gvgpViewOverview'),a=$('gvgpLayoutA'),b=$('gvgpLayoutB');
-    if(!a||!b||state.layout===next)return;
-    if(animate===false){
+    if(!a||!b)return;
+    state.switchToken=(state.switchToken||0)+1;
+    const token=state.switchToken;
+    const apply=()=>{
       a.classList.toggle('gvgp-hidden',next!==1);
       b.classList.toggle('gvgp-hidden',next!==2);
       state.layout=next;
-      return;
-    }
+      setTheme(next===1?'clean':'dark');
+    };
+    if(state.layout===next){apply();return;}
+    if(animate===false){apply();return;}
     view.classList.add('gvgp-switching');
     setTimeout(()=>{
-      a.classList.toggle('gvgp-hidden',next!==1);
-      b.classList.toggle('gvgp-hidden',next!==2);
-      state.layout=next;
+      if(token!==state.switchToken)return;
+      apply();
       view.classList.remove('gvgp-switching');
       const active=next===1?a:b;
       active.classList.remove('gvgp-layout-enter');
@@ -765,9 +852,9 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
   }
   function toggleRotation(){
     state.rotation=!state.rotation;
-    if(state.rotation)state.countdown=10;
+    if(state.rotation)state.countdown=30;
     updateRotationUI();
-    toast(state.rotation?'Rotação automática retomada (10s).':'Rotação automática pausada.');
+    toast(state.rotation?'Rotação automática retomada (30s).':'Rotação automática pausada.');
   }
   function refreshDataSilently(){
     const token=store.get('gvgUsrToken');if(!token)return;
@@ -776,17 +863,6 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
       state.data=d;
       renderDashboard(d);
     }).catch(()=>{});
-  }
-  function renderDashboard(d){
-    state.data=d; state.user=d.usuario||null;
-    $('gvgpLoginCard').classList.add('gvgp-hidden');
-    $('gvgpDashboard').classList.remove('gvgp-hidden');
-    $('gvgpEmpty').classList.toggle('gvgp-hidden',!d.vazio);
-    renderUser();
-    renderKpis(d);
-    renderRecent(d.recentes);
-    renderTop(d.topProdutos);
-    renderTv(d);
   }
   function loadDashboard(){
     const token=store.get('gvgUsrToken');
@@ -859,17 +935,22 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
   function setView(view){
     const future=FUTURE[view];
     state.view=view;
-    if(view!=='overview'){stopRotation();$('gvgpLayoutBar').classList.add('gvgp-hidden');}
+    if(view!=='overview'){
+      stopRotation();
+      $('gvgpLayoutBar').classList.add('gvgp-hidden');
+      switchLayout(1,false);
+      setTheme('clean');
+    }
     document.querySelectorAll('.gvgp-nav-item').forEach(b=>b.classList.toggle('is-active',b.getAttribute('data-view')===view));
     $('gvgpViewOverview').classList.toggle('gvgp-hidden',view!=='overview');
     $('gvgpViewPedidos').classList.toggle('gvgp-hidden',view!=='pedidos');
     $('gvgpViewFuture').classList.toggle('gvgp-hidden',!future);
     if(view==='overview'){
       $('gvgpPageTitle').textContent='Visão geral';
-      $('gvgpPageSubtitle').textContent='Indicadores do módulo Pedidos';
+      $('gvgpPageSubtitle').textContent='Pedidos, gastos, fornecedores e frotas';
       $('gvgpViewFuture').classList.add('gvgp-hidden');
       if(state.data){$('gvgpLayoutBar').classList.remove('gvgp-hidden');startRotation();}
-      else {$('gvgpLayoutBar').classList.add('gvgp-hidden');switchLayout(1,false);}
+      else {$('gvgpLayoutBar').classList.add('gvgp-hidden');switchLayout(1,false);setTheme('clean');}
     } else if(view==='pedidos'){
       $('gvgpPageTitle').textContent='Pedidos';
       $('gvgpPageSubtitle').textContent='Catálogo, carrinho, histórico e Gestão';
@@ -894,10 +975,11 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
   // Eventos
   document.querySelectorAll('.gvgp-nav-item').forEach(b=>b.addEventListener('click',()=>setView(b.getAttribute('data-view'))));
   document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>setView(b.getAttribute('data-go'))));
+  document.querySelectorAll('[data-module]').forEach(b=>b.addEventListener('click',()=>setView(b.getAttribute('data-module'))));
   $('gvgpMenuBtn').addEventListener('click',()=>setSidebar(!$('gvgpApp').classList.contains('gvgp-sidebar-open')));
   $('gvgpBackdrop').addEventListener('click',()=>setSidebar(false));
   $('gvgpLoginForm').addEventListener('submit',login);
-  $('gvgpRefreshBtn').addEventListener('click',refresh);
+  $('gvgpRefreshBtn') && $('gvgpRefreshBtn').addEventListener('click',refresh);
   $('gvgpRotateBtn').addEventListener('click',toggleRotation);
   window.addEventListener('storage',e=>{
     if(e.key==='gvgUsrToken'){
@@ -907,6 +989,7 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
   });
   window.addEventListener('resize',()=>{if(window.innerWidth>980)setSidebar(false)});
   // Inicialização
+  setTheme('clean');
   tickClock();
   setInterval(tickClock,1000);
   renderLoggedOut();

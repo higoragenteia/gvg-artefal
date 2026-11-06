@@ -3,6 +3,10 @@ const GVG_SPREADSHEET_ID = '1i_P-BGv3GROHrVCUh8ifHxOk6gpi5rucLADvAOzgOrA';
 const GVG_BASE_FOLDER_ID = '1eWXZren3iZClUFg4GU0yTIMg1h4__hb2';
 const GVG_FOTOS_FOLDER_ID = '10HPAB7x-z1AgLnQGXWV0EApPFp1MEYHQ';
 const GVG_ANEXOS_FOLDER_ID = '1FH8SACEEUe-mffzT4PigUt-m_hp0xnD1';
+// Resumos somente leitura dos aplicativos existentes (uma informação por app).
+const GVG_GASTOS_ID = '1zj0t-2DbQoz6spian5q-umlg9hu9SJUHUPMaUzgt2XI';
+const GVG_FORNECEDORES_ID = '1kd09waaWiPNR0_BRp5VFNJeeF-zuareTfW94K8vPnes';
+const GVG_FROTAS_ID = '1ck1lDtk_W9vjyQEnhV2Ze5secbayGLFfZi4Z0NuX-GY';
 // Reutiliza referências somente nesta execução; não guarda dados nem permissões entre acessos.
 var GVG_PLANILHA_EXECUCAO_,GVG_GESTAO_EXECUCAO_=false;
 function gvgPlanilha_(){return GVG_PLANILHA_EXECUCAO_||(GVG_PLANILHA_EXECUCAO_=SpreadsheetApp.openById(GVG_SPREADSHEET_ID));}
@@ -373,6 +377,81 @@ function painelData_(v){
   if(v instanceof Date)return Utilities.formatDate(v,Session.getScriptTimeZone(),'dd/MM/yyyy HH:mm');
   return String(v);
 }
+function painelMes_(v){
+  if(v instanceof Date&&!isNaN(v))return Utilities.formatDate(v,Session.getScriptTimeZone(),'yyyy-MM');
+  const s=String(v||'');
+  let m=s.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+  if(m)return m[3]+'-'+m[2];
+  m=s.match(/^(\d{4})-(\d{2})/);
+  if(m)return m[1]+'-'+m[2];
+  return '';
+}
+function painelNumero_(v){
+  if(typeof v==='number')return isFinite(v)?v:0;
+  let s=String(v==null?'':v).replace(/[^\d,.-]/g,'');
+  if(s.indexOf(',')>=0)s=s.replace(/\./g,'').replace(',','.');
+  const n=Number(s);
+  return isFinite(n)?n:0;
+}
+function painelMoeda_(n){
+  return 'R$ '+Number(n||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function painelResumoGastos_(){
+  const ss=SpreadsheetApp.openById(GVG_GASTOS_ID);
+  const sh=ss.getSheetByName('Base de Dados');
+  if(!sh)throw new Error('Aba Base de Dados não encontrada em Gastos.');
+  const v=sh.getDataRange().getValues();
+  const hi=v.findIndex(r=>String(r[0]).trim()==='Data');
+  if(hi<0)throw new Error('Cabeçalho Data não encontrado em Gastos.');
+  const headers=v[hi].map(x=>String(x).trim());
+  const di=0, desci=headers.indexOf('Descrição do Gasto'), vi=headers.indexOf('Valor (R$)');
+  const mes=Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'yyyy-MM');
+  let total=0,recente=null,recenteMs=0;
+  for(let i=hi+1;i<v.length;i++){
+    const r=v[i];if(!r[di])continue;
+    const valor=painelNumero_(vi>=0?r[vi]:0);
+    if(painelMes_(r[di])===mes)total+=valor;
+    const ms=r[di] instanceof Date?r[di].getTime():0;
+    if(!recente||ms>=recenteMs){
+      recenteMs=ms;
+      recente={titulo:String(desci>=0?r[desci]||'Gasto':'Gasto'),detalhe:painelMoeda_(valor),data:r[di] instanceof Date?Utilities.formatDate(r[di],Session.getScriptTimeZone(),'dd/MM/yyyy'):String(r[di]||'')};
+    }
+  }
+  return {valor:painelMoeda_(total),label:'gastos no mês',detalhe:'Total do mês atual',recente:recente};
+}
+function painelResumoFornecedores_(){
+  const ss=SpreadsheetApp.openById(GVG_FORNECEDORES_ID);
+  const sh=ss.getSheetByName('FORNECEDORES');
+  if(!sh)throw new Error('Aba FORNECEDORES não encontrada.');
+  const v=sh.getDataRange().getValues();
+  const headers=(v[0]||[]).map(x=>String(x).trim());
+  const si=headers.indexOf('Status'), ni=headers.indexOf('Fornecedor / Empresa'), ui=headers.indexOf('Atualizado em');
+  let ativos=0,recente=null,recenteMs=0;
+  for(let i=1;i<v.length;i++){
+    const r=v[i];if(!r[ni])continue;
+    if(String(si>=0?r[si]:'').trim().toLowerCase()==='ativo'){
+      ativos++;
+      const ms=ui>=0&&r[ui] instanceof Date?r[ui].getTime():0;
+      if(!recente||ms>=recenteMs){recenteMs=ms;recente={titulo:String(r[ni]),detalhe:'Fornecedor ativo',data:ui>=0&&r[ui] instanceof Date?Utilities.formatDate(r[ui],Session.getScriptTimeZone(),'dd/MM/yyyy'):''};}
+    }
+  }
+  return {valor:ativos,label:'fornecedores ativos',detalhe:'Cadastros com status ativo',recente:recente};
+}
+function painelResumoFrotas_(){
+  const ss=SpreadsheetApp.openById(GVG_FROTAS_ID);
+  const sh=ss.getSheetByName('Base de Dados');
+  if(!sh)throw new Error('Aba Base de Dados não encontrada em Frotas.');
+  const v=sh.getDataRange().getValues();
+  const headers=(v[0]||[]).map(x=>String(x).trim());
+  const idi=headers.indexOf('ID'), mi=headers.indexOf('Marca / Modelo'), pi=headers.indexOf('Placa');
+  let total=0,recente=null;
+  for(let i=1;i<v.length;i++){
+    const r=v[i];if(!r[idi])continue;
+    total++;
+    recente={titulo:String(mi>=0?r[mi]||'Veículo':'Veículo'),detalhe:String(pi>=0?r[pi]||'':'')};
+  }
+  return {valor:total,label:'veículos na frota',detalhe:'Veículos cadastrados',recente:recente};
+}
 function getPainelInicial(sessao){
   let usuario;
   try{usuario=gvguVerificarSessao_(sessao);}catch(e){return {ok:false,error:String(e&&e.message||e)};}
@@ -408,6 +487,25 @@ function getPainelInicial(sessao){
       mapaProdutos[nome].pedidos++;
     });
     const topProdutos=Object.values(mapaProdutos).sort((a,b)=>b.quantidade-a.quantidade).slice(0,5);
+    let gastos={valor:'—',label:'gastos no mês',detalhe:'Indisponível',recente:null};
+    let fornecedores={valor:'—',label:'fornecedores ativos',detalhe:'Indisponível',recente:null};
+    let frotas={valor:'—',label:'veículos na frota',detalhe:'Indisponível',recente:null};
+    try{gastos=painelResumoGastos_()}catch(e){}
+    try{fornecedores=painelResumoFornecedores_()}catch(e){}
+    try{frotas=painelResumoFrotas_()}catch(e){}
+    const pedidosResumo={
+      valor:lista.length,
+      label:lista.length===1?'pedido registrado':'pedidos registrados',
+      detalhe:abertos===1?'1 em andamento':abertos+' em andamento',
+      recente:lista.length?{titulo:lista[0].id,detalhe:lista[0].status,data:lista[0].data}:null
+    };
+    const apps={pedidos:pedidosResumo,gastos:gastos,fornecedores:fornecedores,frotas:frotas};
+    const atividades=[
+      {app:'Pedidos',tone:'gold',titulo:pedidosResumo.recente?pedidosResumo.recente.titulo:'Sem pedidos recentes',detalhe:pedidosResumo.recente?pedidosResumo.recente.detalhe:'',data:pedidosResumo.recente?pedidosResumo.recente.data:''},
+      {app:'Controle de Gastos',tone:'green',titulo:gastos.recente?gastos.recente.titulo:'Sem gastos recentes',detalhe:gastos.recente?gastos.recente.detalhe:'',data:gastos.recente?gastos.recente.data:''},
+      {app:'Fornecedores',tone:'purple',titulo:fornecedores.recente?fornecedores.recente.titulo:'Sem fornecedores recentes',detalhe:fornecedores.recente?fornecedores.recente.detalhe:'',data:fornecedores.recente?fornecedores.recente.data:''},
+      {app:'Frotas',tone:'blue',titulo:frotas.recente?frotas.recente.titulo:'Sem veículos recentes',detalhe:frotas.recente?frotas.recente.detalhe:'',data:''}
+    ];
     return {
       ok:true,
       usuario:{nome:usuario.nome,login:usuario.login,email:usuario.email,perfil:usuario.perfil},
@@ -423,7 +521,9 @@ function getPainelInicial(sessao){
         obrasAtivas:obras.length
       },
       recentes:lista.slice(0,8),
-      topProdutos:topProdutos
+      topProdutos:topProdutos,
+      apps:apps,
+      atividades:atividades
     };
   }catch(e){
     return {ok:false,error:'Não foi possível carregar os indicadores: '+String(e&&e.message||e)};
