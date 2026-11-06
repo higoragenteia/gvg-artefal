@@ -76,3 +76,15 @@ Itens: 1 Pacote de Parafuso 4,2x16 (100 un.) + 1 Caixa de Silicone neutro (24 un
 - Integrar Gastos, Fornecedores e Frotas.
 - Criar fluxo de anexos por pedido em etapa futura (o app original não possui).
 - Trocar o WhatsApp fictício antes de produção.
+
+## Migração do app oficial (06/11/2026)
+
+| Teste | Resultado |
+|---|---|
+| Fotos copiadas | OK — 177/177, bytes e MD5 idênticos |
+| Produtos na cópia | OK — 297, todos com foto |
+| URLs de fotos atualizadas | OK — 172 linhas, 168 IDs únicos; 125 URLs externas preservadas |
+| Origem intacta | OK — 177 fotos / 20.179.061 bytes; planilha oficial com modifiedTime inalterado |
+| Sessões da cópia | OK — 23 sessões antigas removidas |
+| WhatsApp de teste | OK — número fictício `5500000000000` |
+| Painel com a cópia | OK — 40 pedidos e catálogo com 297 produtos |

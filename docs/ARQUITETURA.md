@@ -19,7 +19,7 @@ Navegador
 - **Dois layouts da visão geral**: o layout A (Executivo) e o layout B (Monitor) usam os mesmos dados. Um temporizador de 10 segundos alterna os layouts com transição, atualiza os indicadores e pode ser pausado. A rotação só ocorre na Visão geral; ao abrir Pedidos ou uma integração futura, ela é suspensa.
 - **Apps Script vinculado**: o projeto novo foi criado com `parentId` igual à planilha nova. Assim, planilha e código ficam dentro da pasta GVG&ARTEFAL; o projeto aparece embutido na planilha no Drive.
 - **Uma implantação**: o mesmo deployment serve o painel e o módulo, reduzindo links e evitando duplicidade de versões.
-- **Base independente**: nenhuma fórmula ou função do painel aponta para a planilha antiga. A única cópia de produção foi o registro do administrador (hash de senha) para preservar o acesso existente.
+- **Base ativa**: o painel aponta para a cópia de teste do app oficial de Pedidos (`19bO6...`). A planilha original (`1tIy...`) e a pasta de fotos oficial (`1Rg8...`) permanecem intactas; o app foi copiado como um todo, com 177 fotos verificadas por MD5.
 
 ## Backend (`src/Code.gs`)
 
@@ -27,7 +27,7 @@ Navegador
 - `doGet(e)`: roteia para `doGetPainel_` ou `doGetPedidos_`.
 - `getPainelInicial(sessao)`: valida a sessão e devolve indicadores, recentes e mais solicitados. Não cria dados.
 - Funções originais de Pedidos preservadas: catálogo, solicitações, usuários, sessões, auditoria, entrega, fotos e gestão.
-- `enviarFotoProduto` grava na pasta nova `04 - Fotos de Produtos` via `GVG_FOTOS_FOLDER_ID`.
+- `enviarFotoProduto` grava na pasta de fotos da cópia oficial (`1eBVC...`) via `GVG_FOTOS_FOLDER_ID`.
 - `autorizarAmbiente` e `testarNovaBase` são funções auxiliares de diagnóstico.
 
 ## Frontend
@@ -40,7 +40,7 @@ Navegador
 
 ## Dados
 
-A planilha nova tem as abas `PRODUTOS`, `CATEGORIAS`, `OBRAS`, `CONFIG`, `PEDIDOS`, `ITENS_PEDIDO`, `AUDITORIA`, `GVG_USUARIOS`, `SESSOES_GVG`, `PEDIDOS_USUARIOS` e `LEIA-ME`. Os cabeçalhos e validações seguem o código original; as fórmulas de indicadores ficam na aba `LEIA-ME`.
+A planilha ativa é a cópia de teste do app oficial (`19bO6...`), com as abas `PRODUTOS`, `CATEGORIAS`, `OBRAS`, `CONFIG`, `PEDIDOS`, `ITENS_PEDIDO`, `AUDITORIA`, `GVG_USUARIOS`, `SESSOES_GVG`, `PEDIDOS_USUARIOS`, `BACKUP_PRODUTOS_20261026` e `LEIA-ME`. Os 297 produtos e as 177 fotos oficiais foram copiados; o WhatsApp está fictício e as sessões antigas foram limpas.
 
 ## Limitações
 

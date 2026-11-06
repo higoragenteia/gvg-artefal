@@ -1,7 +1,9 @@
 /** GVG&ARTEFAL — Painel Interno | módulo Pedidos (Apps Script) */
-const GVG_SPREADSHEET_ID = '1i_P-BGv3GROHrVCUh8ifHxOk6gpi5rucLADvAOzgOrA';
+// Base ativa: cópia de teste do app oficial de Pedidos (06/11/2026).
+// Original preservado em PLANILHA DE PEDIDOS (1IZ05GppQ5XkipMGPJo95M6TiznLq5VIq / 1tIy8EZpWKnD-tSl7cGMPX0cRBZwLIJYD6APD862ZKws).
+const GVG_SPREADSHEET_ID = '19bO6gkJX9yre2a3Qzt5EUxsNacj_-sR9C6hrz-UhBG4';
 const GVG_BASE_FOLDER_ID = '1eWXZren3iZClUFg4GU0yTIMg1h4__hb2';
-const GVG_FOTOS_FOLDER_ID = '10HPAB7x-z1AgLnQGXWV0EApPFp1MEYHQ';
+const GVG_FOTOS_FOLDER_ID = '1eBVC5bV7wOqUszfS6roN5eYl5IZkXbLZ';
 const GVG_ANEXOS_FOLDER_ID = '1FH8SACEEUe-mffzT4PigUt-m_hp0xnD1';
 // Resumos somente leitura dos aplicativos existentes (uma informação por app).
 const GVG_GASTOS_ID = '1zj0t-2DbQoz6spian5q-umlg9hu9SJUHUPMaUzgt2XI';
@@ -58,7 +60,7 @@ function fatorEmbalagemGVG_(r){
 
 function getCatalogo(){
   const cache=CacheService.getScriptCache();
-  const cacheKey='gvg_catalogo_v1';
+  const cacheKey='gvg_catalogo_v2';
   const cached=cache.get(cacheKey);
   if(cached){try{return JSON.parse(cached);}catch(e){}}
   const ss = gvgPlanilha_();
@@ -118,11 +120,11 @@ function salvarProduto(pin,d){
   const values=[id,textoSeguro_(String(d.nome).trim(),180),textoSeguro_(String(d.categoria).trim(),80),textoSeguro_(unit,50),textoSeguro_(d.descricao,350),q,ativo,img];
   if(row)sh.getRange(row,1,1,8).setValues([values]);else sh.appendRow(values);
   ss.getSheetByName('AUDITORIA').appendRow([new Date(),row?'EDITAR':'CRIAR',id,values[1],ativo]);
-  try{CacheService.getScriptCache().remove('gvg_catalogo_v1');}catch(e){}
+  try{CacheService.getScriptCache().remove('gvg_catalogo_v2');}catch(e){}
    return {id};
  }finally{lock.releaseLock()}
 }
-function alterarDisponibilidade(pin,id,novo){admin_(pin);if(!['SIM','NÃO','EM FALTA'].includes(novo))throw new Error('Situação inválida.');const lock=LockService.getScriptLock();lock.waitLock(20000);try{const ss=abasGestao_(),sh=ss.getSheetByName('PRODUTOS'),v=sh.getDataRange().getValues();const idx=v.findIndex((r,i)=>i>0&&String(r[0])===String(id));if(idx<0)throw new Error('Produto não encontrado.');sh.getRange(idx+1,7).setValue(novo);try{CacheService.getScriptCache().remove('gvg_catalogo_v1');}catch(e){}ss.getSheetByName('AUDITORIA').appendRow([new Date(),'DISPONIBILIDADE',id,v[idx][1],novo]);return true}finally{lock.releaseLock()}}
+function alterarDisponibilidade(pin,id,novo){admin_(pin);if(!['SIM','NÃO','EM FALTA'].includes(novo))throw new Error('Situação inválida.');const lock=LockService.getScriptLock();lock.waitLock(20000);try{const ss=abasGestao_(),sh=ss.getSheetByName('PRODUTOS'),v=sh.getDataRange().getValues();const idx=v.findIndex((r,i)=>i>0&&String(r[0])===String(id));if(idx<0)throw new Error('Produto não encontrado.');sh.getRange(idx+1,7).setValue(novo);try{CacheService.getScriptCache().remove('gvg_catalogo_v2');}catch(e){}ss.getSheetByName('AUDITORIA').appendRow([new Date(),'DISPONIBILIDADE',id,v[idx][1],novo]);return true}finally{lock.releaseLock()}}
 // Registra SOLICITAÇÃO, não comprova envio no WhatsApp nem entrega de materiais.
 function registrarSolicitacao(d){
  const auth=gvguVerificarSessao_(d&&d.sessao); d.nome=auth.nome; d.usuarioId=auth.id;
