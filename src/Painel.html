@@ -33,9 +33,9 @@
   #gvgpApp.gvgp-locked .gvgp-sidebar{display:none}
   #gvgpApp.gvgp-locked .gvgp-main{margin-left:0}
   #gvgpApp.gvgp-locked .gvgp-topbar,#gvgpApp.gvgp-locked .gvgp-layout-bar{display:none}
-  #gvgpApp.gvgp-locked .gvgp-clean{min-height:100vh;border-radius:0;border:0;box-shadow:none;display:flex;align-items:center;justify-content:center;padding:24px}
+  #gvgpApp.gvgp-locked .gvgp-clean{min-height:100vh;border-radius:0;border:0;box-shadow:none;display:flex;align-items:center;justify-content:flex-start;padding:24px;overflow-y:auto}
   #gvgpApp.gvgp-locked .gvgp-clean-head,#gvgpApp.gvgp-locked .gvgp-clean-foot{display:none}
-  #gvgpApp.gvgp-locked .gvgp-login-card{width:min(560px,100%);margin:0}
+  #gvgpApp.gvgp-locked .gvgp-login-card{width:min(560px,100%);margin:auto 0}
   .gvgp-sidebar{
     position:fixed;inset:0 auto 0 0;width:var(--gvgp-sidebar);z-index:40;
     display:flex;flex-direction:column;padding:24px 18px 18px;
@@ -194,13 +194,69 @@
   .gvgp-field input:focus{border-color:#78b7ae;box-shadow:0 0 0 3px rgba(15,118,110,.12)}
   .gvgp-login-form .gvgp-btn{justify-content:center;margin-top:2px}
   .gvgp-login-msg{min-height:18px;margin:0;font-size:10.5px;color:var(--gvgp-danger);font-weight:700}
-  .gvgp-signup{margin-top:4px;padding-top:9px;border-top:1px solid #e3ecef}
-  .gvgp-signup-toggle{border:0;background:none;color:#0b6b63;font-size:10.5px;font-weight:900;text-align:left;text-decoration:underline;text-underline-offset:3px;padding:0}
-  .gvgp-signup-box{display:grid;gap:7px;margin-top:8px}
+  .gvgp-signup{margin-top:5px;padding-top:10px;border-top:1px solid #e3ecef}
+  .gvgp-signup-toggle{display:flex;align-items:center;gap:8px;width:100%;border:1px solid rgba(241,210,124,.34);border-radius:12px;padding:9px 11px;background:linear-gradient(145deg,#1c2930,#0d151a);color:#f6f1e2;font-size:9px;font-weight:950;letter-spacing:1.15px;text-transform:uppercase;text-align:left;text-decoration:none;box-shadow:0 8px 16px rgba(12,24,30,.14),inset 0 1px 0 rgba(255,255,255,.12);transition:transform .18s ease,border-color .18s ease,background .18s ease}
+  .gvgp-signup-toggle:hover{transform:translateY(-1px);border-color:rgba(241,210,124,.55);background:linear-gradient(145deg,#22323a,#101a20)}
+  .gvgp-signup-toggle:before{content:"";width:17px;height:15px;flex:0 0 auto;border:2px solid #e3be6a;border-radius:2px;background:linear-gradient(135deg,rgba(180,235,235,.5),rgba(20,60,66,.18));box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),2px 2px 0 rgba(0,0,0,.32);transform:perspective(30px) rotateY(-18deg)}
+  .gvgp-signup-toggle:after{content:"3D";margin-left:auto;font-size:7px;letter-spacing:1px;color:#e3be6a;border:1px solid rgba(227,190,106,.35);padding:2px 5px;border-radius:999px;line-height:1}
+  .gvgp-signup-toggle[aria-expanded="true"]{border-color:rgba(241,210,124,.55);background:linear-gradient(145deg,#263841,#121e24)}
+  .gvgp-signup-box{position:relative;display:grid;gap:9px;margin-top:9px;padding:10px;border-radius:16px;overflow:hidden;background:radial-gradient(120% 80% at 80% -10%,rgba(241,210,124,.18),transparent 55%),linear-gradient(160deg,#1a252c 0%,#10181e 55%,#090f13 100%);border:1px solid rgba(241,210,124,.3);box-shadow:0 18px 34px rgba(12,24,30,.28),inset 0 1px 0 rgba(255,255,255,.1);color:#e9f1f1}
+  .gvgp-signup-box:before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(115deg,transparent 0 22px,rgba(255,255,255,.018) 22px 23px),linear-gradient(115deg,transparent 20%,rgba(255,255,255,.05) 40%,transparent 60%);opacity:.8}
+  .gvgp-signup-box>*{position:relative;z-index:1}
+  .gvgp-esq-showcase{display:grid;gap:6px}
+  .gvgp-esq-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 2px}
+  .gvgp-esq-brand{display:flex;align-items:center;gap:6px;font-size:7px;letter-spacing:1.55px;color:#d8b25f;font-weight:950;text-transform:uppercase;white-space:nowrap}
+  .gvgp-esq-brand:before{content:"";width:13px;height:1px;flex:0 0 auto;background:linear-gradient(90deg,#f1d27c,transparent)}
+  .gvgp-esq-brand b{color:#fff2c8;font-weight:950}
+  .gvgp-esq-count{font-size:7.5px;color:#91a7ac;letter-spacing:1px;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .gvgp-esq-count b{font-size:9px;color:#f1d27c}
+  .gvgp-esq-stage{position:relative;height:156px;perspective:640px;overflow:hidden;border-radius:12px;border:1px solid rgba(255,255,255,.07);background:radial-gradient(70% 90% at 50% 0%,rgba(174,224,225,.15),transparent 60%),linear-gradient(180deg,#203038 0%,#142027 55%,#0b1217 100%);box-shadow:inset 0 0 30px rgba(0,0,0,.45);isolation:isolate}
+  .gvgp-esq-stage:before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(90deg,transparent 49.7%,rgba(255,255,255,.07) 50%,transparent 50.3%),repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.035) 38px 39px),linear-gradient(180deg,rgba(255,255,255,.05),transparent 42%);opacity:.6}
+  .gvgp-esq-stage:after{content:"";position:absolute;left:-20%;right:-20%;bottom:-30%;height:55%;z-index:0;background:radial-gradient(50% 80% at 50% 0%,rgba(241,210,124,.12),transparent 70%),linear-gradient(180deg,#10191e,#070c10);transform:perspective(300px) rotateX(58deg);transform-origin:top;border-top:1px solid rgba(241,210,124,.16)}
+  .gvgp-esq-beam{position:absolute;top:-30%;left:18%;width:55%;height:125%;z-index:1;pointer-events:none;background:linear-gradient(105deg,transparent,rgba(220,245,245,.12),transparent);transform:rotate(8deg);filter:blur(2px);animation:gvgpEsqBeam 7s ease-in-out infinite}
+  .gvgp-esq-halo{position:absolute;left:50%;top:48%;width:150px;height:150px;z-index:1;border-radius:50%;background:radial-gradient(circle,rgba(241,210,124,.18),rgba(84,214,160,.08) 42%,transparent 68%);transform:translate(-50%,-50%);filter:blur(8px);animation:gvgpEsqHalo 5s ease-in-out infinite;pointer-events:none}
+  .gvgp-esq-frame-wrap{position:absolute;inset:4px 0 32px;z-index:2;display:grid;place-items:center;transform-style:preserve-3d;animation:gvgpEsqFloat 6s ease-in-out infinite;pointer-events:none}
+  .gvgp-esq-frame{position:relative;width:164px;height:110px;padding:7px;border-radius:4px;transform:rotateY(-18deg) rotateX(3deg);transform-style:preserve-3d;background:linear-gradient(145deg,#f9ecc8 0%,#c99a3e 18%,#f5dc9a 38%,#8a5d17 62%,#e8c66e 82%,#fff1c8 100%);box-shadow:0 1px 0 #fff8dd inset,0 -1px 0 #6d4a10 inset,18px 22px 35px rgba(0,0,0,.55),0 0 38px rgba(241,210,124,.18);transition:transform 1s cubic-bezier(.2,.8,.2,1)}
+  .gvgp-esq-frame:before{content:"";position:absolute;inset:-3px;z-index:-1;border-radius:5px;background:linear-gradient(145deg,rgba(255,246,214,.9),rgba(101,68,14,.9));filter:blur(.3px)}
+  .gvgp-esq-frame:after{content:"";position:absolute;left:4px;right:4px;top:3px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent);opacity:.7;pointer-events:none}
+  .gvgp-esq-inner{position:relative;width:100%;height:100%;display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:2px;background:linear-gradient(145deg,#a87a26,#f0d38a 40%,#8b5d17);box-shadow:inset 0 0 0 1px rgba(69,45,8,.55);perspective:420px;transform-style:preserve-3d;overflow:visible}
+  .gvgp-esq-inner:before{content:"";position:absolute;inset:2px;z-index:0;background:radial-gradient(80% 80% at 50% 35%,rgba(20,38,44,.25),rgba(4,12,16,.92));border:1px solid rgba(40,28,8,.5)}
+  .gvgp-esq-glass{position:relative;z-index:1;display:block;overflow:hidden;border-radius:1px;border:1px solid rgba(225,251,252,.35);background:linear-gradient(135deg,rgba(207,244,246,.45),rgba(54,108,116,.28) 38%,rgba(214,245,247,.16) 68%,rgba(9,31,38,.55)),linear-gradient(180deg,rgba(255,255,255,.18),transparent 45%);box-shadow:inset 0 0 18px rgba(4,22,28,.45),inset 0 1px 0 rgba(255,255,255,.35);transform-origin:left center;transition:transform 1s cubic-bezier(.2,.8,.2,1),filter 1s ease;backface-visibility:hidden}
+  .gvgp-esq-glass:before{content:"";position:absolute;top:-30%;bottom:-30%;left:-35%;width:42%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:rotate(18deg);filter:blur(1px);opacity:.65;animation:gvgpEsqShimmer 5s ease-in-out infinite}
+  .gvgp-esq-glass:after{content:"";position:absolute;left:0;right:0;bottom:0;height:45%;background:linear-gradient(0deg,rgba(5,20,26,.5),transparent)}
+  .gvgp-esq-handle{position:absolute;right:6px;top:50%;z-index:3;width:3px;height:23px;border-radius:2px;background:linear-gradient(180deg,#fff4cf,#c79a3d 45%,#6d4a10);box-shadow:0 0 0 1px rgba(58,38,6,.6),0 2px 5px rgba(0,0,0,.5);opacity:0;transform:translateY(-50%) translateZ(6px);transition:opacity .45s ease}
+  .gvgp-esq-shadow{position:absolute;left:50%;bottom:3px;width:172px;height:24px;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.8),rgba(0,0,0,.28) 42%,transparent 72%);transform:translateX(-50%);filter:blur(4px)}
+  .gvgp-esq-caption{position:absolute;left:10px;bottom:20px;z-index:4;display:grid;gap:1px;text-shadow:0 2px 7px rgba(0,0,0,.7);pointer-events:none}
+  .gvgp-esq-caption span{font-size:6.5px;letter-spacing:1.8px;color:#f1d27c;font-weight:950;text-transform:uppercase}
+  .gvgp-esq-caption strong{font-size:10px;color:#f7f2e6;letter-spacing:-.1px;line-height:1.1}
+  .gvgp-esq-timeline{position:absolute;left:10px;right:10px;bottom:8px;z-index:4;display:flex;gap:4px;pointer-events:none}
+  .gvgp-esq-timeline i{position:relative;height:2px;flex:1;border-radius:2px;background:rgba(255,255,255,.16);overflow:hidden}
+  .gvgp-esq-timeline i.is-done{background:rgba(241,210,124,.55)}
+  .gvgp-esq-timeline i.is-active:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#f1d27c,#fff1c8);transform-origin:left;animation:gvgpEsqTime 5s linear forwards}
+  .gvgp-esq-stage[data-scene="0"] .gvgp-esq-frame{transform:rotateY(-18deg) rotateX(3deg)}
+  .gvgp-esq-stage[data-scene="0"] .gvgp-esq-glass.g2{transform:translateX(-8%) translateZ(1px)}
+  .gvgp-esq-stage[data-scene="1"] .gvgp-esq-frame{transform:rotateY(19deg) rotateX(-2deg) translateZ(12px)}
+  .gvgp-esq-stage[data-scene="1"] .gvgp-esq-glass.g2{transform:rotateY(-58deg) translateX(-2px);filter:brightness(.92)}
+  .gvgp-esq-stage[data-scene="1"] .gvgp-esq-handle{opacity:1}
+  .gvgp-esq-stage[data-scene="2"] .gvgp-esq-frame{transform:rotateY(-5deg) rotateX(7deg) translateY(-2px)}
+  .gvgp-esq-stage[data-scene="2"] .gvgp-esq-glass.g1{transform:rotateY(46deg);transform-origin:left center}
+  .gvgp-esq-stage[data-scene="2"] .gvgp-esq-glass.g2{transform:rotateY(-46deg);transform-origin:right center}
+  .gvgp-esq-form{display:grid;gap:8px;padding:10px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.035));border:1px solid rgba(255,255,255,.09);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
   .gvgp-signup-box .gvgp-field{gap:4px}
-  .gvgp-signup-box .gvgp-field label{font-size:9px}
-  .gvgp-signup-msg{min-height:15px;margin:0;font-size:10px;color:var(--gvgp-danger);font-weight:700}
-  .gvgp-signup-note{font-size:9px;color:#7c7264;line-height:1.4;margin:0}
+  .gvgp-signup-box .gvgp-field label{font-size:8.5px;letter-spacing:1.3px;color:#c7ad72}
+  .gvgp-signup-box .gvgp-field input{background:rgba(4,12,16,.55);border-color:rgba(241,210,124,.2);color:#f4f8f6;padding:10px 11px;font-size:12px;box-shadow:inset 0 2px 7px rgba(0,0,0,.35)}
+  .gvgp-signup-box .gvgp-field input::placeholder{color:#7f979c}
+  .gvgp-signup-box .gvgp-field input:focus{border-color:#d9b25f;box-shadow:0 0 0 3px rgba(241,210,124,.13),inset 0 2px 7px rgba(0,0,0,.35)}
+  .gvgp-signup-box .gvgp-btn-gold{justify-content:center;padding:11px 13px;font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;box-shadow:0 10px 20px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.65)}
+  .gvgp-signup-msg{min-height:15px;margin:0;font-size:10px;color:#ffb4a8;font-weight:700}
+  .gvgp-signup-note{font-size:8.5px;color:#9fb2b6;line-height:1.45;margin:0}
+  @keyframes gvgpEsqFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+  @keyframes gvgpEsqBeam{0%,100%{opacity:.15;transform:translateX(-20%) rotate(8deg)}50%{opacity:.45;transform:translateX(25%) rotate(8deg)}}
+  @keyframes gvgpEsqHalo{0%,100%{transform:translate(-50%,-50%) scale(.92);opacity:.4}50%{transform:translate(-50%,-50%) scale(1.08);opacity:.7}}
+  @keyframes gvgpEsqShimmer{0%,100%{transform:translateX(-120%) rotate(18deg);opacity:0}35%{opacity:.75}55%{transform:translateX(300%) rotate(18deg);opacity:.2}}
+  @keyframes gvgpEsqTime{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  @media (prefers-reduced-motion:reduce){.gvgp-esq-frame-wrap,.gvgp-esq-beam,.gvgp-esq-halo,.gvgp-esq-glass:before,.gvgp-esq-timeline i.is-active:after{animation:none!important}.gvgp-esq-frame,.gvgp-esq-glass{transition:none!important}}
+  @media (max-width:700px){.gvgp-esq-stage{height:146px}.gvgp-esq-frame{width:152px;height:102px}}
   .gvgp-dashboard{margin-top:18px}
   .gvgp-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
   .gvgp-kpi{
@@ -669,17 +725,37 @@
             <div class="gvgp-signup">
               <button type="button" class="gvgp-signup-toggle" id="gvgpSignupToggle" aria-expanded="false" aria-controls="gvgpSignupBox">Criar cadastro</button>
               <div id="gvgpSignupBox" class="gvgp-signup-box gvgp-hidden">
-                <div class="gvgp-field">
-                  <label for="gvgpSignupUser">Usuário para cadastro</label>
-                  <input id="gvgpSignupUser" autocomplete="username" placeholder="Escolha um usuário">
+                <div class="gvgp-esq-showcase" aria-hidden="true">
+                  <div class="gvgp-esq-head"><span class="gvgp-esq-brand">GVG&amp;ARTEFAL <b>ESQUADRIA 3D</b></span><span class="gvgp-esq-count"><b id="gvgpEsqNum">01</b> / 03</span></div>
+                  <div class="gvgp-esq-stage" id="gvgpEsqStage" data-scene="0">
+                    <span class="gvgp-esq-halo"></span>
+                    <span class="gvgp-esq-beam"></span>
+                    <div class="gvgp-esq-frame-wrap">
+                      <div class="gvgp-esq-frame">
+                        <div class="gvgp-esq-inner">
+                          <span class="gvgp-esq-glass g1"></span>
+                          <span class="gvgp-esq-glass g2"><i class="gvgp-esq-handle"></i></span>
+                        </div>
+                      </div>
+                      <span class="gvgp-esq-shadow"></span>
+                    </div>
+                    <div class="gvgp-esq-caption"><span id="gvgpEsqTag">JANELA DE CORRER</span><strong id="gvgpEsqName">Linha Prime 3D</strong></div>
+                    <div class="gvgp-esq-timeline" id="gvgpEsqTimeline"><i class="is-active"></i><i></i><i></i></div>
+                  </div>
                 </div>
-                <div class="gvgp-field">
-                  <label for="gvgpSignupPass">Senha</label>
-                  <input id="gvgpSignupPass" type="password" autocomplete="new-password" placeholder="Pode ser simples, ex.: 12345">
+                <div class="gvgp-esq-form">
+                  <div class="gvgp-field">
+                    <label for="gvgpSignupUser">Usuário para cadastro</label>
+                    <input id="gvgpSignupUser" autocomplete="username" placeholder="Escolha um usuário">
+                  </div>
+                  <div class="gvgp-field">
+                    <label for="gvgpSignupPass">Senha</label>
+                    <input id="gvgpSignupPass" type="password" autocomplete="new-password" placeholder="Pode ser simples, ex.: 12345">
+                  </div>
+                  <button type="button" class="gvgp-btn gvgp-btn-gold" id="gvgpSignupBtn">Solicitar cadastro</button>
+                  <p id="gvgpSignupMsg" class="gvgp-signup-msg" role="status" aria-live="polite"></p>
+                  <p class="gvgp-signup-note">O cadastro fica pendente até a aprovação do administrador. A senha pode ser simples, como 12345.</p>
                 </div>
-                <button type="button" class="gvgp-btn gvgp-btn-gold" id="gvgpSignupBtn">Solicitar cadastro</button>
-                <p id="gvgpSignupMsg" class="gvgp-signup-msg" role="status" aria-live="polite"></p>
-                <p class="gvgp-signup-note">O cadastro fica pendente até a aprovação do administrador. A senha pode ser simples, como 12345.</p>
               </div>
             </div>
           </form>
@@ -1167,19 +1243,48 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
   document.querySelectorAll('[data-module]').forEach(b=>b.addEventListener('click',()=>setView(b.getAttribute('data-module'))));
   $('gvgpMenuBtn').addEventListener('click',()=>setSidebar(!$('gvgpApp').classList.contains('gvgp-sidebar-open')));
   $('gvgpBackdrop').addEventListener('click',()=>setSidebar(false));
+  const signupScenes=[
+    {tag:'JANELA DE CORRER',name:'Linha Prime 3D'},
+    {tag:'PORTA PIVOTANTE',name:'Linha Concept 3D'},
+    {tag:'JANELA DE ABRIR',name:'Linha Vision 3D'}
+  ];
+  let signupScene=0,signupTimer=null;
+  function setSignupScene(n){
+    const stage=$('gvgpEsqStage');if(!stage)return;
+    signupScene=(n+signupScenes.length)%signupScenes.length;
+    const scene=signupScenes[signupScene];
+    stage.setAttribute('data-scene',String(signupScene));
+    const tag=$('gvgpEsqTag'),name=$('gvgpEsqName'),num=$('gvgpEsqNum');
+    if(tag)tag.textContent=scene.tag;
+    if(name)name.textContent=scene.name;
+    if(num)num.textContent=String(signupScene+1).padStart(2,'0');
+    const timeline=$('gvgpEsqTimeline');
+    if(timeline)Array.from(timeline.children).forEach((bar,i)=>{bar.className=i<signupScene?'is-done':i===signupScene?'is-active':'';});
+  }
+  function startSignupShowcase(){
+    if(signupTimer)return;
+    const timeline=$('gvgpEsqTimeline');
+    if(timeline)Array.from(timeline.children).forEach(bar=>{bar.className='';});
+    setSignupScene(0);
+    signupTimer=setInterval(()=>setSignupScene(signupScene+1),5000);
+  }
+  function stopSignupShowcase(){
+    if(signupTimer){clearInterval(signupTimer);signupTimer=null;}
+  }
   $('gvgpSignupToggle').addEventListener('click',()=>{
     const box=$('gvgpSignupBox'),btn=$('gvgpSignupToggle'),hidden=box.classList.contains('gvgp-hidden');
     box.classList.toggle('gvgp-hidden',!hidden);btn.setAttribute('aria-expanded',String(hidden));
+    if(hidden)startSignupShowcase();else stopSignupShowcase();
   });
   $('gvgpSignupBtn').addEventListener('click',async()=>{
     const user=$('gvgpSignupUser').value.trim(),pass=$('gvgpSignupPass').value,msg=$('gvgpSignupMsg'),btn=$('gvgpSignupBtn');
-    msg.textContent='';msg.style.color='#b42318';
+    msg.textContent='';msg.style.color='#ffb4a8';
     if(!user||!pass){msg.textContent='Informe usuário e senha para o cadastro.';return;}
     btn.disabled=true;btn.textContent='Enviando…';
     try{
       const d=await run('cadastrarFuncionario',{login:user,senha:pass});
       if(!d||d.status!=='PENDENTE')throw new Error('O servidor não confirmou o cadastro.');
-      msg.style.color='#0f766e';msg.textContent='Cadastro enviado. Aguarde a aprovação do administrador.';
+      msg.style.color='#7ef0c1';msg.textContent='Cadastro enviado. Aguarde a aprovação do administrador.';
       $('gvgpSignupPass').value='';
     }catch(err){msg.textContent=err.message||String(err);}
     finally{btn.disabled=false;btn.textContent='Solicitar cadastro';}
