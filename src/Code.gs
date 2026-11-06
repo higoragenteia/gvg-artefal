@@ -4,6 +4,7 @@
 const GVG_SPREADSHEET_ID = '19bO6gkJX9yre2a3Qzt5EUxsNacj_-sR9C6hrz-UhBG4';
 const GVG_BASE_FOLDER_ID = '1eWXZren3iZClUFg4GU0yTIMg1h4__hb2';
 const GVG_FOTOS_FOLDER_ID = '1eBVC5bV7wOqUszfS6roN5eYl5IZkXbLZ';
+const GVG_PERFIL_FOLDER_ID = '1r899FRbDxLA23BmItwSiKlEDy7TEbB2d';
 const GVG_ANEXOS_FOLDER_ID = '1FH8SACEEUe-mffzT4PigUt-m_hp0xnD1';
 // Resumos somente leitura dos aplicativos existentes (uma informação por app).
 const GVG_GASTOS_ID = '1zj0t-2DbQoz6spian5q-umlg9hu9SJUHUPMaUzgt2XI';
@@ -125,6 +126,30 @@ function salvarProduto(pin,d){
  }finally{lock.releaseLock()}
 }
 function alterarDisponibilidade(pin,id,novo){admin_(pin);if(!['SIM','NÃO','EM FALTA'].includes(novo))throw new Error('Situação inválida.');const lock=LockService.getScriptLock();lock.waitLock(20000);try{const ss=abasGestao_(),sh=ss.getSheetByName('PRODUTOS'),v=sh.getDataRange().getValues();const idx=v.findIndex((r,i)=>i>0&&String(r[0])===String(id));if(idx<0)throw new Error('Produto não encontrado.');sh.getRange(idx+1,7).setValue(novo);try{CacheService.getScriptCache().remove('gvg_catalogo_v2');}catch(e){}ss.getSheetByName('AUDITORIA').appendRow([new Date(),'DISPONIBILIDADE',id,v[idx][1],novo]);return true}finally{lock.releaseLock()}}
+function gvguPerfilFolder_(){
+  try{return DriveApp.getFolderById(GVG_PERFIL_FOLDER_ID);}catch(e){}
+  const base=DriveApp.getFolderById(GVG_BASE_FOLDER_ID);
+  const it=base.getFoldersByName('08 - Fotos de Perfil');
+  return it.hasNext()?it.next():base.createFolder('08 - Fotos de Perfil');
+}
+function salvarFotoPerfil(sessao,foto){
+  const auth=gvguVerificarSessao_(sessao);
+  const data=String(foto&&foto.data||'');
+  const m=data.match(/^data:(image\/(?:jpeg|jpg|png|webp));base64,([A-Za-z0-9+/=\r\n]+)$/i);
+  if(!m)throw new Error('Envie uma imagem JPG, PNG ou WebP.');
+  const mime=m[1].toLowerCase(),bytes=Utilities.base64Decode(m[2]);
+  if(bytes.length>1500000)throw new Error('A foto deve ter no máximo 1,5 MB.');
+  const ext=/png/.test(mime)?'png':/webp/.test(mime)?'webp':'jpg';
+  const folder=gvguPerfilFolder_();
+  const file=folder.createFile(Utilities.newBlob(bytes,mime,'perfil-'+auth.id+'-'+Utilities.getUuid()+'.'+ext));
+  try{file.setSharing(DriveApp.Access.ANYONE_WITH_LINK,DriveApp.Permission.VIEW);}catch(e){}
+  const url='https://drive.google.com/thumbnail?id='+file.getId()+'&sz=w256';
+  const sh=gvguUsuarios_(),col=gvguFotoCol_(sh),v=sh.getDataRange().getValues();
+  const idx=v.findIndex((r,i)=>i>0&&String(r[0])===String(auth.id));
+  if(idx<0)throw new Error('Usuário não encontrado.');
+  sh.getRange(idx+1,col).setValue(url);
+  return {url,arquivo:file.getId()};
+}
 // Registra SOLICITAÇÃO, não comprova envio no WhatsApp nem entrega de materiais.
 function registrarSolicitacao(d){
  const auth=gvguVerificarSessao_(d&&d.sessao); d.nome=auth.nome; d.usuarioId=auth.id;
@@ -224,6 +249,12 @@ const GVGU_PWD_ITER=4000,GVGU_SESS_MILLIS=1000*60*60*24*7;
 function gvguSheet_(name,headers){const ss=gvgPlanilha_();let sh=ss.getSheetByName(name);if(!sh){sh=ss.insertSheet(name);sh.appendRow(headers)}return sh}
 function gvguSHA_(s){return Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256,String(s)).map(x=>('0'+(x&255).toString(16)).slice(-2)).join('')}
 function gvguHash_(password,salt){let s=salt+'|'+password;for(let i=0;i<GVGU_PWD_ITER;i++)s=gvguSHA_(s);return s}
+function gvguFotoCol_(sh){
+  const headers=sh.getRange(1,1,1,Math.max(sh.getLastColumn(),12)).getValues()[0];
+  let col=headers.findIndex(h=>/foto/i.test(String(h)));
+  if(col<0){sh.getRange(1,12).setValue('Foto (URL)');col=11;}
+  return col+1;
+}
 function gvguUsuarios_(){const ss=gvgPlanilha_();const existing=ss.getSheetByName('USUARIOS_GVG')||ss.getSheetByName('GVG_USUARIOS');return existing||gvguSheet_('GVG_USUARIOS',['ID','Nome','Login','WhatsApp','Salt','Senha_hash','Status','Data_cadastro','Data_status','E-mail','Perfil'])}
 function gvguSessoes_(){return gvguSheet_('SESSOES_GVG',['Token_hash','Usuario_ID','Expira_em','Revogada'])}
 function gvguVinculos_(){return gvguSheet_('PEDIDOS_USUARIOS',['Pedido_ID','Usuario_ID'])}
@@ -245,18 +276,19 @@ function cadastrarFuncionario(d){
 }
 function gvguVerificarSessao_(token){
  const hash=gvguSHA_(token||'');if(!token||String(token).length<20)throw new Error('Entre na sua conta para solicitar materiais.');
+ const sh=gvguUsuarios_(),fotoCol=gvguFotoCol_(sh);
  const ss=gvguSessoes_().getDataRange().getValues();const r=ss.find((x,i)=>i>0&&x[0]===hash&&x[3]!=='SIM'&&Number(x[2])>Date.now());if(!r)throw new Error('Sessão expirada. Entre novamente.');
- const users=gvguUsuarios_().getDataRange().getValues();const user=users.find((x,i)=>i>0&&x[0]===r[1]&&x[6]==='ATIVO');if(!user)throw new Error('Acesso não autorizado ou bloqueado.');return {id:user[0],nome:user[1],login:user[2],email:String(user[9]||'').toLowerCase(),perfil:String(user[10]||'CONSULTA').toUpperCase()};
+ const users=sh.getDataRange().getValues();const user=users.find((x,i)=>i>0&&x[0]===r[1]&&x[6]==='ATIVO');if(!user)throw new Error('Acesso não autorizado ou bloqueado.');return {id:user[0],nome:user[1],login:user[2],email:String(user[9]||'').toLowerCase(),perfil:String(user[10]||'CONSULTA').toUpperCase(),foto:String(user[fotoCol-1]||'')};
 }
 function entrarFuncionario(login,password){
  const l=String(login||'').trim().toLowerCase(),p=String(password||'');
- const users=gvguUsuarios_().getDataRange().getValues();const r=users.find((x,i)=>i>0&&(String(x[9]||'').trim().toLowerCase()===l||String(x[2]||'').trim().toLowerCase()===l));
+ const sh=gvguUsuarios_(),fotoCol=gvguFotoCol_(sh),users=sh.getDataRange().getValues();const r=users.find((x,i)=>i>0&&(String(x[9]||'').trim().toLowerCase()===l||String(x[2]||'').trim().toLowerCase()===l));
  if(!r||gvguHash_(p,r[4])!==r[5])throw new Error('Usuário ou senha inválidos.');
  if(r[6]!=='ATIVO')throw new Error(r[6]==='PENDENTE'?'Cadastro aguardando aprovação.':'Acesso bloqueado.');
  const token=Utilities.getUuid()+Utilities.getUuid(),exp=Date.now()+GVGU_SESS_MILLIS;
- gvguSessoes_().appendRow([gvguSHA_(token),r[0],exp,'NÃO']);return {token,id:r[0],nome:r[1],login:r[2],email:String(r[9]||'').trim().toLowerCase(),perfil:String(r[10]||'CONSULTA').toUpperCase(),expira:exp};
+ gvguSessoes_().appendRow([gvguSHA_(token),r[0],exp,'NÃO']);return {token,id:r[0],nome:r[1],login:r[2],email:String(r[9]||'').trim().toLowerCase(),perfil:String(r[10]||'CONSULTA').toUpperCase(),foto:String(r[fotoCol-1]||''),expira:exp};
 }
-function sessaoFuncionario(token){const u=gvguVerificarSessao_(token);return {nome:u.nome,login:u.login,email:u.email,perfil:u.perfil}}
+function sessaoFuncionario(token){const u=gvguVerificarSessao_(token);return {nome:u.nome,login:u.login,email:u.email,perfil:u.perfil,foto:u.foto||''}}
 function sairFuncionario(token){const h=gvguSHA_(token),sh=gvguSessoes_(),v=sh.getDataRange().getValues();for(let i=1;i<v.length;i++)if(v[i][0]===h)sh.getRange(i+1,4).setValue('SIM');return true}
 function gvguVincularPedido_(ss,pedido,id){gvguVinculos_().appendRow([pedido,id])}
 function meusPedidos(token){const u=gvguVerificarSessao_(token),ss=abasGestao_(),linked=gvguVinculos_().getDataRange().getValues();const ids=new Set(linked.slice(1).filter(r=>String(r[1])===u.id).map(r=>String(r[0])));
@@ -534,7 +566,7 @@ function getPainelInicial(sessao){
     ];
     return {
       ok:true,
-      usuario:{nome:usuario.nome,login:usuario.login,email:usuario.email,perfil:usuario.perfil},
+      usuario:{nome:usuario.nome,login:usuario.login,email:usuario.email,perfil:usuario.perfil,foto:usuario.foto||''},
       ambiente:String(cfg('AMBIENTE')||'TESTE'),
       atualizadoEm:Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'dd/MM/yyyy HH:mm'),
       vazio:lista.length===0,
