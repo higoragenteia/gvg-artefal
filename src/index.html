@@ -805,15 +805,15 @@ body.gvg-access-locked{overflow:hidden}
  const filter=$('gvgUserFilter').value;
  const visible=users.filter(u=>userStatus(u)!=='EXCLUIDO'&&(filter==='TODOS'||userStatus(u)===filter));
  const empty={PENDENTE:'Nenhum cadastro pendente de aprovação.',ATIVO:'Nenhum usuário ativo.',BLOQUEADO:'Nenhum usuário bloqueado.',EXCLUIDO:'Nenhum cadastro excluído.',TODOS:'Nenhum usuário cadastrado.'};
- const permLabels={VISUAL:'Visual',OPERADOR:'Operador',ADMIN:'Admin','':'Sem acesso'};
- const permKeys=[['pedidos','Pedidos'],['gastos','Gastos'],['fornecedores','Fornecedores'],['frotas','Frotas']];
- const permOptions=val=>`<option value="" ${!val?'selected':''}>Sem acesso</option><option value="VISUAL" ${val==='VISUAL'?'selected':''}>Visual</option><option value="OPERADOR" ${val==='OPERADOR'?'selected':''}>Operador</option><option value="ADMIN" ${val==='ADMIN'?'selected':''}>Admin</option>`;
- function effectivePerms(u,status){const p=u.permissoes||{},o={};permKeys.forEach(([k])=>{o[k]=String(p[k]||'').toUpperCase();});if(status==='PENDENTE'&&!o.pedidos)o.pedidos='OPERADOR';return o;}
+ const permLabels={ADMIN:'Admin',OPERADOR:'Operador'};
+ const permKeys=[['pedidos','Pedidos']];
+ const permOptions=val=>`<option value="ADMIN" ${val==='ADMIN'?'selected':''}>Admin</option><option value="OPERADOR" ${val!=='ADMIN'?'selected':''}>Operador</option>`;
+ function effectivePerms(u,status){const p=u.permissoes||{};const v=String(p.pedidos||'').toUpperCase();return {pedidos:v==='ADMIN'?'ADMIN':'OPERADOR'};}
  function permSelects(u,status,self){
   const p=effectivePerms(u,status);
-  return `<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;flex:1 1 100%;margin-top:8px">`+permKeys.map(([k,label])=>`<label style="font-size:9px;font-weight:800;color:#aeb8c2;display:grid;gap:3px">${label}<select data-perm="${k}" ${self?'disabled':''} style="width:100%;padding:7px;border-radius:7px;background:#252a32;color:#fff;border:1px solid #5d6a76">${permOptions(p[k])}</select></label>`).join('')+`</div>`;
+  return `<div style="display:grid;grid-template-columns:1fr;gap:7px;flex:1 1 100%;margin-top:8px">`+permKeys.map(([k,label])=>`<label style="font-size:9px;font-weight:800;color:#aeb8c2;display:grid;gap:3px">${label}<select data-perm="${k}" ${self?'disabled':''} style="width:100%;padding:7px;border-radius:7px;background:#252a32;color:#fff;border:1px solid #5d6a76">${permOptions(p[k])}</select></label>`).join('')+`</div>`;
  }
- function permSummary(p){return permKeys.map(([k,label])=>label+': '+(permLabels[String(p[k]||'').toUpperCase()]||'Sem acesso')).join(' · ');}
+ function permSummary(p){return 'Pedidos: '+(permLabels[String(p&&p.pedidos||'').toUpperCase()]||'Operador');}
  $('gvgUsers').innerHTML=visible.map(u=>{
   const status=userStatus(u),perfil=String(u.perfil||'CONSULTA').toUpperCase(),self=account&&String(u.id)===String(account.id);
   const eff=effectivePerms(u,status);
@@ -842,10 +842,9 @@ async function loadUsers(){
  $('gvgUsers').onclick=async e=>{
  const b=e.target.closest('button[data-user]');if(!b||userChangeInProgress)return;
  const action=b.dataset.action,id=b.dataset.user,card=b.closest('.gvg-useritem'),name=card?card.querySelector('b')?.textContent:'este usuário';
- const permLabels={VISUAL:'Visual',OPERADOR:'Operador',ADMIN:'Admin','':'Sem acesso'};
- const permKeys=[['pedidos','Pedidos'],['gastos','Gastos'],['fornecedores','Fornecedores'],['frotas','Frotas']];
- const readPerms=()=>{const o={};permKeys.forEach(([k])=>{const el=card&&card.querySelector(`select[data-perm="${k}"]`);o[k]=el?el.value:'';});return o;};
- const permSummary=p=>permKeys.map(([k,label])=>label+': '+(permLabels[String(p[k]||'').toUpperCase()]||'Sem acesso')).join(' · ');
+ const permLabels={ADMIN:'Admin',OPERADOR:'Operador'};
+ const readPerms=()=>{const el=card&&card.querySelector('select[data-perm="pedidos"]');const v=el&&el.value==='ADMIN'?'ADMIN':'OPERADOR';return v==='ADMIN'?{pedidos:'ADMIN',gastos:'ADMIN',fornecedores:'ADMIN',frotas:'ADMIN'}:{pedidos:'OPERADOR'};};
+ const permSummary=p=>'Pedidos: '+(permLabels[String(p&&p.pedidos||'').toUpperCase()]||'Operador');
  let request=null,success='',permissoes=null;
  if(action==='password'){
   const nova=prompt('Nova senha para '+name+' (1 a 128 caracteres):');if(nova===null)return;if(!nova){$('gvgUsersMessage').textContent='Informe uma senha.';return;}
