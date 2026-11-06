@@ -120,7 +120,7 @@
   .gvgp-pending-count{min-width:16px;height:16px;padding:0 4px;border-radius:999px;display:grid;place-items:center;background:#b98520;color:#fff;font-size:8.5px;line-height:1;font-weight:950}
   .gvgp-pending-modal{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:18px;background:rgba(8,18,24,.54);backdrop-filter:blur(3px)}
   .gvgp-pending-modal.gvgp-hidden{display:none}
-  .gvgp-pending-card{width:min(560px,100%);max-height:min(78vh,620px);display:flex;flex-direction:column;overflow:hidden;border-radius:18px;background:linear-gradient(180deg,#fff,#fbfaf6);border:1px solid #d9d0c2;box-shadow:0 24px 70px rgba(0,0,0,.32)}
+  .gvgp-pending-card{width:min(820px,100%);max-height:min(84vh,700px);display:flex;flex-direction:column;overflow:hidden;border-radius:18px;background:linear-gradient(180deg,#fff,#fbfaf6);border:1px solid #d9d0c2;box-shadow:0 24px 70px rgba(0,0,0,.32)}
   .gvgp-pending-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;border-bottom:1px solid #e7dfd3}
   .gvgp-pending-head h3{margin:0;font-size:15px;color:#3c372e;letter-spacing:-.2px}
   .gvgp-pending-close{border:0;background:#f1e9dd;color:#6d5b3e;width:28px;height:28px;border-radius:50%;font-size:18px;line-height:1;font-weight:800}
@@ -144,7 +144,32 @@
   .gvgp-role-btn.is-selected[data-pending-role="ADMIN"]{background:linear-gradient(145deg,#5a3f0d,#332306);border-color:#b98520;color:#ffe9a8}
   .gvgp-pending-empty{margin:12px 4px;color:#8b7d6a;font-size:10.5px;text-align:center}
   .gvgp-pending-note{margin:0;padding:10px 16px 13px;border-top:1px solid #e7dfd3;color:#8b7d6a;font-size:9px;line-height:1.45}
-  @media (max-width:700px){.gvgp-pending-label{display:none}.gvgp-pending-actions button{padding:7px 8px;font-size:8.5px}}
+  .gvgp-pending-head>div{min-width:0}
+  .gvgp-pending-head p{margin:2px 0 0;font-size:9px;color:#8b7d6a}
+  .gvgp-pending-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid #e7dfd3;background:#fdfbf7}
+  .gvgp-pending-filters{display:flex;gap:5px;flex-wrap:wrap}
+  .gvgp-pending-filters button{border:1px solid #ddd2c1;background:#fff;color:#6d5b3e;border-radius:999px;padding:6px 9px;font-size:8.5px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:background .16s ease,color .16s ease,border-color .16s ease}
+  .gvgp-pending-filters button:hover{border-color:#c9a35a;background:#fff8e9}
+  .gvgp-pending-filters button.is-active{background:#173b3a;color:#f1d27c;border-color:#8f6c22}
+  .gvgp-pending-filters b{font-size:8px;opacity:.8}
+  .gvgp-cad-search{flex:1;min-width:150px;border:1px solid #d9cfbf;border-radius:9px;padding:7px 9px;font-size:10px;background:#fff;color:#3c372e;outline:none}
+  .gvgp-cad-search:focus{border-color:#c9a35a;box-shadow:0 0 0 3px rgba(201,154,46,.12)}
+  .gvgp-cad-refresh{border:1px solid #ddd2c1;background:#fff;color:#6d5b3e;border-radius:9px;padding:7px 9px;font-size:11px;font-weight:900;cursor:pointer}
+  .gvgp-cad-refresh:hover{border-color:#c9a35a;background:#fff8e9}
+  .gvgp-pending-info .gvgp-cad-status{display:inline-flex;align-items:center;gap:4px;width:max-content;margin-top:3px;padding:3px 6px;border-radius:999px;font-size:7.5px;font-weight:950;letter-spacing:.4px;text-transform:uppercase}
+  .gvgp-cad-status:before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+  .gvgp-cad-status.is-pending{background:#fff3d6;color:#9b6b17}
+  .gvgp-cad-status.is-active{background:#e3f7ef;color:#0f766e}
+  .gvgp-cad-status.is-blocked{background:#fbe9e7;color:#b42318}
+  .gvgp-pending-actions{flex-wrap:wrap;justify-content:flex-end}
+  .gvgp-pending-actions .is-block{background:#fff3d6;color:#8a5a0a;border-color:#ecd39c}
+  .gvgp-pending-actions .is-reactivate{background:#0f766e;color:#fff}
+  .gvgp-pending-actions .is-delete{background:#fbe9e7;color:#b42318;border-color:#f0cdc7}
+  .gvgp-role-save{border:1px solid #e6d7ab;background:#fffaf0;color:#7a5a10;border-radius:999px;padding:5px 9px;font-size:8.5px;font-weight:900;line-height:1;cursor:pointer}
+  .gvgp-role-save:hover{background:#fff3d6}
+  .gvgp-role-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+  .gvgp-cad-self{font-size:8px;color:#8b7d6a;font-weight:800;margin-left:4px}
+  @media (max-width:700px){.gvgp-pending-label{display:none}.gvgp-pending-actions button{padding:7px 8px;font-size:8.5px}.gvgp-pending-top{flex-wrap:wrap}.gvgp-pending-actions{width:100%;margin-left:0;justify-content:flex-end}.gvgp-pending-toolbar{align-items:stretch}.gvgp-cad-search{flex-basis:100%}}
   .gvgp-content{padding:24px 28px 34px;flex:1}
   .gvgp-view{animation:gvgpIn .28s ease both}
   .gvgp-hidden{display:none!important}
@@ -942,9 +967,19 @@
 <div id="gvgpToast" class="gvgp-toast" role="status" aria-live="polite"></div>
 <div id="gvgpPendingModal" class="gvgp-pending-modal gvgp-hidden" role="dialog" aria-modal="true" aria-labelledby="gvgpPendingTitle">
   <div class="gvgp-pending-card">
-    <div class="gvgp-pending-head"><h3 id="gvgpPendingTitle">Cadastros pendentes</h3><button type="button" class="gvgp-pending-close" id="gvgpPendingClose" aria-label="Fechar">×</button></div>
+    <div class="gvgp-pending-head"><div><h3 id="gvgpPendingTitle">Cadastros</h3><p id="gvgpPendingSub">Todos os cadastros do sistema</p></div><button type="button" class="gvgp-pending-close" id="gvgpPendingClose" aria-label="Fechar">×</button></div>
+    <div class="gvgp-pending-toolbar">
+      <div class="gvgp-pending-filters" role="group" aria-label="Filtrar cadastros">
+        <button type="button" class="is-active" data-cad-filter="TODOS">Todos <b data-cad-count="TODOS">0</b></button>
+        <button type="button" data-cad-filter="PENDENTE">Pendentes <b data-cad-count="PENDENTE">0</b></button>
+        <button type="button" data-cad-filter="ATIVO">Ativos <b data-cad-count="ATIVO">0</b></button>
+        <button type="button" data-cad-filter="BLOQUEADO">Bloqueados <b data-cad-count="BLOQUEADO">0</b></button>
+      </div>
+      <input id="gvgpCadSearch" class="gvgp-cad-search" type="search" placeholder="Buscar nome, login ou e-mail" autocomplete="off">
+      <button type="button" class="gvgp-cad-refresh" id="gvgpCadRefresh" title="Atualizar cadastros" aria-label="Atualizar cadastros">↻</button>
+    </div>
     <div id="gvgpPendingList" class="gvgp-pending-list"><p class="gvgp-pending-empty">Carregando…</p></div>
-    <p class="gvgp-pending-note">Escolha a categoria ao aprovar: <b>Visual</b> (consulta), <b>Operador</b> (pedidos) ou <b>Admin</b> (todos os módulos). Visual e Operador ficam somente no Pedidos.</p>
+    <p class="gvgp-pending-note">Aprovação, categoria, bloqueio e exclusão ficam registrados. <b>Admin</b> libera todos os módulos; <b>Visual</b> e <b>Operador</b> ficam somente no Pedidos.</p>
   </div>
 </div>
 <script>
@@ -1027,37 +1062,63 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
     const du=$('gvgpDarkUpdated');if(du)du.textContent='—';
     const box=$('gvgpActivityList');if(box)box.innerHTML='<p class="gvgp-tv-empty">Entre no painel para ver as atividades.</p>';
   }
-  let pendingUsers=[],pendingLoaded=false;
+  let cadastroUsers=[],cadastroLoaded=false,cadastroFilter='TODOS',cadastroSearch='';
+  const cadStatusLabel={PENDENTE:'Pendente',ATIVO:'Ativo',BLOQUEADO:'Bloqueado'};
   function isAdminUser(user){return String(user&&user.perfil||'').toUpperCase()==='ADMIN'||String(user&&user.permissoes&&user.permissoes.pedidos||'').toUpperCase()==='ADMIN';}
-  function renderPending(){
+  function cadNorm(v){return String(v||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim();}
+  function cadPermsForRole(role){return role==='ADMIN'?{pedidos:'ADMIN',gastos:'ADMIN',fornecedores:'ADMIN',frotas:'ADMIN'}:{pedidos:role};}
+  function renderCadastros(){
     const list=$('gvgpPendingList');if(!list)return;
-    if(!pendingUsers.length){list.innerHTML='<p class="gvgp-pending-empty">Nenhum cadastro pendente de aprovação.</p>';return;}
-    list.innerHTML=pendingUsers.map(u=>{
+    const all=cadastroUsers.filter(u=>['PENDENTE','ATIVO','BLOQUEADO'].indexOf(String(u.status||'').toUpperCase())>=0);
+    const counts={TODOS:all.length,PENDENTE:0,ATIVO:0,BLOQUEADO:0};
+    all.forEach(u=>{const st=String(u.status||'').toUpperCase();if(counts[st]!==undefined)counts[st]++;});
+    document.querySelectorAll('[data-cad-count]').forEach(b=>{const k=b.getAttribute('data-cad-count');if(k&&counts[k]!==undefined)b.textContent=String(counts[k]);});
+    document.querySelectorAll('[data-cad-filter]').forEach(b=>b.classList.toggle('is-active',b.getAttribute('data-cad-filter')===cadastroFilter));
+    const badge=$('gvgpPendingCount');if(badge)badge.textContent=String(counts.PENDENTE);
+    const sub=$('gvgpPendingSub');if(sub)sub.textContent=all.length+' cadastro'+(all.length===1?'':'s')+' no sistema · '+counts.PENDENTE+' pendente'+(counts.PENDENTE===1?'':'s');
+    const query=cadNorm(cadastroSearch);
+    const order={PENDENTE:0,ATIVO:1,BLOQUEADO:2};
+    const visible=all.filter(u=>cadastroFilter==='TODOS'||String(u.status||'').toUpperCase()===cadastroFilter).filter(u=>!query||cadNorm([u.nome,u.login,u.email].join(' ')).indexOf(query)>=0).sort((a,b)=>{const sa=String(a.status||'').toUpperCase(),sb=String(b.status||'').toUpperCase();return (order[sa]-order[sb])||String(a.nome||'').localeCompare(String(b.nome||''),'pt-BR');});
+    if(!visible.length){list.innerHTML='<p class="gvgp-pending-empty">'+(query?'Nenhum cadastro encontrado para esta busca.':'Nenhum cadastro neste filtro.')+'</p>';return;}
+    list.innerHTML=visible.map(u=>{
+      const status=String(u.status||'').toUpperCase(),stLabel=cadStatusLabel[status]||status;
       const id=safe(u.id),nome=safe(u.nome||u.login||'Cadastro');
       const meta=safe(u.login||'')+(u.email?' · '+safe(u.email):'');
       const atual=String(u.permissoes&&u.permissoes.pedidos||'').toUpperCase();
-      const sel=['VISUAL','OPERADOR','ADMIN'].indexOf(atual)>=0?atual:'OPERADOR';
-      const role=(key,label)=>'<button type="button" class="gvgp-role-btn'+(sel===key?' is-selected':'')+'" data-pending-role="'+key+'" aria-pressed="'+(sel===key?'true':'false')+'">'+label+'</button>';
-      return '<div class="gvgp-pending-row"><div class="gvgp-pending-top"><div class="gvgp-pending-info"><strong>'+nome+'</strong><span>'+meta+'</span></div><div class="gvgp-pending-actions"><button type="button" class="is-approve" data-pending-approve="'+id+'">Aprovar</button><button type="button" class="is-reject" data-pending-reject="'+id+'">Recusar</button></div></div><div class="gvgp-pending-roles" role="group" aria-label="Categoria de acesso de '+nome+'"><span class="gvgp-pending-roles-label">Categoria</span>'+role('VISUAL','Visual')+role('OPERADOR','Operador')+role('ADMIN','Admin')+'</div></div>';
+      const valid=['VISUAL','OPERADOR','ADMIN'].indexOf(atual)>=0;
+      const sel=status==='PENDENTE'?(valid?atual:'OPERADOR'):(valid?atual:'');
+      const self=!!(state.user&&String(state.user.id)===String(u.id));
+      const role=(key,label)=>'<button type="button" class="gvgp-role-btn'+(sel===key?' is-selected':'')+'" data-pending-role="'+key+'" aria-pressed="'+(sel===key?'true':'false')+'"'+(self?' disabled title="Sua própria categoria não pode ser alterada aqui."':'')+'>'+label+'</button>';
+      let actions='';
+      if(status==='PENDENTE')actions='<button type="button" class="is-approve" data-cad-action="approve" data-cad-id="'+id+'">Aprovar</button><button type="button" class="is-reject" data-cad-action="reject" data-cad-id="'+id+'">Recusar</button><button type="button" class="is-delete" data-cad-action="delete" data-cad-id="'+id+'">Excluir</button>';
+      else if(status==='ATIVO')actions=self?'<span class="gvgp-cad-self">Sua conta</span>':'<button type="button" class="is-block" data-cad-action="block" data-cad-id="'+id+'">Bloquear</button><button type="button" class="is-delete" data-cad-action="delete" data-cad-id="'+id+'">Excluir</button>';
+      else if(status==='BLOQUEADO')actions=self?'<span class="gvgp-cad-self">Sua conta</span>':'<button type="button" class="is-reactivate" data-cad-action="reactivate" data-cad-id="'+id+'">Reativar</button><button type="button" class="is-delete" data-cad-action="delete" data-cad-id="'+id+'">Excluir</button>';
+      const save=(status!=='PENDENTE'&&!self)?'<button type="button" class="gvgp-role-save" data-cad-action="save" data-cad-id="'+id+'">Salvar</button>':'';
+      return '<div class="gvgp-pending-row"><div class="gvgp-pending-top"><div class="gvgp-pending-info"><strong>'+nome+(self?' <span class="gvgp-cad-self">Você</span>':'')+'</strong><span>'+meta+'</span><span class="gvgp-cad-status is-'+status.toLowerCase()+'">'+stLabel+'</span></div><div class="gvgp-pending-actions">'+actions+'</div></div><div class="gvgp-pending-roles" role="group" aria-label="Categoria de acesso de '+nome+'"><span class="gvgp-pending-roles-label">Categoria</span>'+role('VISUAL','Visual')+role('OPERADOR','Operador')+role('ADMIN','Admin')+save+'</div></div>';
     }).join('');
   }
-  async function loadPending(showList){
+  async function loadCadastros(showList){
     const list=$('gvgpPendingList');
-    if(showList&&list)list.innerHTML='<p class="gvgp-pending-empty">Carregando…</p>';
+    if(showList&&list)list.innerHTML='<p class="gvgp-pending-empty">Carregando cadastros…</p>';
     const cred=state.adminToken||state.token;if(!cred)return;
     try{
       const users=await run('adminUsuarios',cred);
-      pendingUsers=(Array.isArray(users)?users:[]).filter(u=>String(u.status||'').toUpperCase()==='PENDENTE');
-      const count=$('gvgpPendingCount');if(count)count.textContent=String(pendingUsers.length);
-      if(showList)renderPending();
+      cadastroUsers=(Array.isArray(users)?users:[]).filter(u=>String(u.status||'').toUpperCase()!=='EXCLUIDO');
+      cadastroLoaded=true;
+      renderCadastros();
     }catch(err){if(showList&&list)list.innerHTML='<p class="gvgp-pending-empty">Não foi possível carregar: '+safe(err.message||String(err))+'</p>';}
   }
-  function openPending(){$('gvgpPendingModal').classList.remove('gvgp-hidden');loadPending(true);}
+  function openPending(){
+    cadastroFilter='TODOS';cadastroSearch='';
+    const search=$('gvgpCadSearch');if(search)search.value='';
+    $('gvgpPendingModal').classList.remove('gvgp-hidden');
+    loadCadastros(true);
+  }
   function closePending(){$('gvgpPendingModal').classList.add('gvgp-hidden');}
   function renderLoggedOut(){
     state.token=''; state.adminToken=''; state.user=null; state.data=null;
     $('gvgpApp').classList.add('gvgp-locked');
-    pendingLoaded=false;pendingUsers=[];closePending();
+    cadastroLoaded=false;cadastroUsers=[];closePending();
     stopRotation();
     switchLayout(1,false);
     setTheme('clean');
@@ -1102,7 +1163,7 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
     $('gvgpTopUser').innerHTML=userChip(state.user);
     const b=$('gvgpLogoutBtn'); if(b)b.onclick=logout;
     applyMenuPermissions();
-    if(isAdminUser(state.user)&&!pendingLoaded){pendingLoaded=true;loadPending(false);}
+    if(isAdminUser(state.user)&&!cadastroLoaded){cadastroLoaded=true;loadCadastros(false);}
   }
   function renderDashboard(d){
     state.data=d; state.user=d.usuario||null; $('gvgpApp').classList.remove('gvgp-locked'); applyMenuPermissions();
@@ -1229,7 +1290,7 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
       if(String(d.perfil||'').toUpperCase()==='ADMIN'){state.adminToken=d.token;}
       else {state.adminToken='';}
       store.remove('gvgAdminToken');
-      state.token=d.token; state.user={nome:d.nome,login:d.login,email:d.email,perfil:d.perfil,permissoes:d.permissoes||{}};
+      state.token=d.token; state.user={id:d.id||'',nome:d.nome,login:d.login,email:d.email,perfil:d.perfil,permissoes:d.permissoes||{}};
       $('gvgpLoginPass').value='';
       msg.style.color='#0f766e'; msg.textContent='Acesso autorizado.';
       loadDashboard();
@@ -1394,29 +1455,51 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
   $('gvgpPendingClose').addEventListener('click',closePending);
   $('gvgpPendingModal').addEventListener('click',e=>{if(e.target===$('gvgpPendingModal'))closePending();});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePending();closeSignup();}});
+  document.querySelectorAll('[data-cad-filter]').forEach(b=>b.addEventListener('click',()=>{cadastroFilter=b.getAttribute('data-cad-filter')||'TODOS';renderCadastros();}));
+  $('gvgpCadSearch').addEventListener('input',e=>{cadastroSearch=e.target.value;renderCadastros();});
+  $('gvgpCadRefresh').addEventListener('click',()=>loadCadastros(true));
   $('gvgpPendingList').addEventListener('click',async e=>{
     const roleBtn=e.target.closest('[data-pending-role]');
     if(roleBtn){
+      if(roleBtn.disabled)return;
       const row=roleBtn.closest('.gvgp-pending-row');if(!row)return;
       row.querySelectorAll('[data-pending-role]').forEach(b=>{const on=b===roleBtn;b.classList.toggle('is-selected',on);b.setAttribute('aria-pressed',String(on));});
       return;
     }
-    const b=e.target.closest('[data-pending-approve],[data-pending-reject]');if(!b)return;
-    const id=b.getAttribute('data-pending-approve')||b.getAttribute('data-pending-reject');
-    const approve=!!b.getAttribute('data-pending-approve');
-    const row=b.closest('.gvgp-pending-row'),nome=row?row.querySelector('strong')?.textContent:'este cadastro';
+    const b=e.target.closest('[data-cad-action]');if(!b)return;
+    const action=b.getAttribute('data-cad-action'),id=b.getAttribute('data-cad-id');
+    const row=b.closest('.gvgp-pending-row');
+    const nome=row?row.querySelector('.gvgp-pending-info strong')?.textContent.replace(/\s*Você\s*$/,'').trim():'este cadastro';
     const roleEl=row?row.querySelector('[data-pending-role].is-selected'):null;
-    const role=roleEl?roleEl.getAttribute('data-pending-role'):'OPERADOR';
+    const role=roleEl?roleEl.getAttribute('data-pending-role'):'';
     const roleLabel={VISUAL:'Visual',OPERADOR:'Operador',ADMIN:'Admin'}[role]||role;
-    const detail=approve?(role==='ADMIN'?'\n\nAdmin concede acesso a todos os módulos.':role==='VISUAL'?'\n\nVisual permite consultar o catálogo, sem registrar pedidos.':'\n\nOperador pode registrar pedidos.'):'';
-    if(!confirm((approve?'Aprovar '+nome+' como '+roleLabel+'?':'Recusar o cadastro de '+nome+'?')+detail))return;
-    b.disabled=true;
-    try{
-      const perms=role==='ADMIN'?{pedidos:'ADMIN',gastos:'ADMIN',fornecedores:'ADMIN',frotas:'ADMIN'}:{pedidos:role};
-      if(approve)await run('adminSituacaoUsuario',state.adminToken||state.token,id,'ATIVO','',perms);
-      else await run('adminSituacaoUsuario',state.adminToken||state.token,id,'BLOQUEADO');
-      await loadPending(true);
+    const perms=cadPermsForRole(role);
+    const detail=role==='ADMIN'?'\n\nAdmin concede acesso a todos os módulos.':role==='VISUAL'?'\n\nVisual permite consultar o catálogo, sem registrar pedidos.':role==='OPERADOR'?'\n\nOperador pode registrar pedidos.':'';
+    let message='',call=null;
+    if(action==='approve'){
+      if(!roleEl){alert('Escolha a categoria antes de aprovar.');return;}
+      message='Aprovar '+nome+' como '+roleLabel+'?'+detail;
+      call=()=>run('adminSituacaoUsuario',state.adminToken||state.token,id,'ATIVO','',perms);
+    }else if(action==='save'){
+      if(!roleEl){alert('Escolha uma categoria antes de salvar.');return;}
+      message='Salvar a categoria de '+nome+' como '+roleLabel+'?'+detail+'\n\nA categoria atual será substituída.';
+      call=()=>run('adminDefinirPermissoes',state.adminToken||state.token,id,perms);
+    }else if(action==='reject'){
+      message='Recusar o cadastro de '+nome+'? O acesso será bloqueado.';
+      call=()=>run('adminSituacaoUsuario',state.adminToken||state.token,id,'BLOQUEADO');
+    }else if(action==='block'){
+      message='Bloquear o acesso de '+nome+'? As sessões abertas serão encerradas.';
+      call=()=>run('adminSituacaoUsuario',state.adminToken||state.token,id,'BLOQUEADO');
+    }else if(action==='reactivate'){
+      message='Reativar o acesso de '+nome+'?';
+      call=()=>run('adminSituacaoUsuario',state.adminToken||state.token,id,'ATIVO');
+    }else if(action==='delete'){
+      message='Excluir permanentemente '+nome+' e suas sessões? O histórico de pedidos será preservado.';
+      call=()=>run('adminSituacaoUsuario',state.adminToken||state.token,id,'EXCLUIDO');
     }
+    if(!call||!confirm(message))return;
+    b.disabled=true;
+    try{await call();await loadCadastros(true);}
     catch(err){alert(err.message||String(err));}
     finally{b.disabled=false;}
   });

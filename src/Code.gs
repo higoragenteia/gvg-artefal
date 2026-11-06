@@ -594,7 +594,7 @@ function getPainelInicial(sessao){
     ];
     return {
       ok:true,
-      usuario:{nome:usuario.nome,login:usuario.login,email:usuario.email,perfil:usuario.perfil,foto:usuario.foto||'',permissoes:usuario.permissoes||{}},
+      usuario:{id:usuario.id,nome:usuario.nome,login:usuario.login,email:usuario.email,perfil:usuario.perfil,foto:usuario.foto||'',permissoes:usuario.permissoes||{}},
       ambiente:String(cfg('AMBIENTE')||'TESTE'),
       atualizadoEm:Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'dd/MM/yyyy HH:mm'),
       vazio:lista.length===0,

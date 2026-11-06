@@ -652,7 +652,7 @@ body.gvg-access-locked{overflow:hidden}
  let sessionRestoring=!!(token||adminToken),sessionPending=false,restoration=null,adminAuthentication=null,authEpoch=0;
 
  const cartView=$('cartView'),adminPanel=$('adminPanel');
- const login=document.createElement('section');login.className='section';login.id='gvgLoginBox';login.innerHTML=`<div class="gvg-addon"><h3>Minha conta · PEDIDOS</h3><p id="gvgWho">Entre com sua conta para solicitar materiais e consultar os pedidos.</p><div id="gvgCredentials"><input id="gvgLogin" autocomplete="username" placeholder="Usuário" style="margin-bottom:8px"><input id="gvgPassword" type="password" autocomplete="current-password" placeholder="Senha" style="margin-bottom:8px"><button type="button" id="gvgLoginBtn">Entrar</button><details style="margin-top:14px"><summary>Criar conta (sujeita à aprovação)</summary><input id="gvgNewLogin" placeholder="Usuário"><input id="gvgNewPassword" type="password" placeholder="Senha"><button type="button" id="gvgSignupBtn">Solicitar cadastro</button></details></div><button type="button" class="secondary" id="gvgLogoutBtn" style="display:none">Sair</button><div id="gvgLoginMessage" class="gvg-addon-message"></div><button type="button" class="secondary" id="gvgMyOrders">Meu histórico de pedidos ▾</button><div id="gvgMyOrdersContent" style="display:none"></div></div>`;
+ const login=document.createElement('section');login.className='section';login.id='gvgLoginBox';login.innerHTML=`<div class="gvg-addon"><div class="gvg-ls-showroom" aria-hidden="true"><div class="gvg-ls-head"><span class="gvg-ls-brand">GVG&amp;ARTEFAL <b>ESQUADRIA 3D</b></span><span class="gvg-ls-live"><i></i> 5s</span></div><div class="gvg-ls-stage" id="gvgLoginStage" data-scene="0"><div class="gvg-ls-frame-wrap"><div class="gvg-ls-frame"><div class="gvg-ls-inner"><span class="gvg-ls-glass g1"></span><span class="gvg-ls-glass g2"><i class="gvg-ls-handle"></i></span><span class="gvg-ls-mullion"></span></div><span class="gvg-ls-track"></span></div><span class="gvg-ls-shadow"></span></div></div><div class="gvg-ls-foot"><div class="gvg-ls-caption"><span id="gvgLoginTag">JANELA DE CORRER</span><strong id="gvgLoginName">Linha Prime 3D</strong></div><div class="gvg-ls-timeline" id="gvgLoginTimeline"><i class="is-active"></i><i></i><i></i></div></div></div><h3>Minha conta · PEDIDOS</h3><p id="gvgWho">Entre com sua conta para solicitar materiais e consultar os pedidos.</p><div id="gvgCredentials"><input id="gvgLogin" autocomplete="username" placeholder="Usuário" style="margin-bottom:8px"><input id="gvgPassword" type="password" autocomplete="current-password" placeholder="Senha" style="margin-bottom:8px"><button type="button" id="gvgLoginBtn">Entrar</button><details style="margin-top:14px"><summary>Criar conta (sujeita à aprovação)</summary><input id="gvgNewLogin" placeholder="Usuário"><input id="gvgNewPassword" type="password" placeholder="Senha"><button type="button" id="gvgSignupBtn">Solicitar cadastro</button></details></div><button type="button" class="secondary" id="gvgLogoutBtn" style="display:none">Sair</button><div id="gvgLoginMessage" class="gvg-addon-message"></div><button type="button" class="secondary" id="gvgMyOrders">Meu histórico de pedidos ▾</button><div id="gvgMyOrdersContent" style="display:none"></div></div>`;
  // Tela obrigatoria de acesso antes de qualquer area operacional.
  const gate=document.createElement('div');gate.id='gvgAccessGate';document.body.appendChild(gate);gate.appendChild(login);
  // O histórico pertence à área autenticada, fora da tela de login que fica oculta.
@@ -1035,5 +1035,78 @@ async function loadUsers(){
 #adminView .gvg-kpi{background:linear-gradient(140deg,#25201a,#15181e)!important;border-color:#97712a!important}
 #adminView .gvg-kpi .value{color:#f8c62e!important}
 @media(max-width:390px){#cartItems .gvg-cart-thumb{width:55px;height:66px;flex-basis:55px}#cartItems .cartrow{padding:10px!important}}
+
+/* Showroom 3D de esquadrias na tela de entrada */
+.gvg-ls-showroom{position:relative;margin:0 0 16px;padding:10px;border:1px solid rgba(241,210,124,.28);border-radius:16px;background:radial-gradient(120% 80% at 80% -10%,rgba(241,210,124,.16),transparent 55%),linear-gradient(160deg,#141f26,#070c10);overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 12px 26px rgba(0,0,0,.28)}
+.gvg-ls-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 2px 8px}
+.gvg-ls-brand{display:flex;align-items:center;gap:6px;font-size:7px;font-weight:950;letter-spacing:1.8px;color:#e7c876;text-transform:uppercase;white-space:nowrap}
+.gvg-ls-brand:before{content:"";width:14px;height:1px;background:linear-gradient(90deg,#f1d27c,transparent)}
+.gvg-ls-brand b{color:#fff4d1}
+.gvg-ls-live{display:flex;align-items:center;gap:5px;padding:4px 7px;border-radius:999px;border:1px solid rgba(241,210,124,.28);background:rgba(6,13,17,.45);font-size:7px;letter-spacing:1.1px;color:#f1d27c;font-weight:900;white-space:nowrap}
+.gvg-ls-live i{width:5px;height:5px;border-radius:50%;background:#54d6a0;box-shadow:0 0 8px #54d6a0;animation:gvgLsDot 1.6s ease-in-out infinite}
+.gvg-ls-stage{position:relative;height:212px;perspective:760px;overflow:hidden;border:1px solid rgba(255,255,255,.07);border-radius:12px;background:radial-gradient(70% 90% at 50% 0%,rgba(174,224,225,.12),transparent 60%),linear-gradient(180deg,#1b2a31,#0a1116);box-shadow:inset 0 0 28px rgba(0,0,0,.45);isolation:isolate}
+.gvg-ls-stage:before{content:"";position:absolute;inset:0;z-index:0;background:repeating-linear-gradient(90deg,transparent 0 72px,rgba(255,255,255,.035) 72px 73px),linear-gradient(180deg,rgba(255,255,255,.05),transparent 42%);opacity:.6;pointer-events:none}
+.gvg-ls-stage:after{content:"";position:absolute;left:-20%;right:-20%;bottom:-10%;height:46%;z-index:0;background:linear-gradient(180deg,#101a20,#05090c);border-top:1px solid rgba(241,210,124,.16);transform:perspective(420px) rotateX(58deg);transform-origin:top;box-shadow:inset 0 26px 60px rgba(0,0,0,.6);pointer-events:none}
+.gvg-ls-frame-wrap{position:absolute;inset:0;z-index:2;display:grid;place-items:center;transform-style:preserve-3d;filter:drop-shadow(18px 24px 18px rgba(0,0,0,.55));animation:gvgLsFloat 7s ease-in-out infinite;transition:transform 1s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+.gvg-ls-frame{position:relative;width:260px;height:184px;padding:0;border:9px solid transparent;border-image:linear-gradient(135deg,#fff0c9 0%,#c49a45 9%,#f8e2a2 22%,#8e6523 43%,#edcb7b 62%,#6f4a11 83%,#f8e7b5 100%) 1;border-radius:0;transform:rotateY(-16deg) rotateX(4deg);transform-style:preserve-3d;background:linear-gradient(145deg,#1b262c,#0a1116) padding-box;box-shadow:inset 0 1px 0 #fff8dc,inset 0 -1px 0 #65440d;transition:transform 1.1s cubic-bezier(.2,.8,.2,1)}
+.gvg-ls-frame:before{content:"";position:absolute;inset:-4px;z-index:-1;border-radius:1px;background:linear-gradient(145deg,rgba(255,246,212,.95),rgba(91,60,10,.95));filter:blur(.4px)}
+.gvg-ls-frame:after{content:"";position:absolute;left:5px;right:5px;top:3px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent);opacity:.72}
+.gvg-ls-inner{position:relative;width:100%;height:100%;display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:2px;background:linear-gradient(145deg,#243036,#0b1418);box-shadow:inset 0 0 0 1px rgba(66,42,7,.6);perspective:420px;transform-style:preserve-3d;overflow:visible}
+.gvg-ls-inner:before{content:"";position:absolute;inset:2px;z-index:0;background:radial-gradient(80% 80% at 50% 35%,rgba(255,225,150,.2),rgba(4,12,16,.96));border:1px solid rgba(40,28,8,.55)}
+.gvg-ls-mullion{position:absolute;left:50%;top:2px;bottom:2px;width:16px;transform:translateX(-50%) translateZ(24px);z-index:30;border-radius:2px;background:linear-gradient(90deg,#6f4a11 0%,#f8e2a2 20%,#a87a26 42%,#171006 50%,#a87a26 58%,#f8e2a2 80%,#6f4a11 100%);box-shadow:0 0 0 1px rgba(50,32,6,.75),0 0 10px rgba(0,0,0,.35);display:none;pointer-events:none}
+.gvg-ls-glass{position:relative;z-index:1;display:block;overflow:hidden;border-radius:1px;border:1px solid rgba(235,253,252,.55);background:linear-gradient(180deg,rgba(225,249,248,.96) 0%,rgba(150,208,214,.92) 24%,rgba(73,133,145,.9) 50%,rgba(24,55,65,.94) 72%,rgba(8,20,26,.98) 100%),radial-gradient(65% 50% at 72% 16%,rgba(255,247,210,.95),transparent 60%);box-shadow:inset 0 0 26px rgba(3,17,22,.42),inset 0 1px 0 rgba(255,255,255,.55);transform-origin:left center;transition:transform 1.1s cubic-bezier(.2,.8,.2,1),filter 1.1s ease;backface-visibility:hidden}
+.gvg-ls-glass:before{content:"";position:absolute;left:0;right:0;bottom:0;height:42%;background:linear-gradient(0deg,rgba(4,14,18,.97) 0 6%,rgba(7,21,27,.86) 6% 10%,transparent 10%),repeating-linear-gradient(90deg,transparent 0 18px,rgba(4,14,18,.58) 18px 25px,transparent 25px 40px),linear-gradient(0deg,rgba(6,18,24,.55),transparent 60%);opacity:.9;clip-path:polygon(0 100%,0 64%,7% 64%,7% 45%,12% 45%,12% 66%,18% 66%,18% 52%,24% 52%,24% 62%,31% 62%,31% 38%,38% 38%,38% 58%,45% 58%,45% 47%,52% 47%,52% 66%,60% 66%,60% 42%,67% 42%,67% 58%,74% 58%,74% 50%,81% 50%,81% 66%,88% 66%,88% 44%,94% 44%,94% 62%,100% 62%,100% 100%)}
+.gvg-ls-glass:after{content:"";position:absolute;top:-35%;bottom:-35%;left:-45%;width:52%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent);transform:rotate(17deg);filter:blur(2px);opacity:.65;animation:gvgLsShine 6s ease-in-out infinite}
+.gvg-ls-glass.g2{transform:translateX(-18%) translateZ(2px)}
+.gvg-ls-handle{position:absolute;right:7px;top:50%;z-index:3;width:3px;height:26px;border-radius:2px;background:linear-gradient(180deg,#fff4cf,#c79a3d 45%,#6d4a10);box-shadow:0 0 0 1px rgba(58,38,6,.65),0 3px 7px rgba(0,0,0,.55);opacity:0;transform:translateY(-50%) translateZ(8px);transition:opacity .45s ease}
+.gvg-ls-track{position:absolute;left:6%;right:6%;bottom:-11px;height:4px;border-radius:4px;background:linear-gradient(90deg,rgba(241,210,124,.15),#c49a45 18%,#f1d27c 50%,#a8791f 82%,rgba(241,210,124,.15));box-shadow:0 0 10px rgba(241,210,124,.35);opacity:0;transition:opacity .6s ease;z-index:2}
+.gvg-ls-shadow{position:absolute;left:50%;bottom:12px;width:290px;height:32px;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.85),rgba(0,0,0,.25) 44%,transparent 72%);transform:translateX(-50%);filter:blur(7px);z-index:-1}
+.gvg-ls-stage[data-scene="0"] .gvg-ls-frame{transform:rotateY(-16deg) rotateX(4deg)}
+.gvg-ls-stage[data-scene="0"] .gvg-ls-glass.g2{transform:translateX(-18%) translateZ(2px)}
+.gvg-ls-stage[data-scene="0"] .gvg-ls-track{opacity:1}
+.gvg-ls-stage[data-scene="0"] .gvg-ls-mullion{display:block}
+.gvg-ls-stage[data-scene="1"] .gvg-ls-frame{transform:rotateY(19deg) rotateX(-2deg) translateZ(12px)}
+.gvg-ls-stage[data-scene="1"] .gvg-ls-glass.g2{transform:rotateY(-64deg) translateX(-2px);filter:brightness(.9)}
+.gvg-ls-stage[data-scene="1"] .gvg-ls-handle{opacity:1}
+.gvg-ls-stage[data-scene="1"] .gvg-ls-inner:before{background:radial-gradient(80% 80% at 45% 40%,rgba(255,222,151,.3),rgba(6,14,18,.96))}
+.gvg-ls-stage[data-scene="2"] .gvg-ls-frame{transform:rotateY(-7deg) rotateX(7deg) translateY(-3px) translateZ(6px);box-shadow:none}
+.gvg-ls-stage[data-scene="2"] .gvg-ls-frame-wrap{filter:drop-shadow(20px 28px 22px rgba(0,0,0,.55))}
+.gvg-ls-stage[data-scene="2"] .gvg-ls-glass.g2{transform:rotateX(27deg) translateZ(9px);transform-origin:top center;filter:brightness(1.08);opacity:.95}
+.gvg-ls-stage[data-scene="2"] .gvg-ls-handle{opacity:1;right:50%;top:auto;bottom:10px;transform:translateX(50%) translateZ(8px)}
+.gvg-ls-foot{display:flex;align-items:center;gap:10px;margin-top:8px;min-height:30px}
+.gvg-ls-caption{display:grid;gap:1px;flex:1;min-width:0}
+.gvg-ls-caption span{font-size:7px;letter-spacing:1.8px;color:#f1d27c;font-weight:950;text-transform:uppercase}
+.gvg-ls-caption strong{font-size:12px;line-height:1.1;color:#fff8e8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gvg-ls-timeline{display:flex;gap:4px;width:86px;flex:0 0 auto}
+.gvg-ls-timeline i{position:relative;height:2px;flex:1;border-radius:2px;background:rgba(255,255,255,.16);overflow:hidden}
+.gvg-ls-timeline i.is-done{background:rgba(241,210,124,.55)}
+.gvg-ls-timeline i.is-active:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#f1d27c,#fff1c8);transform-origin:left;animation:gvgLsTime 5s linear forwards}
+@keyframes gvgLsFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes gvgLsShine{0%,100%{transform:translateX(-120%) rotate(17deg);opacity:0}35%{opacity:.7}55%{transform:translateX(280%) rotate(17deg);opacity:.2}}
+@keyframes gvgLsTime{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes gvgLsDot{0%,100%{opacity:.5}50%{opacity:1}}
+@media(max-width:420px){.gvg-ls-stage{height:196px}.gvg-ls-frame{width:min(250px,66vw);height:min(177px,46vw);border-width:8px}.gvg-ls-foot{gap:7px}.gvg-ls-caption strong{font-size:11px}.gvg-ls-timeline{width:72px}}
+@media(prefers-reduced-motion:reduce){.gvg-ls-frame-wrap,.gvg-ls-glass:after,.gvg-ls-timeline i.is-active:after{animation:none!important}.gvg-ls-frame,.gvg-ls-glass{transition:none!important}}
 </style>
+
+<script>
+(function(){
+ const stage=document.getElementById('gvgLoginStage');if(!stage)return;
+ const scenes=[
+  {tag:'JANELA DE CORRER',name:'Linha Prime 3D'},
+  {tag:'PORTA PIVOTANTE',name:'Linha Concept 3D'},
+  {tag:'JANELA MAXIM-AR',name:'Linha Vision 3D'}
+ ];
+ let i=0,timer=null;
+ function set(n){
+  i=(n+scenes.length)%scenes.length;const sc=scenes[i];
+  stage.setAttribute('data-scene',String(i));
+  const tag=document.getElementById('gvgLoginTag'),name=document.getElementById('gvgLoginName'),tl=document.getElementById('gvgLoginTimeline');
+  if(tag)tag.textContent=sc.tag;if(name)name.textContent=sc.name;
+  if(tl)Array.from(tl.children).forEach((b,k)=>{b.className=k<i?'is-done':k===i?'is-active':'';});
+ }
+ function start(){if(timer)return;set(0);timer=setInterval(()=>set(i+1),5000);}
+ start();
+})();
+</script>
 </body></html>
