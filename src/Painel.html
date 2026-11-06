@@ -933,6 +933,7 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
     msg.textContent=''; msg.style.color='#b42318';
     if(!user||!pass){ msg.textContent='Informe usuário e senha.'; return; }
     btn.disabled=true; btn.textContent='Entrando…';
+    try{if(document.requestStorageAccess)document.requestStorageAccess().catch(function(){});}catch(e){}
     run('entrarFuncionario',user,pass).then(d=>{
       if(!d||!d.token) throw new Error('O servidor não confirmou a sessão.');
       store.set('gvgUsrToken',d.token);

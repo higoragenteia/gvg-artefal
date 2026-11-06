@@ -699,6 +699,7 @@ body.gvg-access-locked{overflow:hidden}
  };
  $('gvgLoginBtn').onclick=async()=>{
   const b=$('gvgLoginBtn');if(b.disabled)return;b.disabled=true;const epoch=++authEpoch;
+  try{if(document.requestStorageAccess)document.requestStorageAccess().catch(function(){});}catch(e){}
   try{const d=await originalCall('entrarFuncionario',$('gvgLogin').value,$('gvgPassword').value);if(epoch!==authEpoch)return;
    if(!d||!d.token)throw new Error('O servidor não confirmou seu acesso.');
    forgetAdmin();token=d.token;store.set('gvgUsrToken',token);account={id:d.id||'',nome:d.nome,login:d.login,email:d.email||'',perfil:String(d.perfil||'CONSULTA').toUpperCase()};
