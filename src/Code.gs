@@ -156,7 +156,7 @@ function registrarSolicitacao(d){
  const lock=LockService.getScriptLock();lock.waitLock(20000);try{
   const ss=abasGestao_(),sh=ss.getSheetByName('PRODUTOS');const vals=sh.getDataRange().getValues();const mapa=new Map(vals.slice(1).filter(r=>r[0]&&String(r[6]).toUpperCase()==='SIM').map(r=>[String(r[0]),r]));
   let linhas=[];for(const x of d.itens){const r=mapa.get(String(x.id));if(!r)throw new Error('Produto indisponível ou retirado: '+x.id+'. Atualize o catálogo.');const q=Number(x.quantidade);if(!Number.isInteger(q)||q<1||q>10000)throw new Error('Quantidade inválida.');const u=['Unidade','Caixa','Pacote','Litro','Quilo'].includes(x.unidade)?x.unidade:'Unidade';const f=fatorEmbalagemGVG_(r);if(['Caixa','Pacote'].includes(u)&&f<=1)throw new Error('Embalagem indisponível para '+r[1]);if(u==='Pacote'&&String(r[2]||'').trim().toLowerCase()!=='parafusos')throw new Error('Pacote indisponível para '+r[1]);const base=String(r[3]||'').toLowerCase();if(u==='Litro'&&!(/litro/.test(base)||/litro/.test(String(r[1]))))throw new Error('Litro indisponível para '+r[1]);if(u==='Quilo'&&!(/quilo/.test(base)||/estopa/.test(String(r[1]))))throw new Error('Quilo indisponível para '+r[1]);linhas.push([String(x.id),String(r[1]),q,u,q*(['Caixa','Pacote'].includes(u)?f:1)])}
-  const pedido='PED-'+Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'yyyyMMdd')+'-'+Utilities.getUuid().slice(0,6).toUpperCase();const agora=new Date();const p=ss.getSheetByName('PEDIDOS');p.appendRow([pedido,agora,textoSeguro_(d.nome,120),textoSeguro_(d.obra,120),textoSeguro_(d.observacao,500),String(d.canal||'WhatsApp'),'REGISTRADO — ENVIO NÃO VERIFICADO']);const itens=ss.getSheetByName('ITENS_PEDIDO');itens.getRange(itens.getLastRow()+1,1,linhas.length,6).setValues(linhas.map(x=>[pedido,...x]));gvguVincularPedido_(ss,pedido,d.usuarioId);return {pedido};
+  const pedido='PED-'+Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'yyyyMMdd')+'-'+Utilities.getUuid().slice(0,6).toUpperCase();const agora=new Date();const p=ss.getSheetByName('PEDIDOS');p.appendRow([pedido,agora,textoSeguro_(d.nome,120),textoSeguro_(d.obra,120),textoSeguro_(d.observacao,500),String(d.canal||'WhatsApp'),'REGISTRADO — ENVIO NÃO VERIFICADO']);const itens=ss.getSheetByName('ITENS_PEDIDO');itens.getRange(itens.getLastRow()+1,1,linhas.length,6).setValues(linhas.map(x=>[pedido,...x]));gvguVincularPedido_(ss,pedido,d.usuarioId);try{CacheService.getScriptCache().remove('gvg_painel_v3_'+auth.id);}catch(e){}return {pedido};
  }finally{lock.releaseLock()}
 }
 function relatorioAdmin(pin){admin_(pin);const ss=abasGestao_();const p=ss.getSheetByName('PEDIDOS').getDataRange().getValues().slice(1),i=ss.getSheetByName('ITENS_PEDIDO').getDataRange().getValues().slice(1);const pedidos=p.map(r=>({id:String(r[0]),data:r[1] instanceof Date?r[1].toISOString():String(r[1]),solicitante:String(r[2]),obra:String(r[3]),canal:String(r[5]),situacao:String(r[6]),dataEntrega:r[7] instanceof Date?r[7].toISOString():''}));const itens=i.map(r=>({id:String(r[0]),codigo:String(r[1]),nome:String(r[2]),qtd:Number(r[3])||0,unidade:String(r[4]),equiv:Number(r[5])||0,entregue:r[6]===''?null:Number(r[6])||0,entregueEquiv:r[7]===''?0:Number(r[7])||0,nota:String(r[8]||'')}));return {pedidos,itens};}
@@ -243,10 +243,16 @@ function enviarFotoProduto(pin, arquivo){
 
 // ===== MÓDULO DE USUÁRIOS INTEGRADO =====
 /** GVG v1: autenticação e rastreio de pedidos. Adicionar como arquivo separado no mesmo projeto Apps Script. */
-const GVGU_PWD_ITER=4000,GVGU_SESS_MILLIS=1000*60*60*24*7;
+const GVGU_PWD_ITER=4000,GVGU_PWD_ITER_FAST=400,GVGU_SESS_MILLIS=1000*60*60*24*7;
 function gvguSheet_(name,headers){const ss=gvgPlanilha_();let sh=ss.getSheetByName(name);if(!sh){sh=ss.insertSheet(name);sh.appendRow(headers)}return sh}
 function gvguSHA_(s){return Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256,String(s)).map(x=>('0'+(x&255).toString(16)).slice(-2)).join('')}
-function gvguHash_(password,salt){let s=salt+'|'+password;for(let i=0;i<GVGU_PWD_ITER;i++)s=gvguSHA_(s);return s}
+function gvguHash_(password,salt,iter){let s=salt+'|'+password;const n=iter||GVGU_PWD_ITER;for(let i=0;i<n;i++)s=gvguSHA_(s);return s}
+function gvguHashNovo_(password,salt){return 'F:'+GVGU_PWD_ITER_FAST+':'+gvguHash_(password,salt,GVGU_PWD_ITER_FAST)}
+function gvguSenhaConfere_(password,salt,stored){
+ const s=String(stored||'');
+ if(/^F:\d+:[a-f0-9]+$/i.test(s)){const p=s.split(':');return gvguHash_(password,salt,Number(p[1]))===p[2];}
+ return gvguHash_(password,salt)===s;
+}
 function gvguFotoCol_(sh){
   const headers=sh.getRange(1,1,1,Math.max(sh.getLastColumn(),12)).getValues()[0];
   let col=headers.findIndex(h=>/foto/i.test(String(h)));
@@ -277,7 +283,7 @@ function cadastrarFuncionario(d){
  const iguais=v.map((r,i)=>({r,i})).filter(x=>x.i>0&&(String(x.r[9]||'').trim().toLowerCase()===rawLogin||String(x.r[2]||'').trim().toLowerCase()===rawLogin));
  if(iguais.some(x=>String(x.r[6]).trim().toUpperCase()!=='EXCLUIDO'))throw new Error('Este usuário já está cadastrado.');
  for(let n=iguais.length-1;n>=0;n--){const x=iguais[n];gvguExcluirCadastro_(sh,x.i+1,x.r[0]);}
- const id='USR-'+Utilities.getUuid(),salt=Utilities.getUuid();sh.appendRow([id,textoSeguro_(nome||rawLogin,120),rawLogin,whats,salt,gvguHash_(senha,salt),'PENDENTE',new Date(),new Date(),email||(isEmail?rawLogin:''),'CONSULTA']);gvguAuditar_('CADASTRO_PENDENTE',id,rawLogin);return {status:'PENDENTE',mensagem:'Cadastro enviado para aprovação do administrador.'};
+ const id='USR-'+Utilities.getUuid(),salt=Utilities.getUuid();sh.appendRow([id,textoSeguro_(nome||rawLogin,120),rawLogin,whats,salt,gvguHashNovo_(senha,salt),'PENDENTE',new Date(),new Date(),email||(isEmail?rawLogin:''),'CONSULTA']);gvguAuditar_('CADASTRO_PENDENTE',id,rawLogin);return {status:'PENDENTE',mensagem:'Cadastro enviado para aprovação do administrador.'};
  }finally{lock.releaseLock()}
 }
 function gvguVerificarSessao_(token){
@@ -288,9 +294,10 @@ function gvguVerificarSessao_(token){
 }
 function entrarFuncionario(login,password){
  const l=String(login||'').trim().toLowerCase(),p=String(password||'');
- const sh=gvguUsuarios_(),fotoCol=gvguFotoCol_(sh),users=sh.getDataRange().getValues();const r=users.find((x,i)=>i>0&&(String(x[9]||'').trim().toLowerCase()===l||String(x[2]||'').trim().toLowerCase()===l));
- if(!r||gvguHash_(p,r[4])!==r[5])throw new Error('Usuário ou senha inválidos.');
+ const sh=gvguUsuarios_(),fotoCol=gvguFotoCol_(sh),users=sh.getDataRange().getValues();const idx=users.findIndex((x,i)=>i>0&&(String(x[9]||'').trim().toLowerCase()===l||String(x[2]||'').trim().toLowerCase()===l));const r=idx>=0?users[idx]:null;
+ if(!r||!gvguSenhaConfere_(p,r[4],r[5]))throw new Error('Usuário ou senha inválidos.');
  if(r[6]!=='ATIVO')throw new Error(r[6]==='PENDENTE'?'Cadastro aguardando aprovação.':'Acesso bloqueado.');
+ if(!/^F:\d+:/.test(String(r[5]))){try{sh.getRange(idx+1,6).setValue(gvguHashNovo_(p,r[4]));}catch(e){}}
  const token=Utilities.getUuid()+Utilities.getUuid(),exp=Date.now()+GVGU_SESS_MILLIS;
  gvguSessoes_().appendRow([gvguSHA_(token),r[0],exp,'NÃO']);return {token,id:r[0],nome:r[1],login:r[2],email:String(r[9]||'').trim().toLowerCase(),perfil:String(r[10]||'CONSULTA').toUpperCase(),foto:String(r[fotoCol-1]||''),permissoes:gvguPermissoes_(r),expira:exp};
 }
@@ -370,7 +377,7 @@ function adminRedefinirSenha(pin,id,nova){
  const lock=LockService.getScriptLock();lock.waitLock(20000);try{
  const sh=gvguUsuarios_(),v=sh.getDataRange().getValues(),i=v.findIndex((r,n)=>n>0&&String(r[0])===String(id));
  if(i<0)throw new Error('Usuário não encontrado. Atualize a lista.');
- const salt=Utilities.getUuid();sh.getRange(i+1,5,1,2).setValues([[salt,gvguHash_(senha,salt)]]);sh.getRange(i+1,9).setValue(new Date());
+ const salt=Utilities.getUuid();sh.getRange(i+1,5,1,2).setValues([[salt,gvguHashNovo_(senha,salt)]]);sh.getRange(i+1,9).setValue(new Date());
  const adminUser=adminSessionUser_(pin);revogarSessoesUsuario_(id,adminUser&&String(adminUser.id)===String(id)?pin:'');gvguAuditar_('REDEFINIR_SENHA',id,'Senha redefinida pelo administrador.');
  return {ok:true};
  }finally{lock.releaseLock()}
@@ -535,7 +542,7 @@ function painelResumosExternos_(){
   try{fornecedores=painelResumoFornecedores_()}catch(e){}
   try{frotas=painelResumoFrotas_()}catch(e){}
   const out={gastos:gastos,fornecedores:fornecedores,frotas:frotas};
-  try{cache.put(key,JSON.stringify(out),300);}catch(e){}
+  try{cache.put(key,JSON.stringify(out),900);}catch(e){}
   return out;
 }
 function aquecerResumos(){
@@ -545,46 +552,34 @@ function aquecerResumos(){
 function getPainelInicial(sessao){
   let usuario;
   try{usuario=gvguVerificarSessao_(sessao);}catch(e){return {ok:false,error:String(e&&e.message||e)};}
+  const cache=CacheService.getScriptCache();
+  const cacheKey='gvg_painel_v3_'+usuario.id;
+  const cached=cache.get(cacheKey);
+  if(cached){
+    try{
+      const out=JSON.parse(cached);
+      out.usuario={id:usuario.id,nome:usuario.nome,login:usuario.login,email:usuario.email,perfil:usuario.perfil,foto:usuario.foto||'',permissoes:usuario.permissoes||{}};
+      return out;
+    }catch(e){}
+  }
   try{
     const ss=abasGestao_();
     const pedidos=ss.getSheetByName('PEDIDOS').getDataRange().getValues().slice(1).filter(r=>r[0]);
-    const itens=ss.getSheetByName('ITENS_PEDIDO').getDataRange().getValues().slice(1).filter(r=>r[0]);
-    const produtos=ss.getSheetByName('PRODUTOS').getDataRange().getValues().slice(1).filter(r=>r[0]&&r[1]);
-    const obras=ss.getSheetByName('OBRAS').getDataRange().getValues().slice(1).filter(r=>r[0]&&String(r[1]).toUpperCase()==='SIM');
     const config=ss.getSheetByName('CONFIG').getDataRange().getValues().slice(1);
     const cfg=key=>{const r=config.find(x=>String(x[0])===key);return r?r[1]:'';};
     const finalizados=['ENTREGUE','ENTREGUE PARCIAL','NÃO ENTREGUE','CANCELADO'];
-    const lista=pedidos.map(r=>({
-      id:String(r[0]),
-      data:painelData_(r[1]),
-      dataOrdenacao:r[1] instanceof Date?r[1].getTime():0,
-      solicitante:String(r[2]||''),
-      obra:String(r[3]||''),
-      observacao:String(r[4]||''),
-      canal:String(r[5]||''),
-      status:String(r[6]||''),
-      entrega:painelData_(r[7])
-    })).sort((a,b)=>b.dataOrdenacao-a.dataOrdenacao);
-    const abertos=lista.filter(p=>!finalizados.includes(p.status.toUpperCase())).length;
-    const entregues=lista.filter(p=>p.status==='ENTREGUE'||p.status==='ENTREGUE PARCIAL').length;
-    const mapaProdutos={};
-    itens.forEach(r=>{
-      const nome=String(r[2]||'');
-      if(!nome)return;
-      const q=Number(r[5])||0; // unidades equivalentes (caixa/pacote convertidos)
-      if(!mapaProdutos[nome])mapaProdutos[nome]={nome,quantidade:0,pedidos:0};
-      mapaProdutos[nome].quantidade+=q;
-      mapaProdutos[nome].pedidos++;
+    let abertos=0,latest=null,latestMs=-1;
+    pedidos.forEach(r=>{
+      const status=String(r[6]||'');
+      if(!finalizados.includes(status.toUpperCase()))abertos++;
+      const ms=r[1] instanceof Date?r[1].getTime():0;
+      if(!latest||ms>=latestMs){latestMs=ms;latest={id:String(r[0]),status:status,data:painelData_(r[1])};}
     });
-    const topProdutos=Object.values(mapaProdutos).sort((a,b)=>b.quantidade-a.quantidade).slice(0,5);
-    const externos=painelResumosExternos_();
-    const gastos=externos.gastos, fornecedores=externos.fornecedores, frotas=externos.frotas;
-    const pedidosResumo={
-      valor:lista.length,
-      label:lista.length===1?'pedido registrado':'pedidos registrados',
-      detalhe:abertos===1?'1 em andamento':abertos+' em andamento',
-      recente:lista.length?{titulo:lista[0].id,detalhe:lista[0].status,data:lista[0].data}:null
-    };
+    let externos=null;
+    try{const ext=cache.get('gvg_painel_resumos_v1');if(ext)externos=JSON.parse(ext);}catch(e){}
+    if(!externos||!externos.gastos)externos={gastos:{valor:'—',label:'gastos no mês',detalhe:'Carregando…',recente:null},fornecedores:{valor:'—',label:'fornecedores ativos',detalhe:'Carregando…',recente:null},frotas:{valor:'—',label:'veículos na frota',detalhe:'Carregando…',recente:null}};
+    const gastos=externos.gastos,fornecedores=externos.fornecedores,frotas=externos.frotas;
+    const pedidosResumo={valor:pedidos.length,label:pedidos.length===1?'pedido registrado':'pedidos registrados',detalhe:abertos===1?'1 em andamento':abertos+' em andamento',recente:latest?{titulo:latest.id,detalhe:latest.status,data:latest.data}:null};
     const apps={pedidos:pedidosResumo,gastos:gastos,fornecedores:fornecedores,frotas:frotas};
     const atividades=[
       {app:'Pedidos',tone:'gold',titulo:pedidosResumo.recente?pedidosResumo.recente.titulo:'Sem pedidos recentes',detalhe:pedidosResumo.recente?pedidosResumo.recente.detalhe:'',data:pedidosResumo.recente?pedidosResumo.recente.data:''},
@@ -592,26 +587,18 @@ function getPainelInicial(sessao){
       {app:'Fornecedores',tone:'purple',titulo:fornecedores.recente?fornecedores.recente.titulo:'Sem fornecedores recentes',detalhe:fornecedores.recente?fornecedores.recente.detalhe:'',data:fornecedores.recente?fornecedores.recente.data:''},
       {app:'Frotas',tone:'blue',titulo:frotas.recente?frotas.recente.titulo:'Sem veículos recentes',detalhe:frotas.recente?frotas.recente.detalhe:'',data:''}
     ];
-    return {
-      ok:true,
-      usuario:{id:usuario.id,nome:usuario.nome,login:usuario.login,email:usuario.email,perfil:usuario.perfil,foto:usuario.foto||'',permissoes:usuario.permissoes||{}},
-      ambiente:String(cfg('AMBIENTE')||'TESTE'),
-      atualizadoEm:Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'dd/MM/yyyy HH:mm'),
-      vazio:lista.length===0,
-      indicadores:{
-        totalPedidos:lista.length,
-        abertos:abertos,
-        entregues:entregues,
-        itens:itens.length,
-        produtosAtivos:produtos.filter(r=>String(r[6]).toUpperCase()==='SIM').length,
-        obrasAtivas:obras.length
-      },
-      recentes:lista.slice(0,8),
-      topProdutos:topProdutos,
-      apps:apps,
-      atividades:atividades
-    };
+    const out={ok:true,usuario:{id:usuario.id,nome:usuario.nome,login:usuario.login,email:usuario.email,perfil:usuario.perfil,foto:usuario.foto||'',permissoes:usuario.permissoes||{}},ambiente:String(cfg('AMBIENTE')||'TESTE'),atualizadoEm:Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'dd/MM/yyyy HH:mm'),vazio:pedidos.length===0,apps:apps,atividades:atividades};
+    try{cache.put(cacheKey,JSON.stringify(out),30);}catch(e){}
+    return out;
   }catch(e){
     return {ok:false,error:'Não foi possível carregar os indicadores: '+String(e&&e.message||e)};
   }
 }
+function getPainelExternos(sessao){
+  try{gvguVerificarSessao_(sessao);}catch(e){return {ok:false,error:String(e&&e.message||e)};}
+  try{
+    const r=painelResumosExternos_();
+    return {ok:true,apps:{gastos:r.gastos,fornecedores:r.fornecedores,frotas:r.frotas}};
+  }catch(e){return {ok:false,error:'Não foi possível carregar os resumos: '+String(e&&e.message||e)};}
+}
+
