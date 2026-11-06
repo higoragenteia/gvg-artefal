@@ -48,7 +48,7 @@ O Apps Script é **vinculado à planilha nova**; por isso o projeto fica dentro 
 
 ## Módulos do menu
 
-- **Visão geral** — indicadores calculados da planilha nova: pedidos, em andamento, entregues, itens, produtos ativos, obras ativas, pedidos recentes e mais solicitados. Com base vazia, exibe estado vazio com atalho para Pedidos.
+- **Visão geral** — indicadores calculados da planilha nova: pedidos, em andamento, entregues, itens, produtos ativos, obras ativas, pedidos recentes e mais solicitados. Com base vazia, exibe estado vazio com atalho para Pedidos. A visão alterna automaticamente entre **dois layouts** (Executivo e Monitor) a cada **10 segundos**, com transição; o botão **Pausar/Retomar** fica no topo. Os dados são atualizados a cada troca.
 - **Pedidos** — aplicativo original preservado: catálogo, carrinho, obras, solicitação, histórico do usuário, Gestão, disponibilidade de produtos, relatório, conferência de entrega e foto de produto.
 - **Controle de Gastos**, **Fornecedores** e **Frotas** — sinalizados como **Em breve**; abrem uma tela de integração futura, sem alterar o módulo Pedidos.
 

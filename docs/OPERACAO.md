@@ -16,6 +16,10 @@
    `clasp update-deployment AKfycby35-KiTddoqhEuo9zalGkVC2Wfspw5lG7i9Vt-_qJXZBa_wqeyiV51_42xh4ITtHhL -V <número>`.
 5. Teste o link único e o módulo Pedidos.
 
+## Visão geral em dois layouts
+
+A Visão geral alterna automaticamente entre o layout **Executivo** e o layout **Monitor** a cada 10 segundos. A troca atualiza os indicadores e pode ser pausada pelo botão **Pausar** no topo da visão. A rotação fica suspensa enquanto o usuário está em Pedidos ou em uma integração futura.
+
 ## Administração
 
 - O acesso à Gestão usa o perfil ADMIN da aba `GVG_USUARIOS`.

@@ -16,6 +16,7 @@ Navegador
 ## Decisões
 
 - **Iframe**: isola o CSS e o comportamento do aplicativo original, preservando o layout sem conflito com o painel. O login e a sessão ficam no mesmo armazenamento de origem do Apps Script e são reaproveitados pelo módulo.
+- **Dois layouts da visão geral**: o layout A (Executivo) e o layout B (Monitor) usam os mesmos dados. Um temporizador de 10 segundos alterna os layouts com transição, atualiza os indicadores e pode ser pausado. A rotação só ocorre na Visão geral; ao abrir Pedidos ou uma integração futura, ela é suspensa.
 - **Apps Script vinculado**: o projeto novo foi criado com `parentId` igual à planilha nova. Assim, planilha e código ficam dentro da pasta GVG&ARTEFAL; o projeto aparece embutido na planilha no Drive.
 - **Uma implantação**: o mesmo deployment serve o painel e o módulo, reduzindo links e evitando duplicidade de versões.
 - **Base independente**: nenhuma fórmula ou função do painel aponta para a planilha antiga. A única cópia de produção foi o registro do administrador (hash de senha) para preservar o acesso existente.

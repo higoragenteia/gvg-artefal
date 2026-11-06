@@ -25,6 +25,9 @@ Ambiente: navegador Chromium 156, conta administradora existente, base nova `GVG
 | Menu lateral fixo no desktop (1440×900) | OK — sidebar `fixed`, largura 268 px, menu hambúrguer oculto |
 | Menu recolhível no celular (390×844) | OK — hambúrguer visível, sidebar off-canvas, cartões em 2 colunas |
 | Visão geral | OK — KPIs, recentes, mais solicitados e mini-indicadores |
+| Dois layouts da visão geral | OK — Executivo (claro) e Monitor (escuro) |
+| Rotação automática a cada 10s | OK — alternou A→B→A com transição e atualização dos dados |
+| Controle Pausar/Retomar | OK — pausou, manteve o layout e retomou a rotação |
 | Estado vazio antes do primeiro pedido | OK — KPIs zerados e cartão “A base ainda não tem pedidos” |
 | Abrir Pedidos pelo menu | OK — iframe carregado na área principal, menu mantido no desktop |
 | Controle de Gastos / Fornecedores / Frotas | OK — selo “Em breve” e tela de integração futura |
