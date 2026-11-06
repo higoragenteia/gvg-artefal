@@ -877,7 +877,7 @@
   <div class="gvgp-pending-card">
     <div class="gvgp-pending-head"><h3 id="gvgpPendingTitle">Cadastros pendentes</h3><button type="button" class="gvgp-pending-close" id="gvgpPendingClose" aria-label="Fechar">×</button></div>
     <div id="gvgpPendingList" class="gvgp-pending-list"><p class="gvgp-pending-empty">Carregando…</p></div>
-    <p class="gvgp-pending-note">Escolha a categoria ao aprovar: <b>Visual</b> (consulta), <b>Operador</b> (pedidos) ou <b>Admin</b> (gestão). As demais permissões podem ser ajustadas na Gestão.</p>
+    <p class="gvgp-pending-note">Escolha a categoria ao aprovar: <b>Visual</b> (consulta), <b>Operador</b> (pedidos) ou <b>Admin</b> (todos os módulos). Visual e Operador ficam somente no Pedidos.</p>
   </div>
 </div>
 <script>
@@ -1313,11 +1313,12 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
     const roleEl=row?row.querySelector('[data-pending-role].is-selected'):null;
     const role=roleEl?roleEl.getAttribute('data-pending-role'):'OPERADOR';
     const roleLabel={VISUAL:'Visual',OPERADOR:'Operador',ADMIN:'Admin'}[role]||role;
-    const detail=approve?(role==='ADMIN'?'\n\nAdmin concede acesso à Gestão.':role==='VISUAL'?'\n\nVisual permite consultar o catálogo, sem registrar pedidos.':'\n\nOperador pode registrar pedidos.'):'';
+    const detail=approve?(role==='ADMIN'?'\n\nAdmin concede acesso a todos os módulos.':role==='VISUAL'?'\n\nVisual permite consultar o catálogo, sem registrar pedidos.':'\n\nOperador pode registrar pedidos.'):'';
     if(!confirm((approve?'Aprovar '+nome+' como '+roleLabel+'?':'Recusar o cadastro de '+nome+'?')+detail))return;
     b.disabled=true;
     try{
-      if(approve)await run('adminSituacaoUsuario',state.adminToken||state.token,id,'ATIVO','',{pedidos:role});
+      const perms=role==='ADMIN'?{pedidos:'ADMIN',gastos:'ADMIN',fornecedores:'ADMIN',frotas:'ADMIN'}:{pedidos:role};
+      if(approve)await run('adminSituacaoUsuario',state.adminToken||state.token,id,'ATIVO','',perms);
       else await run('adminSituacaoUsuario',state.adminToken||state.token,id,'BLOQUEADO');
       await loadPending(true);
     }

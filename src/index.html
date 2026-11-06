@@ -54,13 +54,35 @@ function load(){
   el('products').innerHTML='<div class="empty">Verifique a configuração e a versão publicada.</div>';
  }
 }
-async function loadAuthenticatedCatalog(sessao){
- const v=await gsCall('getCatalogo',sessao);
- if(!v||!Array.isArray(v.produtos))throw new Error('Resposta do catálogo inválida.');
- DATA={produtos:v.produtos,obras:Array.isArray(v.obras)?v.obras:[],whatsapp:v.whatsapp||''};
- el('obra').innerHTML='<option value="">Selecione uma obra</option>'+DATA.obras.map(o=>`<option value="${safe(o)}">${safe(o)}</option>`).join('');
- draw();
+function showCatalogLoading(){
+ DATA={produtos:[],obras:[],whatsapp:''};
+ el('obra').innerHTML='<option value="">Selecione uma obra</option>';
+ el('results').textContent='Carregando catálogo…';
+ el('products').innerHTML='<div class="empty">Buscando produtos e fotos…</div>';
+ count();
 }
+function showCatalogError(message){
+ el('results').textContent='Não foi possível carregar o catálogo.';
+ el('products').innerHTML='<div class="empty">'+safe(message||'Tente novamente.')+'<br><button class="big" style="max-width:240px;margin:14px auto 0" type="button" onclick="retryCatalog()">Tentar novamente</button></div>';
+}
+async function loadAuthenticatedCatalog(sessao){
+ showCatalogLoading();
+ try{
+  const v=await gsCall('getCatalogo',sessao);
+  if(!v||!Array.isArray(v.produtos))throw new Error('Resposta do catálogo inválida.');
+  DATA={produtos:v.produtos,obras:Array.isArray(v.obras)?v.obras:[],whatsapp:v.whatsapp||''};
+  el('obra').innerHTML='<option value="">Selecione uma obra</option>'+DATA.obras.map(o=>`<option value="${safe(o)}">${safe(o)}</option>`).join('');
+  draw();
+ }catch(e){
+  showCatalogError(e.message||String(e));
+  throw e;
+ }
+}
+window.retryCatalog=function(){
+ const token=localStorage.getItem('gvgUsrToken');
+ if(!token){showCatalogError('Entre na sua conta novamente.');return;}
+ loadAuthenticatedCatalog(token).catch(e=>notify('Não foi possível carregar o catálogo: '+(e.message||String(e))));
+};
 function normalizarBusca(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR').trim();}
 
 function icon(cat){return {'Silicones':'🧴','Parafusos':'🔩','Brocas':'🛠️','Discos':'⚙️','EPIs':'🦺','Ferragens':'🚪','Perfis':'📏','Vedação':'🧰','Fixação':'🔧','Químicos':'🧪'}[cat]||'📦'}
@@ -643,7 +665,7 @@ body.gvg-access-locked{overflow:hidden}
  let historyRequest=0;
 
  const adminEntry=document.createElement('div');adminEntry.className='gvg-admin-entry';adminEntry.innerHTML='<details><summary>Sou administrador</summary><p>Informe a senha administrativa para conferir pedidos.</p><input id="gvgAccessPin" type="password" autocomplete="off" placeholder="Senha do administrador"><button id="gvgAdminAccess" type="button">Entrar na Gestão</button><p id="gvgAdminAccessMsg" role="status"></p></details>';
- gate.appendChild(adminEntry);adminEntry.style.display=(is&&adminPerm&&!adminAccess)?'block':'none';
+ gate.appendChild(adminEntry);adminEntry.style.display='none';
  const sessionBar=document.createElement('div');sessionBar.id='gvgSessionBar';sessionBar.className='gvg-session-compact';sessionBar.style.cssText='display:none;align-items:flex-end;flex-direction:column;gap:5px;margin:6px 0 0;padding:0;border:0;border-radius:0;background:transparent;font-size:11px;max-width:100%;text-align:right';
  sessionBar.innerHTML='<span id="gvgSessionLabel" style="font-size:11px;line-height:1.4;overflow-wrap:anywhere"></span><button id="gvgOrdersBadge" type="button" class="secondary" style="display:none">🔔 Pedidos</button><small id="gvgSessionConnection" role="status" style="flex-basis:100%"></small>';
  const logoutButton=$('gvgLogoutBtn');logoutButton.style.cssText='display:none;width:auto;min-height:30px;padding:5px 10px;border:1px solid #c59a2b;border-radius:7px;background:#282b31;color:#ffce44;font-size:11px;font-weight:700;cursor:pointer';sessionBar.appendChild(logoutButton);const headerAccount=document.querySelector('.top .gvg-header-account');headerAccount.appendChild(sessionBar);

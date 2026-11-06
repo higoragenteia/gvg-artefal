@@ -69,7 +69,7 @@ function getCatalogo(sessao){
   const configs = ss.getSheetByName('CONFIG').getDataRange().getDisplayValues();
   const get=(key)=>{const row=configs.find(r=>r[0]===key);return row?row[1]:''};
   const out={produtos,obras,whatsapp:String(get('WHATSAPP_DESTINO')).replace(/\D/g,''),titulo:get('TITULO_APP')||'GVG • Catálogo de Materiais'};
-  try{cache.put(cacheKey,JSON.stringify(out),60);}catch(e){}
+  try{cache.put(cacheKey,JSON.stringify(out),300);}catch(e){}
   return out;
 }
 
