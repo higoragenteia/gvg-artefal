@@ -519,6 +519,9 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
     $('gvgpDashboard').classList.add('gvgp-hidden');
     $('gvgpEmpty').classList.add('gvgp-hidden');
     $('gvgpTopUser').innerHTML='<span class="gvgp-user-chip"><span class="gvgp-user-avatar">?</span><span class="gvgp-user-meta"><strong>Não autenticado</strong><span>Entre para acessar</span></span></span>';
+    const msg=$('gvgpLoginMsg'); if(msg){msg.textContent='';msg.style.color='#b42318';}
+    const pass=$('gvgpLoginPass'); if(pass)pass.value='';
+    const btn=$('gvgpLoginBtn'); if(btn){btn.disabled=false;btn.textContent='Entrar no painel';}
     emptyDashboard();
   }
   function userChip(user){
@@ -579,8 +582,10 @@ const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
     run('getPainelInicial',token).then(d=>{
       if(!d||d.ok!==true){
         if(d&&d.error) console.warn(d.error);
+        const wasLogged=!!store.get('gvgUsrToken');
         store.remove('gvgUsrToken'); store.remove('gvgAdminToken');
         renderLoggedOut();
+        if(wasLogged){const msg=$('gvgpLoginMsg');if(msg){msg.textContent='Sessão expirada ou acesso revogado. Entre novamente.';msg.style.color='#b42318';}}
         return;
       }
       if(String(d.usuario.perfil||'').toUpperCase()==='ADMIN'){state.adminToken=token;}
