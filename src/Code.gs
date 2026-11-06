@@ -402,7 +402,7 @@ function getPainelInicial(sessao){
     itens.forEach(r=>{
       const nome=String(r[2]||'');
       if(!nome)return;
-      const q=Number(r[3])||0;
+      const q=Number(r[5])||0; // unidades equivalentes (caixa/pacote convertidos)
       if(!mapaProdutos[nome])mapaProdutos[nome]={nome,quantidade:0,pedidos:0};
       mapaProdutos[nome].quantidade+=q;
       mapaProdutos[nome].pedidos++;
