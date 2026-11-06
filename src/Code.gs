@@ -25,11 +25,8 @@ function doGet(e){
 }
 function doGetPedidos_(){
   const modelo = HtmlService.createTemplateFromFile('index');
-  // Inclui os produtos diretamente na página. Evita uma segunda chamada assíncrona no celular.
-  modelo.initialData = JSON.stringify(getCatalogo())
-    .replace(/</g, '\\u003c')
-    .replace(/>/g, '\\u003e')
-    .replace(/&/g, '\\u0026');
+  // O catálogo só é carregado depois do login, com sessão válida.
+  modelo.initialData = 'null';
   return modelo.evaluate()
     .setTitle('PEDIDOS')
     .addMetaTag('viewport','width=device-width, initial-scale=1')
@@ -59,7 +56,8 @@ function fatorEmbalagemGVG_(r){
  return 1;
 }
 
-function getCatalogo(){
+function getCatalogo(sessao){
+  gvguVerificarSessao_(sessao);
   const cache=CacheService.getScriptCache();
   const cacheKey='gvg_catalogo_v2';
   const cached=cache.get(cacheKey);
