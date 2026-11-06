@@ -1,0 +1,10 @@
+GVG&ARTEFAL — Anexos de Pedidos
+
+Esta pasta está reservada para anexos por pedido em uma etapa futura.
+
+O aplicativo de Pedidos atual (copiado do sistema original) NÃO possui fluxo de anexos por pedido.
+Os fluxos existentes de arquivos são:
+- foto de produto, gravada em 04 - Fotos de Produtos;
+- conferência de entrega, registrada na planilha (PEDIDOS, ITENS_PEDIDO e AUDITORIA).
+
+Nenhum anexo de pedido foi criado nesta etapa.

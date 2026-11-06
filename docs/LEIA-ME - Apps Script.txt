@@ -1,0 +1,14 @@
+GVG&ARTEFAL — Apps Script (módulo Pedidos)
+
+Projeto: GVG&ARTEFAL — Painel Interno
+Script ID: 1E98hK1UhabSftMUnCR1j1Jm_XHfQZeTqv96PfqT9h26HND-Zyw1bOBfS
+Implantação web: AKfycby35-KiTddoqhEuo9zalGkVC2Wfspw5lG7i9Vt-_qJXZBa_wqeyiV51_42xh4ITtHhL
+Editor: https://script.google.com/d/1E98hK1UhabSftMUnCR1j1Jm_XHfQZeTqv96PfqT9h26HND-Zyw1bOBfS/edit
+
+O projeto é VINCULADO à planilha GVG&ARTEFAL - Base de Dados.
+Por isso ele fica embutido no arquivo da planilha, dentro de 01 - Planilhas.
+O código-fonte também está no repositório privado:
+https://github.com/higoragenteia/gvg-artefal
+
+Para editar: abra a planilha > Extensões > Apps Script.
+Para publicar: use clasp push e atualize a implantação.
