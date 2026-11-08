@@ -72,6 +72,21 @@ Itens: 1 Pacote de Parafuso 4,2x16 (100 un.) + 1 Caixa de Silicone neutro (24 un
 - Os recursos temporários `__GVG_TESTE_HELPER__` e `__GVG_TESTE_BOUND__` foram movidos para a lixeira.
 - O pedido fictício permanece na base nova para demonstração; a observação contém “NÃO ENVIAR”.
 
+## Integração do Controle de Gastos (08/11/2026)
+
+| Teste | Resultado |
+|---|---|
+| Cópia da planilha oficial | OK — 8 abas e fórmulas preservadas; original com `modifiedTime` inalterado |
+| Código oficial integrado | OK — `Código` e `Index` preservados no projeto do painel; `book_()` aponta para a cópia de teste |
+| Login do painel como Admin | OK — menu Controle de Gastos ativo e iframe carregado |
+| Login do app de Gastos | OK — dashboard com orçamento de R$ 26.000,00 |
+| Lançamento de despesa | OK — gravado na Base de Dados e auditado |
+| Exclusão da despesa de teste | OK — linha removida e auditoria registrada |
+| Operador | OK — menu de Gastos oculto e cartão bloqueado com aviso; Pedidos permanece disponível |
+| Pedidos após a integração | OK — catálogo com 297 produtos |
+| Saída do painel | OK — sessão do Gastos encerrada e tela de login restaurada |
+| Limpeza | OK — usuários, sessões e despesas de teste removidos; somente a cópia organizada permanece |
+
 ## Pendências
 
 - Integrar Fornecedores e Frotas. O Controle de Gastos já está integrado.
