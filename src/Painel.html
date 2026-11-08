@@ -1381,7 +1381,7 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
     if(!state.user){ $('gvgpTopUser').innerHTML='<span class="gvgp-user-chip"><span class="gvgp-user-avatar">?</span><span class="gvgp-user-meta"><strong>Não autenticado</strong><span>Entre para acessar</span></span></span>'; lastUserSignature=''; return; }
     const u=state.user;
     const sig=[u.id,u.nome,u.login,u.email,u.perfil,u.foto,JSON.stringify(u.permissoes||{})].join('|');
-    if(sig===lastUserSignature&&$('gvgpTopUser').querySelector('.gvgp-user-chip')){applyMenuPermissions();return;}
+    if(sig===lastUserSignature&&$('gvgpTopUser').querySelector('#gvgpLogoutBtn')){applyMenuPermissions();return;}
     lastUserSignature=sig;
     $('gvgpTopUser').innerHTML=userChip(u);
     const b=$('gvgpLogoutBtn'); if(b)b.onclick=logout;
@@ -1477,7 +1477,7 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
     $('gvgpLoginCard').classList.add('gvgp-hidden');
     $('gvgpDashboard').classList.remove('gvgp-hidden');
     $('gvgpEmpty').classList.add('gvgp-hidden');
-    if(!state.user) $('gvgpTopUser').innerHTML='<span class="gvgp-user-chip"><span class="gvgp-user-avatar">…</span><span class="gvgp-user-meta"><strong>Carregando</strong><span>Validando sessão</span></span></span>';
+    if(!state.user){lastUserSignature='';$('gvgpTopUser').innerHTML='<span class="gvgp-user-chip"><span class="gvgp-user-avatar">…</span><span class="gvgp-user-meta"><strong>Carregando</strong><span>Validando sessão</span></span></span>';}
     run('getPainelInicial',token).then(d=>{
       if(!d||d.ok!==true){
         if(d&&d.error) console.warn(d.error);
