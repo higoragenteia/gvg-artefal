@@ -737,6 +737,44 @@
     .gvgp-table{min-width:480px}
     .gvgp-toast{left:12px;right:12px;bottom:12px;max-width:none}
   }
+
+  /* Topbar mobile: relógio acima do nome do usuário, sem sobrepor o título */
+  @media (max-width:700px){
+    .gvgp-topbar{
+      display:grid;
+      grid-template-columns:40px minmax(0,1fr) auto;
+      grid-template-areas:
+        "menu title clock"
+        "menu title user";
+      align-items:center;
+      gap:5px 10px;
+      padding:10px 14px;
+    }
+    .gvgp-menu-btn{grid-area:menu;align-self:center}
+    .gvgp-topbar-title{grid-area:title;align-self:center;min-width:0}
+    .gvgp-topbar-title h1{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .gvgp-topbar-title p{font-size:9.5px;line-height:1.3;margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .gvgp-top-clock{grid-area:clock;justify-self:end;align-self:end;display:flex;flex-direction:row;align-items:center;gap:4px;min-width:0;padding:0;background:transparent;border:0;border-radius:0;margin:0 4px 0 0}
+    .gvgp-top-clock span{display:none}
+    .gvgp-top-clock strong{font-size:10.5px;letter-spacing:-.2px;line-height:1;color:var(--gvgp-muted);font-weight:900;font-variant-numeric:tabular-nums}
+    .gvgp-top-user{grid-area:user;justify-self:end;align-self:start;min-width:0;gap:6px}
+    .gvgp-top-user .gvgp-user-chip{max-width:122px;padding:4px 7px 4px 4px;gap:6px}
+    .gvgp-top-user .gvgp-user-avatar{width:24px;height:24px;font-size:9px}
+    .gvgp-top-user .gvgp-user-meta strong{font-size:9.5px}
+    .gvgp-top-user .gvgp-user-meta span{display:none}
+    .gvgp-top-user .gvgp-logout{padding:5px 7px;font-size:9px}
+    .gvgp-top-user .gvgp-pending-btn{padding:5px 7px;font-size:9px}
+  }
+  @media (max-width:430px){
+    .gvgp-topbar{grid-template-columns:40px minmax(0,1fr) auto;gap:4px 8px;padding:9px 12px}
+    .gvgp-top-user .gvgp-user-chip{max-width:112px}
+    .gvgp-top-user .gvgp-user-avatar{width:22px;height:22px}
+    .gvgp-top-user .gvgp-user-meta strong{font-size:9px}
+    .gvgp-top-user .gvgp-logout{padding:5px 6px;font-size:8.5px}
+    .gvgp-top-user .gvgp-pending-btn{padding:5px 6px;font-size:8.5px}
+    .gvgp-topbar-title h1{font-size:15px}
+    .gvgp-topbar-title p{font-size:9px}
+  }
 </style>
 </head>
 <body>
