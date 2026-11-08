@@ -36,6 +36,7 @@ Ambiente: navegador Chromium 156, conta administradora existente, base nova `GVG
 | Frotas | OK — selo “Em breve” e tela de integração futura |
 | Ícones do menu lateral | OK — efeito 3D dourado em Visão geral, Pedidos, Gastos, Fornecedores, Máquinas e Frotas |
 | Abertura dos módulos | OK — modo expandido ocupando toda a área útil; retorno pela Visão geral |
+| Aviso por voz em segundo plano | OK — consulta e áudio continuam com a aba oculta/minimizada; o navegador pode atrasar a verificação |
 | Correção do menu lateral | OK — logo e ícone de instalação embutidos; rodapé “Versão funcional” visível e navegação com rolagem em telas baixas |
 | Topbar no celular | OK — relógio acima do nome do usuário, sem sobrepor título ou subtítulo |
 | Voltar à visão geral | OK |
