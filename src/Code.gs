@@ -7,7 +7,7 @@ const GVG_FOTOS_FOLDER_ID = '1eBVC5bV7wOqUszfS6roN5eYl5IZkXbLZ';
 const GVG_PERFIL_FOLDER_ID = '1r899FRbDxLA23BmItwSiKlEDy7TEbB2d';
 const GVG_ANEXOS_FOLDER_ID = '1FH8SACEEUe-mffzT4PigUt-m_hp0xnD1';
 // Resumos somente leitura dos aplicativos existentes (uma informação por app).
-const GVG_GASTOS_ID = '1zj0t-2DbQoz6spian5q-umlg9hu9SJUHUPMaUzgt2XI';
+const GVG_GASTOS_ID = '1lTz62h76XlmKnKJdSWTRW20s1sROe-0s6jgeTJTPs5Y';
 const GVG_FORNECEDORES_ID = '1kd09waaWiPNR0_BRp5VFNJeeF-zuareTfW94K8vPnes';
 const GVG_FROTAS_ID = '1ck1lDtk_W9vjyQEnhV2Ze5secbayGLFfZi4Z0NuX-GY';
 // Reutiliza referências somente nesta execução; não guarda dados nem permissões entre acessos.
@@ -21,7 +21,15 @@ function gvgPlanilha_(){return GVG_PLANILHA_EXECUCAO_||(GVG_PLANILHA_EXECUCAO_=S
 function doGet(e){
   const modulo=String(e&&e.parameter&&e.parameter.modulo||'').toLowerCase();
   if(modulo==='pedidos')return doGetPedidos_();
+  if(modulo==='gastos')return doGetGastos_();
   return doGetPainel_(e);
+}
+function doGetGastos_(){
+  return HtmlService.createHtmlOutputFromFile('GastosIndex')
+    .setTitle('GVG & ARTEFAL | Controle de Gastos')
+    .addMetaTag('viewport','width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover')
+    .setFaviconUrl('https://higoragenteia.github.io/gvg-gastos/icons/apple-touch-icon-gastos-v3.png')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 function doGetPedidos_(){
   const modelo = HtmlService.createTemplateFromFile('index');
@@ -36,6 +44,7 @@ function doGetPainel_(e){
   const modelo = HtmlService.createTemplateFromFile('Painel');
   const url=ScriptApp.getService().getUrl();
   modelo.pedidosUrl=url+(url.indexOf('?')>=0?'&':'?')+'modulo=pedidos';
+  modelo.gastosUrl=url+(url.indexOf('?')>=0?'&':'?')+'modulo=gastos';
   return modelo.evaluate()
     .setTitle('GVG&ARTEFAL')
     .addMetaTag('viewport','width=device-width, initial-scale=1, viewport-fit=cover')

@@ -1,0 +1,225 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GVG & ARTEFAL | Controle de Gastos</title><style>
+:root{font-family:Inter,Arial,sans-serif;color:#e9edf4;background:#0c111a}*{box-sizing:border-box}body{margin:0;background:#0c111a}header{padding:20px 28px;background:#131a26;border-bottom:1px solid #313b48;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{color:#f3c745;font-weight:800;letter-spacing:1px;font-size:21px}.brand small{display:block;color:#a2acbb;font-weight:400;letter-spacing:0;font-size:12px}main{max-width:1350px;margin:auto;padding:22px}.head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}.head h1{margin:0;font-size:23px;flex:1}input,select,textarea{width:100%;border-radius:8px;padding:11px 12px;border:1px solid #3a4658;background:#111a27;color:#f2f5fa;min-width:0}input:focus,select:focus,textarea:focus{outline:2px solid #f2c646}label{color:#afbbcd;font-size:12px;display:block;margin-bottom:5px}button{border:1px solid #ad8931;border-radius:8px;background:#e6b937;color:#131820;font-weight:700;padding:11px 15px;cursor:pointer}button.secondary{background:#222d3c;color:#f4c946;border-color:#514730}button.danger{background:#4a1d27;color:#ffc3ca;border-color:#8b3741}button:disabled{opacity:.5;cursor:wait}.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}.tabs button{background:#1b2635;color:#c0cad8;border-color:#35404d}.tabs button.active{background:#e6b937;color:#111}.panel{background:#141d2b;border:1px solid #323e51;border-radius:14px;padding:20px;margin-bottom:16px}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.metric{background:#141d2b;padding:20px;border-radius:14px;border:1px solid #323e51}.metric span{font-size:12px;color:#abb7c8}.metric strong{display:block;font-size:28px;margin-top:10px;color:#fff}.metric:last-child strong{color:#4bd4a0}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.wide{grid-column:1/-1}.hide{display:none!important}.bar{height:10px;background:#273347;border-radius:20px;overflow:hidden}.bar i{height:100%;background:#e5b83b;display:block}.row{display:flex;justify-content:space-between;gap:12px;margin:12px 0}.muted{color:#aab5c3;font-size:13px}table{width:100%;border-collapse:collapse;white-space:nowrap}th,td{padding:12px;border-bottom:1px solid #324050;text-align:left}th{font-size:12px;color:#e9bb47}td{font-size:13px}.scroll{overflow:auto}.actions{display:flex;gap:6px;flex-wrap:wrap}.actions button{padding:7px 10px;font-size:12px}.ok{color:#4bd4a0}.bad{color:#ff9eaa}#msg{margin:0 0 12px;color:#f7c958;min-height:21px}footer{padding:25px;text-align:center;color:#657384;font-size:12px}@media(max-width:760px){header{padding:15px}main{padding:13px}.fields,.grid{grid-template-columns:1fr}.metrics{grid-template-columns:1fr}.head h1{width:100%}.metric strong{font-size:24px}}
+
+.auth-screen{position:fixed;inset:0;z-index:1000;background:radial-gradient(circle at 50% 0,#1a2436,#0c111a 60%,#070a10);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
+.auth-screen.hide{display:none!important}
+.auth-card{width:min(100%,420px);background:#141d2b;border:1px solid #514730;border-radius:18px;padding:26px;box-shadow:0 30px 80px rgba(0,0,0,.65)}
+.auth-logo{color:#f3c745;font-weight:900;font-size:26px;text-align:center;letter-spacing:1px}
+.auth-logo span{color:#fff}
+.auth-sub{text-align:center;color:#a2acbb;font-size:10px;letter-spacing:3px;font-weight:700;margin:5px 0 18px}
+.auth-card h2{font-size:19px;text-align:center;margin:0 0 6px}
+.auth-desc{text-align:center;color:#a2acbb;font-size:12px;line-height:1.5;margin:0 0 14px}
+.auth-card label{margin-top:10px}
+.auth-btn{width:100%;margin-top:14px;padding:13px}
+.auth-msg{border-radius:8px;padding:10px;font-size:12px;margin-top:12px;line-height:1.4}
+.auth-msg.info{background:#1d2d40;color:#b9d5f2;border:1px solid #34506e}
+.auth-msg.success{background:#123b2e;color:#8ff0c5;border:1px solid #2c7a5e}
+.auth-msg.error{background:#3a1720;color:#ffc3ca;border:1px solid #8b3741}
+.auth-msg.warn{background:#3a3017;color:#ffe3a6;border:1px solid #8b6c2b}
+.auth-switch{text-align:center;color:#a2acbb;font-size:12px;margin:14px 0 0}
+.auth-switch a{color:#f3c745;font-weight:700;text-decoration:none;cursor:pointer}
+.auth-note{color:#7f8b9c;font-size:10px;text-align:center;margin:12px 0 0;line-height:1.5}
+.header-tools{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;justify-content:flex-end}.header-tools button{white-space:nowrap}
+.session-box{display:flex;align-items:center;gap:8px;color:#c8d3e2;font-size:11px;flex-wrap:nowrap;justify-content:flex-end}
+.session-box .role{color:#f3c745;font-weight:700}
+body.authing header,body.authing main,body.authing footer{display:none!important}
+.admin-only.hide{display:none!important}
+@media(max-width:640px){#authScreen input,#authScreen select,#authScreen textarea{font-size:16px!important}.session-box{font-size:10px}}
+@media(max-width:860px){header{padding:15px;flex-direction:column;align-items:stretch;gap:12px}.header-tools{display:flex;flex-wrap:wrap;width:100%;justify-content:flex-start;align-items:center;gap:8px}.session-box{display:contents}#sessionUser{order:1;flex:1 1 100%;min-width:0;font-size:10px;line-height:1.35}.header-tools > button,.session-box > button{order:2;flex:0 0 auto}}
+</style><link rel="apple-touch-icon" sizes="180x180" href="https://higoragenteia.github.io/gvg-gastos/icons/apple-touch-icon-gastos-v3.png">
+</head><body class="authing"><div id="authScreen" class="auth-screen"><div class="auth-card"><div class="auth-logo">GVG <span>&amp;</span> ARTEFAL</div><div class="auth-sub">CONTROLE DE GASTOS</div><div id="authBody"></div></div></div><header><div class="brand">GVG <span style="color:#fff">& ARTEFAL</span><small>CONTROLE INTELIGENTE DE GASTOS</small></div><div class="header-tools"><button class="secondary" onclick="refresh()">↻ Atualizar</button><div id="sessionBox" class="session-box hide"><span id="sessionUser"></span><button class="secondary" onclick="changeMyPassword()">Minha senha</button><button class="secondary" onclick="logout()">Sair</button></div></div></header><main><div class="head"><h1>Dashboard financeiro</h1><label>Mês de referência <input id="month" type="month" onchange="refresh()"></label></div><div id="msg"></div><div class="metrics"><div class="metric"><span>Orçamento mensal</span><strong id="budget">—</strong></div><div class="metric"><span>Gasto do mês</span><strong id="spent">—</strong></div><div class="metric"><span>Saldo disponível</span><strong id="remaining">—</strong></div></div><div class="tabs" style="margin-top:20px"><button class="active" data-tab="overview" onclick="tab('overview')">Visão geral</button><button data-tab="expenses" onclick="tab('expenses')">Despesas</button><button class="admin-only" data-tab="adjust" onclick="tab('adjust')">Adicionar / retirar saldo</button><button class="admin-only" data-tab="budgets" onclick="tab('budgets')">Orçamento mensal</button><button class="admin-only" data-tab="records" onclick="tab('records')">Cadastros</button><button class="admin-only" data-tab="users" onclick="tab('users')">Usuários</button></div>
+<section id="overview"><div class="grid"><div class="panel"><h3>Gastos por categoria</h3><div id="byCategory"></div></div><div class="panel"><h3>Orçamento por funcionário</h3><div id="byPerson"></div></div></div><div class="panel"><h3>Últimos comprovantes</h3><div id="recent" class="scroll"></div></div></section>
+<section id="expenses" class="hide"><div class="panel admin-only"><h3 id="expenseTitle">Novo lançamento de comprovante</h3><form id="expenseForm" class="fields"><input id="editRow" type="hidden"><div><label>Data</label><input id="date" type="date" required></div><div><label>Funcionário</label><select id="person" required></select></div><div><label>Categoria</label><select id="category" required></select></div><div><label>Descrição</label><input id="description" required placeholder="Ex.: Reabastecimento de combustível"></div><div><label>Valor (R$)</label><input id="value" type="number" step="0.01" min="0.01" required></div><div><label>Empresa</label><select id="company"></select></div><div><label>Forma de pagamento</label><select id="payment"></select></div><div class="wide"><label>Observações / comprovante</label><textarea id="notes" rows="2" placeholder="Número, referência ou link do comprovante"></textarea></div><div class="wide actions"><button type="submit">Salvar despesa</button><button type="button" class="secondary" onclick="resetExpense()">Limpar formulário</button></div></form></div><div class="panel"><h3>Histórico de despesas</h3><div class="fields" style="margin-bottom:12px"><div><label>Filtrar funcionário</label><select id="filterPerson" onchange="drawExpenses()"></select></div><div><label>Filtrar categoria</label><select id="filterCategory" onchange="drawExpenses()"></select></div><div><label>Buscar na descrição</label><input id="filterText" oninput="drawExpenses()" placeholder="Pesquisar"></div></div><div class="scroll" id="expenseTable"></div></div></section>
+<section id="adjust" class="hide"><div class="panel"><h3>Movimentar saldo</h3><p class="muted">Registra crédito ou débito separado das despesas; não apaga lançamentos.</p><form id="adjustForm" class="fields"><input id="adjustEditRow" type="hidden"><div><label>Data</label><input id="adjustDate" type="date" required></div><div><label>Funcionário</label><select id="adjustPerson" required></select></div><div><label>Categoria</label><select id="adjustCategory" required></select></div><div><label>Operação</label><select id="adjustType"><option>Adicionar</option><option>Retirar</option></select></div><div><label>Valor (R$)</label><input id="adjustValue" type="number" min="0.01" step="0.01" required></div><div class="wide"><label>Motivo do ajuste</label><input id="adjustNotes" placeholder="Ex.: crédito extraordinário, correção de limite"></div><div class="wide actions"><button>Salvar ajuste</button><button type="button" class="secondary" onclick="resetAdjust()">Novo ajuste</button></div></form></div><div class="panel"><h3>Histórico dos ajustes</h3><div id="adjustTable" class="scroll"></div></div></section>
+<section id="budgets" class="hide"><div class="panel"><h3>Definir orçamento por mês</h3><p class="muted">Uma alteração começa no mês escolhido e segue nos próximos. Meses anteriores permanecem com valores históricos.</p><form id="budgetForm" class="fields"><div><label>A partir do mês</label><input id="budgetMonth" type="month" required></div><div><label>Funcionário</label><select id="budgetPerson" required></select></div><div><label>Categoria</label><select id="budgetCategory" required></select></div><div><label>Novo limite mensal (R$)</label><input id="budgetValue" type="number" min="0" step="0.01" required></div><div class="wide"><button>Salvar orçamento</button></div></form></div><div class="panel"><h3>Orçamento, gasto e saldo por pessoa/categoria</h3><div id="budgetTable" class="scroll"></div></div></section>
+<section id="records" class="hide"><div class="panel"><h3>Adicionar funcionário, categoria, empresa ou forma de pagamento</h3><form id="recordForm" class="fields"><div><label>Tipo</label><select id="recordKind"><option value="person">Funcionário</option><option value="category">Categoria</option><option value="company">Empresa</option><option value="payment">Forma de pagamento</option></select></div><div><label>Nome</label><input id="recordValue" required></div><div><label>&nbsp;</label><button>Adicionar cadastro</button></div></form><p class="muted">Para um funcionário novo participar do orçamento, adicione também sua coluna na aba “Orçamento Mensal”. Os lançamentos antigos permanecem intactos.</p></div><div class="panel" id="recordList"></div></section><section id="users" class="hide"><div class="panel"><h3>Cadastros pendentes</h3><div id="pendingUsers"></div></div><div class="panel"><h3>Usuários ativos</h3><div id="activeUsers"></div></div><div class="panel"><h3>Bloqueados e recusados</h3><div id="otherUsers"></div></div></section></main><footer>GVG & ARTEFAL • Os lançamentos são gravados na planilha Google Sheets vinculada</footer>
+<script>
+let DATA=null,USER=null,IS_ADMIN=false;const TOKEN_KEY='gvgGastosToken';let MEMORY_TOKEN='';const $=id=>document.getElementById(id),money=n=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(Number(n)||0);const safe=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function rpc(name,...args){return new Promise((resolve,reject)=>{if(typeof google==='undefined'||!google.script||!google.script.run){reject(Error('Execute como aplicativo Google Apps Script; prévia local sem conexão.'));return;}google.script.run.withSuccessHandler(resolve).withFailureHandler(err=>reject(Error(err&&err.message?err.message:String(err)))).apiCall(name,args,getToken())})}
+function message(x,isErr=false){$('msg').textContent=x;$('msg').style.color=isErr?'#ff9eaa':'#f2c846';}
+async function task(name,args,success='Operação concluída'){message('Processando...');try{await rpc(name,args);message(success);await refresh();return true}catch(e){message(e.message||String(e),true);return false}}
+function tab(id){if(!IS_ADMIN&&['adjust','budgets','records','users'].indexOf(id)>=0)id='overview';document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));document.querySelectorAll('main>section').forEach(x=>x.classList.toggle('hide',x.id!==id));if(id==='users')loadUsers();}
+function choices(id,items,all=false){const old=$(id).value;$(id).innerHTML=(all?'<option value="">Todos</option>':'<option value="">Selecione...</option>')+[...new Set(items||[])].map(x=>`<option value="${safe(x)}">${safe(x)}</option>`).join('');if([...items,''].includes(old))$(id).value=old;}
+function table(headers,rows){return '<table><thead><tr>'+headers.map(s=>`<th>${s}</th>`).join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>`<td>${c}</td>`).join('')+'</tr>').join('')+'</tbody></table>'}
+function draw(){if(!DATA)return;const d=DATA;['budget','spent','remaining'].forEach((x,i)=>$(x).textContent=money([d.summary.budget,d.summary.spent,d.summary.remaining][i]));
+for(const id of ['person','adjustPerson','budgetPerson'])choices(id,d.people);for(const id of ['category','adjustCategory','budgetCategory'])choices(id,d.categories);choices('company',d.companies);choices('payment',d.payments);choices('filterPerson',d.people,true);choices('filterCategory',d.categories,true);
+let byCat={},byP={};for(const x of d.expenses.filter(x=>x.date.slice(0,7)===d.month)){byCat[x.category]=(byCat[x.category]||0)+x.value;byP[x.person]=(byP[x.person]||0)+x.value};
+const bars=(items)=>{const pairs=Object.entries(items).sort((a,b)=>b[1]-a[1]);const max=Math.max(1,...pairs.map(x=>x[1]));return pairs.length?pairs.map(([name,v])=>`<div class="row"><span>${safe(name)}</span><b>${money(v)}</b></div><div class="bar"><i style="width:${100*v/max}%"></i></div>`).join(''):'<p class="muted">Sem despesas neste mês.</p>'};$('byCategory').innerHTML=bars(byCat);$('byPerson').innerHTML=bars(byP);
+let es=d.expenses.filter(x=>x.date.slice(0,7)===d.month).sort((a,b)=>b.date.localeCompare(a.date));$('recent').innerHTML=table(['Data','Funcionário','Descrição','Valor'],es.slice(0,8).map(x=>[safe(x.date),safe(x.person),safe(x.description),money(x.value)]));drawExpenses();
+$('adjustTable').innerHTML=table(['Data','Funcionário','Categoria','Operação','Valor','Motivo','Ações'],d.adjustments.filter(x=>x.date.slice(0,7)===d.month).map(x=>[safe(x.date),safe(x.person),safe(x.category),safe(x.type),money(x.value),safe(x.notes),`<div class="actions"><button class="secondary" onclick="editAdjust(${x.row})">Editar</button><button class="danger" onclick="deleteAdjust(${x.row})">Excluir</button></div>`]));
+let keys=[...new Set([...Object.keys(d.budgets),...Object.keys(d.spentByKey)])].sort();$('budgetTable').innerHTML=table(['Funcionário','Categoria','Orçamento ajustado','Gasto','Saldo'],keys.map(k=>{let [p,c]=k.split('||'),b=d.budgets[k]||0,g=d.spentByKey[k]||0;return [safe(p),safe(c),money(b),money(g),`<b class="${b-g<0?'bad':'ok'}">${money(b-g)}</b>`]}));
+$('recordList').innerHTML='<h3>Cadastros em uso</h3>'+[['Pessoas',d.people],['Categorias',d.categories],['Empresas',d.companies],['Pagamentos',d.payments]].map(([k,arr])=>`<h4>${k}</h4><p class="muted">${arr.map(safe).join(' · ')||'Não cadastrado'}</p>`).join('');}
+function drawExpenses(){if(!DATA)return;let list=DATA.expenses.filter(x=>x.date.slice(0,7)===$('month').value&&(!$('filterPerson').value||x.person===$('filterPerson').value)&&(!$('filterCategory').value||x.category===$('filterCategory').value)&&x.description.toLowerCase().includes($('filterText').value.toLowerCase()));list.sort((a,b)=>b.date.localeCompare(a.date));const headers=['Data','Funcionário','Descrição','Categoria','Valor'];if(IS_ADMIN)headers.push('Ações');$('expenseTable').innerHTML=table(headers,list.map(x=>{const line=[safe(x.date),safe(x.person),safe(x.description),safe(x.category),money(x.value)];if(IS_ADMIN)line.push(`<div class="actions"><button class="secondary" onclick="editExpense(${x.row})">Editar</button><button class="danger" onclick="deleteExpense(${x.row})">Excluir</button></div>`);return line;}));}
+function editExpense(row){let x=DATA.expenses.find(z=>z.row===row);if(!x)return;tab('expenses');$('editRow').value=x.row;for(const [k,v] of Object.entries({date:x.date,person:x.person,category:x.category,description:x.description,value:x.value,company:x.company,payment:x.payment,notes:x.notes}))$(k).value=v;$('expenseTitle').textContent='Editar lançamento';window.scrollTo({top:0,behavior:'smooth'});}
+function resetExpense(){$('expenseForm').reset();$('editRow').value='';$('date').value=new Date().toISOString().slice(0,10);$('expenseTitle').textContent='Novo lançamento de comprovante'}
+async function deleteExpense(row){if(!confirm('Excluir este lançamento? Ele ficará registrado na auditoria.'))return;await task('excluirGasto',row,'Lançamento excluído e auditado.');}
+async function refresh(){if(!USER){showAuth();return;}message('Atualizando dados...');try{DATA=await rpc('getDadosDashboard',$('month').value);draw();message('Dados sincronizados com a planilha.')}catch(e){if(String(e.message)==='AUTH_REQUIRED'){setToken('');USER=null;IS_ADMIN=false;showAuth();return;}message(e.message||String(e),true)}}
+$('expenseForm').onsubmit=async e=>{e.preventDefault();const payload=Object.fromEntries(['date','person','category','description','value','company','payment','notes'].map(x=>[x,$(x).value]));const row=$('editRow').value;const ok=await task(row?'editarGasto':'addGasto',row?{...payload,row:+row}:payload,'Despesa gravada com sucesso.');if(ok)resetExpense();};
+function editAdjust(row){const x=DATA.adjustments.find(a=>a.row===row);if(!x)return;tab('adjust');$('adjustEditRow').value=row;for(const [id,v] of Object.entries({adjustDate:x.date,adjustPerson:x.person,adjustCategory:x.category,adjustType:x.type,adjustValue:x.value,adjustNotes:x.notes}))$(id).value=v;window.scrollTo({top:0,behavior:'smooth'});}
+function resetAdjust(){$('adjustForm').reset();$('adjustEditRow').value='';$('adjustDate').value=local;}
+async function deleteAdjust(row){if(!confirm('Excluir este ajuste de saldo? A operação será auditada.'))return;await task('excluirAjuste',row,'Ajuste excluído.');}
+$('adjustForm').onsubmit=async e=>{e.preventDefault();const row=$('adjustEditRow').value;const payload={date:$('adjustDate').value,person:$('adjustPerson').value,category:$('adjustCategory').value,type:$('adjustType').value,value:$('adjustValue').value,notes:$('adjustNotes').value};const ok=await task(row?'editarAjuste':'ajustarSaldo',row?{...payload,row:+row}:payload,'Ajuste de saldo salvo.');if(ok)resetAdjust();};
+$('budgetForm').onsubmit=async e=>{e.preventDefault();await task('alterarOrcamento',{month:$('budgetMonth').value,person:$('budgetPerson').value,category:$('budgetCategory').value,value:$('budgetValue').value},'Orçamento atualizado a partir do mês selecionado.');};
+$('recordForm').onsubmit=async e=>{e.preventDefault();await task('cadastrarOpcao',{kind:$('recordKind').value,value:$('recordValue').value},'Cadastro incluído.');};
+/* ---------------- autenticação própria ---------------- */
+function roleLabel(p){ return p==='ADMIN' ? 'Administrador' : 'Usuário Comum'; }
+function getToken(){ if(MEMORY_TOKEN) return MEMORY_TOKEN; try{ return localStorage.getItem(TOKEN_KEY)||''; }catch(e){ return ''; } }
+function setToken(t){ MEMORY_TOKEN = t ? String(t) : ''; try{ if(t) localStorage.setItem(TOKEN_KEY,String(t)); else localStorage.removeItem(TOKEN_KEY); }catch(e){} }
+function setAuthMsg(type,text){ const el=$('authMsg'); if(!el) return; el.className='auth-msg '+type; el.textContent=text; }
+function showAuth(){ $('authScreen').classList.remove('hide'); document.body.classList.add('authing'); $('sessionBox').classList.add('hide'); renderAuth('login'); }
+function hideAuth(){ $('authScreen').classList.add('hide'); document.body.classList.remove('authing'); $('sessionBox').classList.remove('hide'); }
+function renderAuth(mode){
+  const reg=mode==='register';
+  const body=reg
+    ? '<h2>Criar cadastro</h2><p class="auth-desc">Seu cadastro será enviado para aprovação do administrador.</p>'
+      +'<form onsubmit="submitRegister(event)">'
+      +'<label>Nome e sobrenome</label><input id="authName" autocomplete="name" required placeholder="Ex.: João Silva">'
+      +'<label>E-mail</label><input id="authEmail" type="email" autocomplete="email" required placeholder="seu@email.com">'
+      +'<label>Senha</label><input id="authPassword" type="password" autocomplete="new-password" required placeholder="Crie uma senha">'
+      +'<label>Confirmar senha</label><input id="authConfirm" type="password" autocomplete="new-password" required placeholder="Repita a senha">'
+      +'<button type="submit" class="auth-btn">Criar cadastro</button>'
+      +'<div id="authMsg" class="auth-msg hide"></div>'
+      +'<p class="auth-switch">Já tem cadastro? <a href="#" onclick="renderAuth(\'login\');return false">Entrar</a></p>'
+      +'<p class="auth-note">A senha é armazenada com hash e salt; nunca em texto puro.</p></form>'
+    : '<h2>Entrar no sistema</h2><p class="auth-desc">Use o e-mail e a senha cadastrados.</p>'
+      +'<form onsubmit="submitLogin(event)">'
+      +'<label>E-mail</label><input id="authEmail" type="email" autocomplete="username" required placeholder="seu@email.com">'
+      +'<label>Senha</label><input id="authPassword" type="password" autocomplete="current-password" required placeholder="Sua senha">'
+      +'<button type="submit" class="auth-btn">Entrar</button>'
+      +'<div id="authMsg" class="auth-msg hide"></div>'
+      +'<p class="auth-switch">Ainda não tem cadastro? <a href="#" onclick="renderAuth(\'register\');return false">Criar cadastro</a></p></form>';
+  $('authBody').innerHTML=body;
+}
+async function bootAuth(){
+  if(!getToken()){ showAuth(); return; }
+  try{
+    const r=await rpc('getBootstrap');
+    if(r && r.ok && r.user){
+      USER=r.user; IS_ADMIN=USER.perfil==='ADMIN';
+      hideAuth(); applySession(); await refresh(); return;
+    }
+  }catch(e){}
+  setToken(''); USER=null; IS_ADMIN=false; showAuth();
+}
+function applySession(){
+  if(!USER) return;
+  $('sessionUser').innerHTML=safe(USER.nome||USER.email)+' · <span class="role">'+safe(roleLabel(USER.perfil))+'</span>';
+  $('sessionBox').classList.remove('hide');
+  applyRole();
+}
+function applyRole(){
+  document.querySelectorAll('.admin-only').forEach(el=>el.classList.toggle('hide',!IS_ADMIN));
+  if(!IS_ADMIN) tab('overview');
+}
+async function submitLogin(e){
+  e.preventDefault();
+  const email=$('authEmail').value.trim(), senha=$('authPassword').value;
+  setAuthMsg('info','⏳ Verificando acesso...');
+  try{
+    const r=await rpc('loginUsuario',{email:email,senha:senha});
+    if(!r || !r.ok) throw Error((r&&r.error)||'Falha no login.');
+    setToken(r.token); USER=r.user; IS_ADMIN=USER.perfil==='ADMIN';
+    hideAuth(); applySession(); await refresh();
+  }catch(err){ setAuthMsg('error','❌ '+(err.message||'Não foi possível entrar.')); }
+}
+async function submitRegister(e){
+  e.preventDefault();
+  const p={nome:$('authName').value.trim(),email:$('authEmail').value.trim(),senha:$('authPassword').value,confirmar:$('authConfirm').value};
+  if(!p.nome||!p.email||!p.senha) return setAuthMsg('error','Preencha todos os campos.');
+  if(p.senha!==p.confirmar) return setAuthMsg('error','As senhas não conferem.');
+  setAuthMsg('info','⏳ Realizando cadastro...');
+  try{
+    const r=await rpc('registrarUsuario',p);
+    if(!r || !r.ok) throw Error((r&&r.error)||'Falha no cadastro.');
+    setAuthMsg('success','✅ Cadastro realizado! Aguarde a aprovação do administrador.');
+  }catch(err){ setAuthMsg('error','❌ '+(err.message||'Não foi possível cadastrar.')); }
+}
+async function logout(){
+  try{ await rpc('logoutUsuario'); }catch(e){}
+  setToken(''); USER=null; IS_ADMIN=false; DATA=null; showAuth();
+}
+async function changeMyPassword(){
+  const atual=prompt('Senha atual:'); if(atual===null) return;
+  const nova=prompt('Nova senha (qualquer tamanho):'); if(!nova) return;
+  const confirmar=prompt('Repita a nova senha:'); if(confirmar!==nova) return alert('As senhas não conferem.');
+  try{
+    const r=await rpc('alterarMinhaSenha',{atual:atual,nova:nova,confirmar:confirmar});
+    if(r && r.token) setToken(r.token);
+    message('Senha alterada com sucesso.');
+  }catch(e){ message(e.message||String(e),true); }
+}
+
+/* ---------------- gestão de usuários ---------------- */
+function userKey(email){ return String(email||'').toLowerCase().replace(/[^a-z0-9]/g,'_'); }
+async function loadUsers(){
+  if(!IS_ADMIN) return;
+  try{ renderUsers(await rpc('listarUsuarios')); }
+  catch(e){ message(e.message||String(e),true); }
+}
+function renderUsers(users){
+  const pending=users.filter(u=>u.status==='PENDENTE');
+  const active=users.filter(u=>u.status==='ATIVO');
+  const other=users.filter(u=>u.status!=='PENDENTE'&&u.status!=='ATIVO');
+  $('pendingUsers').innerHTML=pending.length?table(['Nome','E-mail','Solicitado','Nível de acesso','Ações'],pending.map(u=>{
+    const k=userKey(u.email);
+    return [safe(u.nome||'—'),safe(u.email),safe(u.solicitadoEm||''),
+      '<select id="role_'+k+'"><option value="CONSULTA">Usuário Comum</option><option value="ADMIN">Administrador</option></select>',
+      '<button data-email="'+safe(u.email)+'" onclick="approveUser(this)">Aprovar</button> <button class="danger" data-email="'+safe(u.email)+'" onclick="rejectUser(this)">Recusar</button>'];
+  })):'<p class="muted">Nenhum cadastro pendente.</p>';
+  $('activeUsers').innerHTML=active.length?table(['Usuário','Perfil','Último acesso','Ações'],active.map(u=>{
+    const k=userKey(u.email), self=USER&&String(u.email).toLowerCase()===String(USER.email).toLowerCase();
+    const role='<select id="role_'+k+'" '+(self?'disabled':'')+'><option value="CONSULTA" '+(u.perfil!=='ADMIN'?'selected':'')+'>Usuário Comum</option><option value="ADMIN" '+(u.perfil==='ADMIN'?'selected':'')+'>Administrador</option></select>';
+    const actions=self
+      ? '<button class="secondary" onclick="changeMyPassword()">Trocar senha</button>'
+      : '<button data-email="'+safe(u.email)+'" onclick="saveUserRole(this)">Salvar perfil</button> <button class="secondary" data-email="'+safe(u.email)+'" data-status="ATIVO" onclick="toggleUserBlock(this)">Bloquear</button> <button class="secondary" data-email="'+safe(u.email)+'" onclick="resetUserPassword(this)">Redefinir senha</button> <button class="danger" data-email="'+safe(u.email)+'" onclick="deleteUser(this)">Excluir</button>';
+    return ['<b>'+safe(u.nome||u.email)+'</b><br><small>'+safe(u.email)+(self?' · você':'')+'</small>',role,safe(u.ultimoAcesso||'—'),actions];
+  })):'<p class="muted">Nenhum usuário ativo.</p>';
+  $('otherUsers').innerHTML=other.length?table(['Usuário','Status','Ações'],other.map(u=>{
+    return ['<b>'+safe(u.nome||u.email)+'</b><br><small>'+safe(u.email)+'</small>',safe(u.status),
+      '<button data-email="'+safe(u.email)+'" data-status="'+safe(u.status)+'" onclick="toggleUserBlock(this)">Reativar</button> <button class="secondary" data-email="'+safe(u.email)+'" onclick="resetUserPassword(this)">Redefinir senha</button> <button class="danger" data-email="'+safe(u.email)+'" onclick="deleteUser(this)">Excluir</button>'];
+  })):'<p class="muted">Nenhum usuário bloqueado ou recusado.</p>';
+}
+async function approveUser(btn){
+  if(!IS_ADMIN) return;
+  const email=btn.dataset.email, perfil=$('role_'+userKey(email)).value;
+  try{ await rpc('aprovarUsuario',{email:email,perfil:perfil}); message('Cadastro aprovado.'); await loadUsers(); }
+  catch(e){ message(e.message||String(e),true); }
+}
+async function rejectUser(btn){
+  if(!IS_ADMIN) return;
+  const email=btn.dataset.email;
+  if(!confirm('Recusar o cadastro de '+email+'?')) return;
+  try{ await rpc('recusarUsuario',{email:email}); message('Cadastro recusado.'); await loadUsers(); }
+  catch(e){ message(e.message||String(e),true); }
+}
+async function saveUserRole(btn){
+  if(!IS_ADMIN) return;
+  const email=btn.dataset.email, perfil=$('role_'+userKey(email)).value;
+  try{ await rpc('alterarPerfilUsuario',{email:email,perfil:perfil}); message('Permissão atualizada.'); await loadUsers(); }
+  catch(e){ message(e.message||String(e),true); }
+}
+async function toggleUserBlock(btn){
+  if(!IS_ADMIN) return;
+  const email=btn.dataset.email, ativar=btn.dataset.status!=='ATIVO';
+  if(!confirm((ativar?'Reativar':'Bloquear')+' o usuário '+email+'?')) return;
+  try{ await rpc('bloquearUsuario',{email:email,status:ativar?'ATIVO':'BLOQUEADO'}); message(ativar?'Usuário reativado.':'Usuário bloqueado.'); await loadUsers(); }
+  catch(e){ message(e.message||String(e),true); }
+}
+async function resetUserPassword(btn){
+  if(!IS_ADMIN) return;
+  const email=btn.dataset.email;
+  const nova=prompt('Nova senha para '+email+' (qualquer tamanho):');
+  if(!nova) return;
+  try{ await rpc('redefinirSenhaUsuario',{email:email,nova:nova,confirmar:nova}); message('Senha redefinida.'); await loadUsers(); }
+  catch(e){ message(e.message||String(e),true); }
+}
+async function deleteUser(btn){
+  if(!IS_ADMIN) return;
+  const email=btn.dataset.email;
+  if(!confirm('Excluir definitivamente o usuário '+email+'?')) return;
+  try{ await rpc('excluirUsuario',{email:email}); message('Usuário excluído.'); await loadUsers(); }
+  catch(e){ message(e.message||String(e),true); }
+}
+
+const now=new Date();const local=new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,10);$('date').value=local;$('adjustDate').value=local;$('month').value=local.slice(0,7);$('budgetMonth').value=local.slice(0,7);bootAuth();
+</script></body></html>

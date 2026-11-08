@@ -30,7 +30,8 @@ Ambiente: navegador Chromium 156, conta administradora existente, base nova `GVG
 | Controle Pausar/Retomar | OK — pausou, manteve o layout e retomou a rotação |
 | Estado vazio antes do primeiro pedido | OK — KPIs zerados e cartão “A base ainda não tem pedidos” |
 | Abrir Pedidos pelo menu | OK — iframe carregado na área principal, menu mantido no desktop |
-| Controle de Gastos / Fornecedores / Frotas | OK — selo “Em breve” e tela de integração futura |
+| Controle de Gastos | OK — app oficial integrado em iframe, login próprio, dashboard e permissão de administrador |
+| Fornecedores / Frotas | OK — selo “Em breve” e tela de integração futura |
 | Voltar à visão geral | OK |
 
 ## Login e permissões
@@ -73,7 +74,7 @@ Itens: 1 Pacote de Parafuso 4,2x16 (100 un.) + 1 Caixa de Silicone neutro (24 un
 
 ## Pendências
 
-- Integrar Gastos, Fornecedores e Frotas.
+- Integrar Fornecedores e Frotas. O Controle de Gastos já está integrado.
 - Criar fluxo de anexos por pedido em etapa futura (o app original não possui).
 - Trocar o WhatsApp fictício antes de produção.
 
