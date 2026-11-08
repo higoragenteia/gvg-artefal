@@ -32,6 +32,7 @@ Ambiente: navegador Chromium 156, conta administradora existente, base nova `GVG
 | Abrir Pedidos pelo menu | OK — iframe carregado na área principal, menu mantido no desktop |
 | Controle de Gastos | OK — app oficial integrado em iframe, login próprio, dashboard e permissão de administrador |
 | Fornecedores | OK — app oficial integrado em iframe, login próprio, dashboard e permissão de administrador |
+| Controle de Máquinas | OK — título “MÁQUINAS” no menu, item “Em breve” visível apenas para Admin |
 | Frotas | OK — selo “Em breve” e tela de integração futura |
 | Voltar à visão geral | OK |
 
@@ -106,7 +107,7 @@ Itens: 1 Pacote de Parafuso 4,2x16 (100 un.) + 1 Caixa de Silicone neutro (24 un
 
 ## Pendências
 
-- Integrar Frotas. Controle de Gastos e Fornecedores já estão integrados.
+- Integrar Controle de Máquinas e Frotas. Controle de Gastos e Fornecedores já estão integrados.
 - Criar fluxo de anexos por pedido em etapa futura (o app original não possui).
 - Trocar o WhatsApp fictício antes de produção.
 
