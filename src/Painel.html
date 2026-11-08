@@ -752,7 +752,7 @@
       <button type="button" class="gvgp-nav-item" data-view="fornecedores">
         <span class="gvgp-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M9 21v-5h6v5"/><path d="M9 10h1"/><path d="M14 10h1"/></svg></span>
         Fornecedores
-        <span class="gvgp-pill gvgp-pill-soon">Em breve</span>
+        <span class="gvgp-pill">Ativo</span>
       </button>
       <div class="gvgp-nav-topic" data-topic="frotas">VEÍCULOS</div>
       <button type="button" class="gvgp-nav-item" data-view="frotas">
@@ -954,14 +954,27 @@
         </div>
       </section>
 
+      <section id="gvgpViewFornecedores" class="gvgp-view gvgp-hidden">
+        <div class="gvgp-frame-head gvgp-frame-head-actions">
+          <button type="button" class="gvgp-btn gvgp-btn-ghost" style="color:#0b4a5a;border-color:#c9dce2;background:#fff" data-go="overview">← Voltar à visão geral</button>
+        </div>
+        <div class="gvgp-frame-wrap">
+          <div id="gvgpFornecedoresLoading" class="gvgp-frame-loading">
+            <span class="gvgp-frame-spinner" aria-hidden="true"></span>
+            <strong>Carregando Fornecedores…</strong>
+            <span>Conectando ao backend da base de fornecedores</span>
+          </div>
+          <iframe id="gvgpFornecedoresFrame" class="gvgp-frame" title="Módulo Fornecedores" src="about:blank" loading="eager"></iframe>
+        </div>
+      </section>
+
       <section id="gvgpViewFuture" class="gvgp-view gvgp-hidden">
         <div class="gvgp-future-card">
           <div class="gvgp-future-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/><path d="m5.6 5.6 2.1 2.1"/><path d="m16.3 16.3 2.1 2.1"/><path d="m18.4 5.6-2.1 2.1"/><path d="m7.7 16.3-2.1 2.1"/><circle cx="12" cy="12" r="3"/></svg></div>
           <span class="gvgp-eyebrow" style="color:#8a5d0b;background:#fdf6df;border-color:#ead08a">Integração futura</span>
-          <h2 id="gvgpFutureTitle">Fornecedores</h2>
-          <p>Os módulos Fornecedores e Frotas ainda não fazem parte desta etapa do painel GVG&amp;ARTEFAL. A estrutura lateral já está preparada para receber a integração sem alterar Pedidos e Gastos.</p>
+          <h2 id="gvgpFutureTitle">Frotas</h2>
+          <p>O módulo Frotas ainda não faz parte desta etapa do painel GVG&amp;ARTEFAL. A estrutura lateral já está preparada para receber a integração sem alterar Pedidos, Gastos e Fornecedores.</p>
           <div class="gvgp-future-list">
-            <div class="gvgp-future-item"><strong>Fornecedores</strong><span>Cadastro, cotações e histórico de compras.</span></div>
             <div class="gvgp-future-item"><strong>Frotas</strong><span>Veículos, documentos e manutenções.</span></div>
           </div>
           <button type="button" class="gvgp-btn gvgp-btn-gold" data-go="overview">Voltar à visão geral</button>
@@ -1035,12 +1048,12 @@
 <script>
 const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
 const GASTOS_URL = <?!= JSON.stringify(gastosUrl) ?>;
+const FORNECEDORES_URL = <?!= JSON.stringify(fornecedoresUrl) ?>;
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
-  const state = { token:'', adminToken:'', user:null, data:null, view:'overview', frameLoaded:false, gastosFrameLoaded:false, layout:1, rotation:true, rotationTimer:null, countdown:30 };
+  const state = { token:'', adminToken:'', user:null, data:null, view:'overview', frameLoaded:false, gastosFrameLoaded:false, fornecedoresFrameLoaded:false, layout:1, rotation:true, rotationTimer:null, countdown:30 };
   const FUTURE = {
-    fornecedores:{title:'Fornecedores', subtitle:'Integração futura'},
     frotas:{title:'Frotas', subtitle:'Integração futura'}
   };
   const safe = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1182,8 +1195,9 @@ const GASTOS_URL = <?!= JSON.stringify(gastosUrl) ?>;
   }
   function closePending(){$('gvgpPendingModal').classList.add('gvgp-hidden');}
   function renderLoggedOut(){
-    state.token=''; state.adminToken=''; state.user=null; state.data=null; state.gastosFrameLoaded=false;
+    state.token=''; state.adminToken=''; state.user=null; state.data=null; state.gastosFrameLoaded=false; state.fornecedoresFrameLoaded=false;
     const gastosFrame=$('gvgpGastosFrame'); if(gastosFrame)gastosFrame.src='about:blank';
+    const fornecedoresFrame=$('gvgpFornecedoresFrame'); if(fornecedoresFrame)fornecedoresFrame.src='about:blank';
     $('gvgpApp').classList.add('gvgp-locked');
     cadastroLoaded=false;cadastroUsers=[];closePending();
     stopRotation();
@@ -1325,7 +1339,9 @@ const GASTOS_URL = <?!= JSON.stringify(gastosUrl) ?>;
         const wasLogged=!!store.get('gvgUsrToken');
         const gastosToken=store.get('gvgGastosToken');
         if(gastosToken){try{run('logoutUsuario',{token:gastosToken})}catch(e){}}
-        store.remove('gvgUsrToken'); store.remove('gvgAdminToken'); store.remove('gvgGastosToken');
+        const fornecedoresToken=store.get('gvgSessionToken');
+        if(fornecedoresToken){try{run('fornecedoresApiCall','logoutUsuario',[],fornecedoresToken)}catch(e){}}
+        store.remove('gvgUsrToken'); store.remove('gvgAdminToken'); store.remove('gvgGastosToken'); store.remove('gvgSessionToken');
         renderLoggedOut();
         if(wasLogged){const msg=$('gvgpLoginMsg');if(msg){msg.textContent='Sessão expirada ou acesso revogado. Entre novamente.';msg.style.color='#b42318';}}
         return;
@@ -1342,6 +1358,10 @@ const GASTOS_URL = <?!= JSON.stringify(gastosUrl) ?>;
       if(state.gastosFrameLoaded){
         const g=$('gvgpGastosFrame');
         if(g){showGastosLoading();try{g.contentWindow.location.reload()}catch(e){g.src=GASTOS_URL;}setTimeout(hideGastosLoading,18000);}
+      }
+      if(state.fornecedoresFrameLoaded){
+        const f=$('gvgpFornecedoresFrame');
+        if(f){showFornecedoresLoading();try{f.contentWindow.location.reload()}catch(e){f.src=FORNECEDORES_URL;}setTimeout(hideFornecedoresLoading,18000);}
       }
     }).catch(err=>{
       console.warn(err);
@@ -1369,33 +1389,36 @@ const GASTOS_URL = <?!= JSON.stringify(gastosUrl) ?>;
       loadDashboard(d.token);
       if(state.frameLoaded){ const f=$('gvgpPedidosFrame'); if(f) f.src=PEDIDOS_URL; }
       if(state.gastosFrameLoaded){ const g=$('gvgpGastosFrame'); if(g) g.src=GASTOS_URL; }
+      if(state.fornecedoresFrameLoaded){ const f=$('gvgpFornecedoresFrame'); if(f) f.src=FORNECEDORES_URL; }
       toast('Bem-vindo(a), '+d.nome+'!');
     }).catch(err=>{
       msg.style.color='#b42318'; msg.textContent=String(err&&err.message||err).replace(/^Error:\s*/,'');
     }).finally(()=>{btn.disabled=false;btn.textContent='Entrar no painel';});
   }
   function logout(){
-    const token=state.token||store.get('gvgUsrToken'), admin=state.adminToken||store.get('gvgAdminToken'), gastosToken=store.get('gvgGastosToken');
-    // Encerra a sessão do Gastos em segundo plano para não atrasar a saída do painel.
+    const token=state.token||store.get('gvgUsrToken'), admin=state.adminToken||store.get('gvgAdminToken'), gastosToken=store.get('gvgGastosToken'), fornecedoresToken=store.get('gvgSessionToken');
+    // Encerra as sessões dos módulos em segundo plano para não atrasar a saída do painel.
     if(gastosToken){try{run('logoutUsuario',{token:gastosToken}).catch(()=>{})}catch(e){}}
-    store.remove('gvgGastosToken');
+    if(fornecedoresToken){try{run('fornecedoresApiCall','logoutUsuario',[],fornecedoresToken).catch(()=>{})}catch(e){}}
+    store.remove('gvgGastosToken'); store.remove('gvgSessionToken');
     Promise.allSettled([
       token?run('sairFuncionario',token):Promise.resolve(),
       admin&&admin!==token?run('sairAdminGVG',admin):Promise.resolve()
     ]).finally(()=>{
       store.remove('gvgUsrToken'); store.remove('gvgAdminToken');
-      state.token=''; state.adminToken=''; state.frameLoaded=false; state.gastosFrameLoaded=false;
+      state.token=''; state.adminToken=''; state.frameLoaded=false; state.gastosFrameLoaded=false; state.fornecedoresFrameLoaded=false;
       renderLoggedOut();
       const f=$('gvgpPedidosFrame'); if(f) f.src='about:blank';
       const g=$('gvgpGastosFrame'); if(g) g.src='about:blank';
+      const h=$('gvgpFornecedoresFrame'); if(h) h.src='about:blank';
       toast('Sessão encerrada neste aparelho.');
     });
   }
   function canAccessView(view){
-    if(view!=='gastos')return true;
+    if(view!=='gastos'&&view!=='fornecedores')return true;
     const p=(state.user&&state.user.permissoes)||{};
-    if(String(p.gastos||'').toUpperCase())return true;
-    toast('Seu perfil não tem acesso ao Controle de Gastos.');
+    if(String(p[view]||'').toUpperCase())return true;
+    toast('Seu perfil não tem acesso a '+(view==='gastos'?'Controle de Gastos':'Fornecedores')+'.');
     return false;
   }
   function setView(view){
@@ -1412,6 +1435,7 @@ const GASTOS_URL = <?!= JSON.stringify(gastosUrl) ?>;
     $('gvgpViewOverview').classList.toggle('gvgp-hidden',view!=='overview');
     $('gvgpViewPedidos').classList.toggle('gvgp-hidden',view!=='pedidos');
     $('gvgpViewGastos').classList.toggle('gvgp-hidden',view!=='gastos');
+    $('gvgpViewFornecedores').classList.toggle('gvgp-hidden',view!=='fornecedores');
     $('gvgpViewFuture').classList.toggle('gvgp-hidden',!future);
     if(view==='overview'){
       $('gvgpPageTitle').textContent='Visão geral';
@@ -1427,6 +1451,10 @@ const GASTOS_URL = <?!= JSON.stringify(gastosUrl) ?>;
       $('gvgpPageTitle').textContent='Controle de Gastos';
       $('gvgpPageSubtitle').textContent='Despesas, orçamento, saldo e comprovantes';
       loadGastosFrame();
+    } else if(view==='fornecedores'){
+      $('gvgpPageTitle').textContent='Fornecedores';
+      $('gvgpPageSubtitle').textContent='Fornecedores, produtos, cotações e compras';
+      loadFornecedoresFrame();
     } else if(future){
       $('gvgpPageTitle').textContent=future.title;
       $('gvgpPageSubtitle').textContent=future.subtitle;
@@ -1467,6 +1495,23 @@ const GASTOS_URL = <?!= JSON.stringify(gastosUrl) ?>;
       state.gastosFrameLoaded=true;
       clearTimeout(loadGastosFrame._fallback);
       loadGastosFrame._fallback=setTimeout(hideGastosLoading,18000);
+    }
+  }
+  function showFornecedoresLoading(){
+    const l=$('gvgpFornecedoresLoading');if(l)l.classList.remove('gvgp-hidden');
+  }
+  function hideFornecedoresLoading(){
+    const l=$('gvgpFornecedoresLoading');if(l)l.classList.add('gvgp-hidden');
+  }
+  function loadFornecedoresFrame(){
+    const f=$('gvgpFornecedoresFrame');
+    if(!f)return;
+    if(!state.fornecedoresFrameLoaded||f.src==='about:blank'||!f.getAttribute('src')){
+      showFornecedoresLoading();
+      f.src=FORNECEDORES_URL;
+      state.fornecedoresFrameLoaded=true;
+      clearTimeout(loadFornecedoresFrame._fallback);
+      loadFornecedoresFrame._fallback=setTimeout(hideFornecedoresLoading,18000);
     }
   }
   function refresh(){
@@ -1623,10 +1668,12 @@ const GASTOS_URL = <?!= JSON.stringify(gastosUrl) ?>;
   if(pedidosFrame)pedidosFrame.addEventListener('load',()=>{hideFrameLoading();clearTimeout(loadFrame._fallback);});
   const gastosFrame=$('gvgpGastosFrame');
   if(gastosFrame)gastosFrame.addEventListener('load',()=>{hideGastosLoading();clearTimeout(loadGastosFrame._fallback);});
+  const fornecedoresFrame=$('gvgpFornecedoresFrame');
+  if(fornecedoresFrame)fornecedoresFrame.addEventListener('load',()=>{hideFornecedoresLoading();clearTimeout(loadFornecedoresFrame._fallback);});
   window.addEventListener('storage',e=>{
     if(e.key==='gvgUsrToken'){
       if(e.newValue){state.user=null;loadDashboard(e.newValue);}
-      else{store.remove('gvgGastosToken');renderLoggedOut();const f=$('gvgpPedidosFrame');if(f)f.src='about:blank';const g=$('gvgpGastosFrame');if(g)g.src='about:blank';state.frameLoaded=false;state.gastosFrameLoaded=false;}
+      else{store.remove('gvgGastosToken');store.remove('gvgSessionToken');renderLoggedOut();const f=$('gvgpPedidosFrame');if(f)f.src='about:blank';const g=$('gvgpGastosFrame');if(g)g.src='about:blank';const h=$('gvgpFornecedoresFrame');if(h)h.src='about:blank';state.frameLoaded=false;state.gastosFrameLoaded=false;state.fornecedoresFrameLoaded=false;}
     }
   });
   window.addEventListener('resize',()=>{if(window.innerWidth>980)setSidebar(false)});

@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111111">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="GVG &amp; ARTEFAL">
+  <title>GVG &amp; ARTEFAL | Controle de Fornecedores</title>
+  <style>
+    :root{
+      --navy:#0b2239; --navy2:#12324d; --navy3:#1a405f;
+      --gold:#c8a24a; --gold2:#e8cd86;
+      --bg:#eef3f7; --card:#ffffff; --line:#dce6ee;
+      --text:#1b2a36; --muted:#6b7d8c; --soft:#f7fafc;
+      --green:#1e8e5a; --green-bg:#e6f6ee;
+      --red:#c0392b; --red-bg:#fdecea;
+      --amber:#a86a15; --amber-bg:#fff5e2;
+      --blue:#2563a6; --blue-bg:#e9f1fb;
+      --shadow:0 10px 30px rgba(11,34,57,.08);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;background:var(--bg);color:var(--text);
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      font-size:14px;line-height:1.45;
+    }
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    a{color:var(--blue)}
+    .hidden{display:none!important}
+    .app{display:flex;min-height:100vh}
+    .sidebar{
+      width:264px;flex:0 0 264px;background:linear-gradient(180deg,var(--navy),#081a2c);
+      color:#fff;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;z-index:30;
+      border-right:1px solid rgba(255,255,255,.06);
+    }
+    .brand{padding:24px 22px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .brand .logo{font-weight:900;letter-spacing:-1.8px;font-size:29px;line-height:1}
+    .brand .logo span{color:var(--gold)}
+    .brand .sub{font-size:9px;letter-spacing:3.5px;color:#aebfce;margin-top:7px;text-transform:uppercase}
+    .brand .sys{font-size:11px;color:#dce7ef;margin-top:12px;font-weight:600;line-height:1.3}
+    .nav{padding:14px 12px;display:flex;flex-direction:column;gap:3px;overflow:auto}
+    .nav-item{
+      display:flex;align-items:center;gap:11px;width:100%;padding:10px 12px;border:0;border-radius:10px;
+      background:transparent;color:#c9d7e2;text-align:left;font-size:13px;font-weight:600;
+      transition:.16s ease;white-space:nowrap;
+    }
+    .nav-item .ico{width:22px;text-align:center;font-size:15px;opacity:.95}
+    .nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
+    .nav-item.active{background:linear-gradient(90deg,rgba(200,162,74,.22),rgba(200,162,74,.06));color:#fff;box-shadow:inset 3px 0 0 var(--gold)}
+    .nav-sep{height:1px;background:rgba(255,255,255,.08);margin:9px 10px}
+    .sidebar-foot{margin-top:auto;padding:14px 18px 18px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:#9db0c0}
+    .sidebar-foot b{display:block;color:#e8f0f6;font-size:12px;margin-bottom:2px}
+    .main{flex:1;min-width:0;display:flex;flex-direction:column}
+    .topbar{
+      display:flex;align-items:center;gap:14px;padding:17px 24px;background:rgba(255,255,255,.92);
+      border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;backdrop-filter:blur(10px);
+    }
+    .topbar h1{font-size:20px;margin:0;letter-spacing:-.4px}
+    .topbar .sub{margin:2px 0 0;color:var(--muted);font-size:12px}
+    .top-actions{margin-left:auto;display:flex;align-items:center;gap:9px}
+    .icon-btn{
+      border:1px solid var(--line);background:var(--card);color:var(--navy);width:38px;height:38px;
+      border-radius:11px;font-size:17px;display:grid;place-items:center;transition:.15s;
+    }
+    .icon-btn:hover{background:var(--soft);border-color:#c8d6e2}
+    .sync{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px;white-space:nowrap}
+    .sync .dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+    .user-chip{
+      display:flex;align-items:center;gap:9px;padding:5px 10px 5px 5px;border:1px solid var(--line);
+      border-radius:999px;background:var(--card);max-width:240px;
+    }
+    .avatar{width:30px;height:30px;border-radius:50%;background:var(--navy);color:var(--gold2);display:grid;place-items:center;font-weight:900;font-size:12px;flex:0 0 30px}
+    .user-chip .who{min-width:0}
+    .user-chip .who b{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .user-chip .who span{display:block;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+    .content{padding:24px;max-width:1500px;width:100%;margin:0 auto;flex:1}
+    .page-head{display:flex;align-items:flex-start;gap:15px;margin-bottom:18px;flex-wrap:wrap}
+    .page-head h2{font-size:18px;margin:0;letter-spacing:-.3px}
+    .page-head p{margin:4px 0 0;color:var(--muted);font-size:12px}
+    .page-head .actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+    .grid{display:grid;gap:16px}
+    .grid.cards{grid-template-columns:repeat(5,minmax(0,1fr))}
+    .grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .stat{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:17px 18px;
+      box-shadow:var(--shadow);position:relative;overflow:hidden;
+    }
+    .stat:before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--gold)}
+    .stat .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:800}
+    .stat .value{font-size:27px;font-weight:900;letter-spacing:-1px;margin:7px 0 2px;color:var(--navy)}
+    .stat .hint{font-size:11px;color:var(--muted)}
+    .stat .ico{position:absolute;right:14px;top:14px;font-size:20px;opacity:.7}
+    .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);min-width:0}
+    .panel h3{margin:0 0 3px;font-size:14px;letter-spacing:-.2px}
+    .panel .panel-sub{color:var(--muted);font-size:11px;margin:0 0 14px}
+    .bar-row{display:grid;grid-template-columns:minmax(100px,1fr) 2fr auto;gap:10px;align-items:center;margin:9px 0}
+    .bar-row .name{font-size:12px;color:#385064;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .bar-track{height:9px;border-radius:99px;background:#edf3f7;overflow:hidden}
+    .bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--navy2),var(--navy3));min-width:3px}
+    .bar-row .num{font-size:11px;font-weight:800;color:var(--navy)}
+    .chips{display:flex;gap:7px;flex-wrap:wrap}
+    .chip{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:var(--soft);border:1px solid var(--line);font-size:11px;color:#425a6b;font-weight:700}
+    .chip b{color:var(--navy)}
+    .timeline{display:flex;flex-direction:column;gap:0}
+    .timeline-item{display:grid;grid-template-columns:34px 1fr;gap:10px;padding:9px 0;border-bottom:1px dashed #e5edf3}
+    .timeline-item:last-child{border-bottom:0}
+    .timeline-dot{width:30px;height:30px;border-radius:50%;background:var(--blue-bg);color:var(--blue);display:grid;place-items:center;font-size:12px;font-weight:900}
+    .timeline-item b{font-size:12px;display:block}
+    .timeline-item span{font-size:11px;color:var(--muted)}
+    .toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+    .toolbar .grow{flex:1;min-width:180px}
+    .field{display:flex;flex-direction:column;gap:5px;min-width:0}
+    .field span{font-size:11px;font-weight:800;color:#496174;letter-spacing:.2px}
+    .field input,.field select,.field textarea{
+      width:100%;border:1px solid #d3e0e9;border-radius:10px;background:#fff;padding:10px 11px;color:var(--text);
+      outline:none;transition:.15s;min-height:39px;
+    }
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:#87a8c0;box-shadow:0 0 0 3px rgba(37,99,166,.10)}
+    .field textarea{resize:vertical;min-height:80px}
+    .field.full{grid-column:1/-1}
+    .form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .form-grid .span2{grid-column:span 2}
+    .btn{
+      border:1px solid var(--line);background:#fff;color:var(--navy);padding:9px 13px;border-radius:10px;
+      font-weight:800;font-size:12px;display:inline-flex;align-items:center;gap:7px;transition:.15s;text-decoration:none;
+    }
+    .btn:hover{background:var(--soft);border-color:#c9d7e2}
+    .btn.primary{background:var(--navy);border-color:var(--navy);color:#fff}
+    .btn.primary:hover{background:var(--navy2)}
+    .btn.gold{background:var(--gold);border-color:var(--gold);color:#2a210d}
+    .btn.gold:hover{background:var(--gold2)}
+    .btn.danger{background:var(--red-bg);border-color:#f4c7c2;color:var(--red)}
+    .btn.ghost{background:transparent}
+    .btn.sm{padding:6px 9px;font-size:11px;border-radius:8px}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fff}
+    .table{width:100%;border-collapse:collapse;min-width:760px}
+    .table th{
+      text-align:left;font-size:10px;letter-spacing:.7px;text-transform:uppercase;color:#708596;
+      padding:11px 12px;background:#f7fafc;border-bottom:1px solid var(--line);white-space:nowrap;position:sticky;top:0;z-index:1;
+    }
+    .table td{padding:11px 12px;border-bottom:1px solid #edf2f6;font-size:12px;vertical-align:middle}
+    .table tr:last-child td{border-bottom:0}
+    .table tbody tr:hover{background:#fbfdff}
+    .table .main-cell{font-weight:800;color:var(--navy)}
+    .table .small{font-size:10px;color:var(--muted);margin-top:2px}
+    .table .num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+    .table .actions{white-space:nowrap;text-align:right}
+    .table.compact{min-width:560px}
+    .badge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:900;letter-spacing:.2px;white-space:nowrap}
+    .badge.ok{background:var(--green-bg);color:var(--green)}
+    .badge.warn{background:var(--amber-bg);color:var(--amber)}
+    .badge.bad{background:var(--red-bg);color:var(--red)}
+    .badge.info{background:var(--blue-bg);color:var(--blue)}
+    .badge.neutral{background:#eef3f7;color:#5b7080}
+    .empty{text-align:center;padding:42px 18px;color:var(--muted)}
+    .empty .big{font-size:30px;margin-bottom:8px}
+    .empty h3{color:var(--navy);margin:0 0 5px;font-size:15px}
+    .empty p{margin:0 auto 14px;max-width:430px;font-size:12px}
+    .hero{
+      background:linear-gradient(120deg,var(--navy),#123b59 70%,#1c4e6b);color:#fff;border-radius:21px;padding:22px 24px;
+      display:flex;gap:18px;align-items:center;justify-content:space-between;box-shadow:0 15px 40px rgba(11,34,57,.22);
+      margin-bottom:18px;position:relative;overflow:hidden;
+    }
+    .hero:after{content:"";position:absolute;width:220px;height:220px;border:1px solid rgba(232,205,134,.25);border-radius:50%;right:-70px;top:-90px}
+    .hero:before{content:"";position:absolute;width:150px;height:150px;border:1px solid rgba(232,205,134,.18);border-radius:50%;right:20px;bottom:-90px}
+    .hero h2{margin:0;font-size:21px;letter-spacing:-.5px;position:relative}
+    .hero p{margin:5px 0 0;color:#c6d7e4;font-size:12px;max-width:640px;position:relative}
+    .hero .actions{display:flex;gap:8px;flex-wrap:wrap;position:relative}
+    .mini-chart{display:flex;align-items:flex-end;gap:6px;height:100px;padding-top:8px}
+    .mini-chart .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px;min-width:0}
+    .mini-chart .bar{width:100%;max-width:42px;border-radius:7px 7px 3px 3px;background:linear-gradient(180deg,var(--navy3),var(--navy));min-height:4px}
+    .mini-chart .lbl{font-size:9px;color:var(--muted);white-space:nowrap}
+    .mini-chart .val{font-size:9px;color:var(--navy);font-weight:800}
+    .compare-bars{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+    .compare-bar{display:grid;grid-template-columns:150px 1fr auto;gap:10px;align-items:center}
+    .compare-bar .track{height:12px;background:#edf3f7;border-radius:99px;overflow:hidden}
+    .compare-bar .fill{height:100%;background:linear-gradient(90deg,#8ca9bd,var(--navy));border-radius:99px}
+    .compare-bar.best .fill{background:linear-gradient(90deg,#53b98a,var(--green))}
+    .compare-bar .who{font-size:11px;font-weight:800;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .compare-bar .amount{font-size:11px;font-weight:900;color:var(--navy);white-space:nowrap}
+    .note{background:var(--blue-bg);border:1px solid #cfe0f3;color:#2d4f72;border-radius:11px;padding:10px 12px;font-size:11px;line-height:1.5}
+    .modal{position:fixed;inset:0;background:rgba(6,20,33,.55);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:30px 14px;overflow:auto}
+    .modal-card{background:#fff;border-radius:18px;width:min(900px,100%);box-shadow:0 30px 80px rgba(0,0,0,.35);animation:pop .18s ease}
+    .modal-card.wide{width:min(1040px,100%)}
+    @keyframes pop{from{transform:translateY(10px);opacity:.5}to{transform:none;opacity:1}}
+    .modal-head{display:flex;align-items:center;gap:12px;padding:17px 20px;border-bottom:1px solid var(--line)}
+    .modal-head h2{margin:0;font-size:16px}
+    .modal-head button{margin-left:auto;border:0;background:#f0f4f7;width:32px;height:32px;border-radius:9px;font-size:19px;color:#526879}
+    .modal-body{padding:18px 20px 20px}
+    .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+    .toast-wrap{position:fixed;right:18px;bottom:18px;z-index:200;display:flex;flex-direction:column;gap:8px;max-width:min(420px,calc(100vw - 36px))}
+    .toast{background:var(--navy);color:#fff;padding:12px 14px;border-radius:11px;box-shadow:0 15px 40px rgba(0,0,0,.3);font-size:12px;font-weight:700;animation:pop .18s ease}
+    .toast.error{background:#7e261d}
+    .toast.success{background:#116240}
+    .busy{position:fixed;inset:0;background:rgba(238,243,247,.6);backdrop-filter:blur(2px);z-index:150;display:grid;place-items:center}
+    .spinner{width:34px;height:34px;border:3px solid #c8d6e2;border-top-color:var(--navy);border-radius:50%;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .loading{padding:70px 20px;text-align:center;color:var(--muted)}
+    .loading .spinner{margin:0 auto 12px}
+    .error-box{max-width:680px;margin:60px auto;background:#fff;border:1px solid #f0c9c4;border-radius:18px;padding:28px;box-shadow:var(--shadow)}
+    .error-box h2{margin:0 0 8px;color:var(--red)}
+    .error-box pre{white-space:pre-wrap;font-size:11px;background:#fff7f6;padding:12px;border-radius:10px;border:1px solid #f5d5d1;color:#7d322a}
+    .kpi-inline{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px}
+    .kpi-inline span{font-size:11px;color:var(--muted)}
+    .kpi-inline b{color:var(--navy)}
+    .sort-select{min-width:150px}
+    .mobile-only{display:none}
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:25}
+    .muted{color:var(--muted)}
+    .right{text-align:right}
+    .nowrap{white-space:nowrap}
+    .divider{height:1px;background:var(--line);margin:14px 0}
+    @media (max-width:1200px){.grid.cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    @media (max-width:980px){
+      .sidebar{position:fixed;left:0;top:0;transform:translateX(-102%);transition:.22s ease;box-shadow:20px 0 50px rgba(0,0,0,.2)}
+      .sidebar.open{transform:none}
+      .mobile-only{display:inline-grid}
+      .topbar{padding:13px 14px}
+      .content{padding:16px}
+      .grid.cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .grid.two,.grid.three{grid-template-columns:1fr}
+      .form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .hero{align-items:flex-start;flex-direction:column}
+    }
+    @media (max-width:640px){
+      .grid.cards{grid-template-columns:1fr}
+      .form-grid{grid-template-columns:1fr}
+      .form-grid .span2{grid-column:auto}
+      .topbar h1{font-size:16px}
+      .user-chip .who{display:none}
+      .sync{display:none}
+      .page-head .actions{margin-left:0}
+      .stat .value{font-size:23px}
+      .modal{padding:10px 8px}
+      .modal-body{padding:14px}
+      .table{min-width:680px}
+    }
+    @media print{
+      .sidebar,.topbar,.page-head .actions,.toolbar,.no-print{display:none!important}
+      .content{padding:0;max-width:none}
+      .panel,.stat,.table-wrap{box-shadow:none;border-color:#bbb}
+    }
+
+    /* ---- v2.1: acabamento premium, imagens e profundidade ---- */
+    body{
+      background:
+        radial-gradient(1200px 600px at 8% -10%, rgba(200,162,74,.10), transparent 60%),
+        radial-gradient(900px 500px at 100% 0%, rgba(37,99,166,.08), transparent 55%),
+        linear-gradient(180deg,#f5f8fb 0%,var(--bg) 38%,#e9f0f5 100%);
+      background-attachment:fixed;
+    }
+    .sidebar{
+      background:
+        radial-gradient(500px 300px at 20% 0%, rgba(200,162,74,.14), transparent 65%),
+        linear-gradient(180deg,#0b2239 0%,#081a2c 58%,#061524 100%);
+      box-shadow:18px 0 50px rgba(6,21,36,.18);
+    }
+    .brand .logo{text-shadow:0 2px 18px rgba(200,162,74,.18)}
+    .topbar{
+      background:rgba(255,255,255,.78);
+      box-shadow:0 8px 30px rgba(11,34,57,.07);
+      border-bottom:1px solid rgba(220,230,238,.85);
+      backdrop-filter:blur(18px) saturate(150%);
+    }
+    .panel,.stat{
+      border:1px solid rgba(220,230,238,.9);
+      background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,255,255,.88));
+      box-shadow:0 12px 34px rgba(11,34,57,.075),0 2px 6px rgba(11,34,57,.035);
+      transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+    }
+    .panel:hover,.stat:hover{
+      transform:translateY(-2px);
+      border-color:rgba(200,162,74,.42);
+      box-shadow:0 22px 55px rgba(11,34,57,.13),0 4px 10px rgba(11,34,57,.05);
+    }
+    .stat .value{text-shadow:0 1px 0 #fff}
+    .hero{
+      background:
+        radial-gradient(600px 260px at 85% -30%, rgba(232,205,134,.22), transparent 60%),
+        linear-gradient(120deg,#0a2036 0%,#123b59 55%,#1d5575 100%);
+      box-shadow:0 24px 60px rgba(11,34,57,.28),inset 0 1px 0 rgba(255,255,255,.12);
+    }
+    .hero:before,.hero:after{animation:heroFloat 9s ease-in-out infinite alternate}
+    .hero:after{animation-delay:-3s}
+    @keyframes heroFloat{from{transform:translate3d(0,0,0)}to{transform:translate3d(-8px,10px,0)}}
+    .btn{
+      background:linear-gradient(180deg,#fff,#f8fbfd);
+      box-shadow:0 2px 5px rgba(11,34,57,.06),inset 0 1px 0 #fff;
+      transition:transform .15s ease,box-shadow .15s ease,background .15s ease,border-color .15s ease;
+    }
+    .btn:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(11,34,57,.10)}
+    .btn:active{transform:translateY(0) scale(.985)}
+    .btn.primary{background:linear-gradient(180deg,#153d5c,#0b2239);box-shadow:0 8px 18px rgba(11,34,57,.22)}
+    .btn.primary:hover{background:linear-gradient(180deg,#1b4a6e,#102d49)}
+    .btn.gold{background:linear-gradient(180deg,#e8cd86,#c8a24a);box-shadow:0 8px 18px rgba(200,162,74,.24)}
+    .btn.gold:hover{background:linear-gradient(180deg,#f0d99b,#d1ac54)}
+    .nav-item{transition:background .16s ease,color .16s ease,transform .16s ease}
+    .nav-item:hover{transform:translateX(2px)}
+    .table tbody tr{transition:background .15s ease,box-shadow .15s ease}
+    .table tbody tr:hover{background:#f7fbfe;box-shadow:inset 3px 0 0 rgba(200,162,74,.55)}
+    .thumb{
+      width:48px;height:48px;border-radius:11px;object-fit:cover;background:#eef3f7;border:1px solid #dbe6ee;
+      box-shadow:0 4px 10px rgba(11,34,57,.10);flex:0 0 48px;cursor:zoom-in;transition:transform .18s ease,box-shadow .18s ease;
+    }
+    .thumb:hover{transform:scale(1.08);box-shadow:0 10px 22px rgba(11,34,57,.18)}
+    .thumb.placeholder{display:grid;place-items:center;font-size:22px;color:#8fa4b4;cursor:default}
+    .product-cell{display:flex;align-items:center;gap:11px;min-width:0}
+    .product-cell .pc-body{min-width:0}
+    .product-cell .pc-body .main-cell{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:340px}
+    .image-editor{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:12px;border:1px solid var(--line);border-radius:13px;background:var(--soft)}
+    .image-preview{width:112px;height:112px;border-radius:13px;object-fit:cover;background:#eef3f7;border:1px solid #d8e4ec;box-shadow:0 8px 20px rgba(11,34,57,.12)}
+    .image-preview.placeholder{display:grid;place-items:center;font-size:30px;color:#93a8b7}
+    .image-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .image-actions input[type=file]{display:none}
+    .image-hint{font-size:10px;color:var(--muted);margin:0;max-width:360px}
+    .badge.excluido{background:#eef0f2;color:#7a8790;text-decoration:line-through}
+    .table th.actions,.table td.actions{position:sticky;right:0;background:#fff;z-index:2;box-shadow:-7px 0 12px rgba(255,255,255,.92)}
+    .table tbody tr:hover td.actions{background:#f7fbfe}
+    .image-viewer{display:flex;flex-direction:column;gap:12px}
+    .image-stage{
+      position:relative;height:min(62vh,620px);min-height:320px;border-radius:18px;overflow:hidden;
+      background:
+        radial-gradient(ellipse at 50% 35%,rgba(255,255,255,.16),transparent 55%),
+        radial-gradient(ellipse at 50% 100%,rgba(0,0,0,.38),transparent 65%),
+        linear-gradient(145deg,#0a1c2d,#123b59 55%,#081624);
+      box-shadow:inset 0 0 80px rgba(0,0,0,.35),0 18px 50px rgba(11,34,57,.25);
+      display:grid;place-items:center;cursor:grab;perspective:1100px;touch-action:none;
+    }
+    .image-stage:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,rgba(255,255,255,.10),transparent 35%,transparent 65%,rgba(0,0,0,.18))}
+    .image-stage.grabbing{cursor:grabbing}
+    .image-stage img{
+      max-width:92%;max-height:92%;object-fit:contain;border-radius:10px;
+      filter:drop-shadow(0 28px 35px rgba(0,0,0,.45));
+      transform-origin:center center;transition:transform .16s ease;user-select:none;pointer-events:none;
+    }
+    .image-controls{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap}
+    .image-controls .btn{min-width:42px;justify-content:center}
+    .image-viewer-note{text-align:center;font-size:11px;color:var(--muted);margin:0}
+    .content > *{animation:fadeUp .28s ease both}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    @media (prefers-reduced-motion:reduce){
+      *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+    }
+
+    /* ---- autenticação / cadastro ---- */
+    body.auth-mode .sidebar,body.auth-mode .topbar{display:none!important}
+    body.auth-mode .main{min-height:100vh}
+    body.auth-mode .content{display:grid;place-items:center;min-height:100vh;padding:20px;max-width:none}
+    .auth-wrap{width:min(100%,440px);margin:0 auto}
+    .auth-card{background:linear-gradient(180deg,rgba(14,28,43,.94),rgba(5,12,20,.97));border:1px solid rgba(232,205,134,.34);border-radius:26px;padding:26px 22px;box-shadow:0 30px 90px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08);color:#fff;backdrop-filter:blur(18px)}
+    .auth-logo{font-size:30px;font-weight:950;letter-spacing:-1.8px;line-height:1;text-align:center;color:#fff}
+    .auth-logo span{color:var(--gold2)}
+    .auth-sub{text-align:center;color:#9fb4c3;font-size:9px;letter-spacing:3px;font-weight:800;margin-top:7px}
+    .auth-card h2{font-size:19px;letter-spacing:-.4px;text-align:center;margin:18px 0 5px}
+    .auth-card .auth-desc{text-align:center;color:#a9bdcb;font-size:11px;line-height:1.5;margin:0 0 16px}
+    .auth-email{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11);border-radius:11px;padding:10px 12px;text-align:center;color:#dce8ef;font-size:11px;margin-bottom:14px;word-break:break-all}
+    .auth-field{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+    .auth-field span{font-size:10px;font-weight:800;color:#b8cbd8;letter-spacing:.2px}
+    .auth-field input{width:100%;border:1px solid rgba(255,255,255,.16);border-radius:11px;background:rgba(255,255,255,.07);color:#fff;padding:12px 12px;font-size:13px;outline:none;min-height:43px}
+    .auth-field input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,162,74,.12)}
+    .auth-btn{width:100%;border:0;border-radius:12px;padding:14px;background:linear-gradient(180deg,#f0d99b,#c8a24a);color:#1b1405;font-weight:950;font-size:13px;cursor:pointer;margin-top:6px}
+    .auth-btn:disabled{opacity:.55;cursor:wait}
+    .auth-msg{border-radius:10px;padding:10px 12px;font-size:11px;font-weight:700;line-height:1.45;margin-top:12px}
+    .auth-msg.success{background:#e6f6ee;color:#116240;border:1px solid #b7e4cb}
+    .auth-msg.error{background:#fdecea;color:#8c2a20;border:1px solid #f3c4bf}
+    .auth-msg.warn{background:#fff5e2;color:#8a5a12;border:1px solid #f0d39a}
+    .auth-msg.info{background:#e9f1fb;color:#244e7b;border:1px solid #c7dcf3}
+    .auth-switch{text-align:center;font-size:11px;color:#a9bdcb;margin:14px 0 0}
+    .auth-switch a{color:var(--gold2);font-weight:800;cursor:pointer}
+    .auth-note{text-align:center;color:#7f95a4;font-size:9px;line-height:1.5;margin:14px 0 0}
+    .auth-status{text-align:center;padding:8px 0}
+    .auth-status .big{font-size:34px;margin-bottom:8px}
+    .auth-status h3{font-size:17px;margin:0 0 6px}
+    .auth-status p{color:#a9bdcb;font-size:11px;line-height:1.55;margin:0 auto 16px;max-width:320px}
+    @media (max-width:420px){.auth-card{padding:22px 16px}.auth-logo{font-size:26px}}
+    html,body{max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}
+    @media (max-width:640px){
+      input,select,textarea,.auth-field input{font-size:16px!important}
+    }
+  </style>
+<link rel="apple-touch-icon" sizes="180x180" href="https://higoragenteia.github.io/gvg-fornecedores/icons/apple-touch-icon-v3.png">
+</head>
+<body>
+  <div class="app">
+    <aside id="sidebar" class="sidebar">
+      <div class="brand">
+        <div class="logo">GVG<span>&amp;</span>ARTEFAL</div>
+        <div class="sub">Esquadrias &amp; Soluções</div>
+        <div class="sys">Controle de Fornecedores<br>Compras e Cotações</div>
+      </div>
+      <nav class="nav" id="nav">
+        <button class="nav-item" data-view="visao" onclick="app.setView('visao')"><span class="ico">▦</span> Visão Geral</button>
+        <button class="nav-item" data-view="fornecedores" onclick="app.setView('fornecedores')"><span class="ico">🏢</span> Fornecedores</button>
+        <button class="nav-item" data-view="produtos" onclick="app.setView('produtos')"><span class="ico">📦</span> Produtos e Serviços</button>
+        <button class="nav-item" data-view="cotacoes" onclick="app.setView('cotacoes')"><span class="ico">📋</span> Cotações</button>
+        <button class="nav-item" data-view="comparacao" onclick="app.setView('comparacao')"><span class="ico">⚖</span> Comparação de Preços</button>
+        <button class="nav-item" data-view="precos" onclick="app.setView('precos')"><span class="ico">📈</span> Histórico de Preços</button>
+        <button class="nav-item" data-view="compras" onclick="app.setView('compras')"><span class="ico">🛒</span> Compras</button>
+        <div class="nav-sep"></div>
+        <button class="nav-item" data-view="atividades" onclick="app.setView('atividades')"><span class="ico">🕘</span> Histórico de Atividades</button>
+        <button class="nav-item" data-view="relatorios" onclick="app.setView('relatorios')"><span class="ico">📊</span> Relatórios</button>
+        <button class="nav-item" id="navUsuarios" data-view="usuarios" onclick="app.setView('usuarios')"><span class="ico">👥</span> Gestão de Usuários</button>
+        <button class="nav-item" id="navConfig" data-view="configuracoes" onclick="app.setView('configuracoes')"><span class="ico">⚙</span> Configurações</button>
+      </nav>
+      <div class="sidebar-foot">
+        <b id="sideUser">—</b>
+        <span id="sideRole">—</span>
+        <div style="margin-top:8px">v<span id="sideVersion">2.0.0</span> · America/Recife</div>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="icon-btn mobile-only" onclick="app.toggleMenu()" aria-label="Abrir menu">☰</button>
+        <div>
+          <h1 id="pageTitle">Visão Geral</h1>
+          <p class="sub" id="pageSub">Carregando informações...</p>
+        </div>
+        <div class="top-actions">
+          <span class="sync"><span class="dot"></span><span id="syncText">Conectado</span></span>
+          <button class="icon-btn" onclick="app.refresh()" title="Atualizar dados">↻</button>
+          <button class="icon-btn" onclick="app.openMyPassword()" title="Alterar minha senha">🔑</button>
+          <button class="icon-btn" onclick="app.logout()" title="Sair">⏻</button>
+          <div class="user-chip" id="userChip"></div>
+        </div>
+      </header>
+      <main class="content" id="content">
+        <div class="loading"><div class="spinner"></div>Carregando o sistema...</div>
+      </main>
+    </div>
+  </div>
+
+  <div id="overlay" class="overlay hidden" onclick="app.closeMenu()"></div>
+
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card" id="modalCard">
+      <div class="modal-head">
+        <h2 id="modalTitle">Título</h2>
+        <button onclick="app.closeModal()" aria-label="Fechar">×</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast-wrap"></div>
+  <div id="busy" class="busy hidden"><div class="spinner"></div></div>
+
+  <script>
+  (function(){
+    'use strict';
+
+    const INITIAL_VIEW = '<?= initialView ?>';
+
+    const VIEWS = {
+      visao: ['Visão Geral','Indicadores, oportunidades e últimas alterações'],
+      fornecedores: ['Fornecedores','Cadastro, contatos, condições e status'],
+      produtos: ['Produtos e Serviços','Catálogo de materiais, equipamentos e serviços'],
+      cotacoes: ['Cotações','Propostas, condições comerciais e vencedores'],
+      comparacao: ['Comparação de Preços','Custo total por fornecedor para o mesmo produto'],
+      precos: ['Histórico de Preços','Valores antigos, valores atuais e responsáveis'],
+      compras: ['Compras','Pedidos realizados, notas fiscais e entregas'],
+      atividades: ['Histórico de Atividades','Auditoria das alterações do sistema'],
+      relatorios: ['Relatórios','Indicadores por período, fornecedor, categoria e produto'],
+      usuarios: ['Gestão de Usuários','Aprovação de cadastros, permissões e bloqueios'],
+      configuracoes: ['Configurações','Parâmetros do sistema e backup']
+    };
+
+    const state = {
+      data:null, user:null, dashboard:null, meta:null,
+      canEdit:false, isAdmin:false, view:'visao', loading:true, error:'',
+      filters:{
+        fornecedores:'', fornecedoresStatus:'', fornecedoresCategoria:'',
+        produtos:'', produtosStatus:'', produtosCategoria:'',
+        cotacoes:'', cotacoesStatus:'', cotacoesProduto:'', cotacoesFornecedor:'',
+        precosProduto:'', precosFornecedor:'',
+        compras:'', comprasStatus:'',
+        atividades:'', atividadesTabela:'',
+        comparacaoProduto:'', comparacaoSort:'total'
+      },
+      report:null, reportLoading:false, reportError:'',
+      reportFilters:{inicio:'', fim:'', fornecedorId:'', categoria:''},
+      pendingImage:null, removeImage:false,
+      imageViewer:{scale:1,x:0,y:0,drag:false,startX:0,startY:0},
+      auth:null, authForm:'login'
+    };
+
+    const moneyFmt = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
+    const numFmt = new Intl.NumberFormat('pt-BR',{maximumFractionDigits:2});
+
+    function $(sel, root){ return (root||document).querySelector(sel); }
+    function $$(sel, root){ return Array.from((root||document).querySelectorAll(sel)); }
+    function esc(v){
+      return String(v === null || v === undefined ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+    function escAttr(v){ return esc(v).replace(/`/g,'&#96;'); }
+    function jsq(v){ return String(v === null || v === undefined ? '' : v).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+    function norm(v){
+      return String(v === null || v === undefined ? '' : v).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+    }
+    function money(v){ return moneyFmt.format(Number(v)||0); }
+    function number(v){ return numFmt.format(Number(v)||0); }
+    function dateBR(v){
+      if(!v) return '—';
+      const s = String(v).slice(0,10);
+      const p = s.split('-');
+      return p.length===3 ? p[2]+'/'+p[1]+'/'+p[0] : s;
+    }
+    function dateTimeBR(v){
+      if(!v) return '—';
+      const s = String(v);
+      const d = s.slice(0,10), t = s.slice(11,19);
+      return dateBR(d) + (t ? ' '+t : '');
+    }
+    function todayISO(){
+      const d = new Date();
+      return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    }
+    function statusKey(s){
+      const n = norm(s);
+      if(/^(excluido|excluida)/.test(n)) return 'excluido';
+      if(/^(ativo|ativa|aprovada|aprovado|entregue|recebida|concluida|concluido)/.test(n)) return 'ok';
+      if(/^(inativo|inativa|rejeitada|rejeitado|recusado|recusada|bloqueado|bloqueada|cancelada|cancelado|atrasada)/.test(n)) return 'bad';
+      if(/^(aguardando|em analise|pendente|em transito|em elaboracao)/.test(n)) return 'warn';
+      if(/^(recebida|recebido)/.test(n)) return 'info';
+      return 'neutral';
+    }
+    function badge(s){
+      if(!s) return '<span class="badge neutral">—</span>';
+      return '<span class="badge '+statusKey(s)+'">'+esc(s)+'</span>';
+    }
+    function initial(name){
+      const s = String(name||'?').trim();
+      return s ? s[0].toUpperCase() : '?';
+    }
+    function roleLabel(r){
+      return ({ADMIN:'Administrador',COMPRAS:'Usuário Comum',CONSULTA:'Usuário Comum'})[r] || r || '—';
+    }
+    function short(v,n){
+      const s = String(v === null || v === undefined ? '' : v);
+      return s.length > (n||90) ? s.slice(0,(n||90))+'…' : s;
+    }
+    function parseNum(v){
+      if(typeof v === 'number') return isFinite(v) ? v : 0;
+      let s = String(v === null || v === undefined ? '' : v).trim();
+      if(!s) return 0;
+      s = s.replace(/R\$/gi,'').replace(/%/g,'').replace(/\s/g,'');
+      if(s.indexOf(',')>=0 && s.indexOf('.')>=0) s = s.replace(/\./g,'').replace(',','.');
+      else if(s.indexOf(',')>=0) s = s.replace(',','.');
+      const n = Number(s);
+      return isFinite(n) ? n : 0;
+    }
+    function round2(n){ return Math.round((Number(n)+Number.EPSILON)*100)/100; }
+    const TOKEN_KEY = 'gvgSessionToken';
+    let MEMORY_TOKEN = '';
+    function getSessionToken(){
+      if(MEMORY_TOKEN) return MEMORY_TOKEN;
+      try{ return localStorage.getItem(TOKEN_KEY)||''; }catch(e){ return ''; }
+    }
+    function setSessionToken(token){
+      MEMORY_TOKEN = token ? String(token) : '';
+      try{ if(token) localStorage.setItem(TOKEN_KEY,String(token)); else localStorage.removeItem(TOKEN_KEY); }catch(e){}
+    }
+    function api(fn){
+      const args = Array.prototype.slice.call(arguments,1);
+      return new Promise((resolve,reject) => {
+        if(!window.google || !google.script || !google.script.run){
+          reject(new Error('Este dashboard precisa ser aberto pelo link /exec do Google Apps Script.'));
+          return;
+        }
+        const runner = google.script.run
+          .withSuccessHandler(resolve)
+          .withFailureHandler(err => reject(new Error(err && err.message ? err.message : String(err))));
+        runner.fornecedoresApiCall(fn, args, getSessionToken());
+      });
+    }
+
+    function setBusy(on){
+      $('#busy').classList.toggle('hidden', !on);
+    }
+    function toast(msg,type){
+      const el = document.createElement('div');
+      el.className = 'toast '+(type||'');
+      el.textContent = msg;
+      $('#toast').appendChild(el);
+      setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateY(6px)'; setTimeout(()=>el.remove(),250); }, 3800);
+    }
+
+    function card(label,value,hint,ico){
+      return '<section class="stat"><div class="ico">'+(ico||'')+'</div><div class="label">'+esc(label)+'</div><div class="value">'+esc(value)+'</div><div class="hint">'+esc(hint||'')+'</div></section>';
+    }
+    function empty(icon,title,text,button){
+      return '<div class="empty"><div class="big">'+esc(icon||'—')+'</div><h3>'+esc(title)+'</h3><p>'+esc(text||'')+'</p>'+(button||'')+'</div>';
+    }
+    function panel(title,sub,body){
+      return '<section class="panel"><h3>'+esc(title)+'</h3>'+(sub?'<p class="panel-sub">'+esc(sub)+'</p>':'')+body+'</section>';
+    }
+    function pageHead(title,sub,actions){
+      return '<div class="page-head"><div><h2>'+esc(title)+'</h2><p>'+esc(sub||'')+'</p></div><div class="actions">'+(actions||'')+'</div></div>';
+    }
+    function field(name,label,value,type,opts){
+      opts=opts||{};
+      return '<label class="field '+(opts.full?'full':'')+'"><span>'+esc(label)+(opts.required?' *':'')+'</span><input name="'+escAttr(name)+'" type="'+escAttr(type||'text')+'" value="'+escAttr(value===undefined||value===null?'':value)+'" '+(opts.required?'required':'')+' '+(opts.attrs||'')+'></label>';
+    }
+    function selectField(name,label,value,options,opts){
+      opts=opts||{};
+      const html = (options||[]).map(o => '<option value="'+escAttr(o.value)+'" '+(String(o.value)===String(value===undefined||value===null?'':value)?'selected':'')+'>'+esc(o.label)+'</option>').join('');
+      return '<label class="field '+(opts.full?'full':'')+'"><span>'+esc(label)+(opts.required?' *':'')+'</span><select name="'+escAttr(name)+'" '+(opts.required?'required':'')+' '+(opts.attrs||'')+'>'+html+'</select></label>';
+    }
+    function textArea(name,label,value,opts){
+      opts=opts||{};
+      return '<label class="field '+(opts.full?'full':'')+'"><span>'+esc(label)+'</span><textarea name="'+escAttr(name)+'" rows="'+(opts.rows||3)+'" '+(opts.attrs||'')+'>'+esc(value||'')+'</textarea></label>';
+    }
+    function checkField(name,label,checked){
+      return '<div class="field"><span>&nbsp;</span><label style="display:flex;align-items:center;gap:8px;min-height:39px;font-size:12px;font-weight:700;color:#385064"><input type="checkbox" name="'+escAttr(name)+'" style="width:18px;height:18px" '+(checked?'checked':'')+'> '+esc(label)+'</label></div>';
+    }
+    function formActions(saveLabel){
+      return '<div class="modal-actions"><button type="button" class="btn" onclick="app.closeModal()">Cancelar</button><button type="submit" class="btn primary">'+esc(saveLabel||'Salvar')+'</button></div>';
+    }
+    function formObj(form){
+      const data = {};
+      new FormData(form).forEach((v,k)=>{ data[k] = typeof v === 'string' ? v.trim() : v; });
+      $$('input[type=checkbox]',form).forEach(c=>{ data[c.name] = c.checked; });
+      return data;
+    }
+    function optionsFrom(items,valueKey,labelKey,includeBlank,blankLabel){
+      const arr = includeBlank ? [{value:'',label:blankLabel||'Todos'}] : [];
+      (items||[]).forEach(i=>arr.push({value:i[valueKey],label:i[labelKey]}));
+      return arr;
+    }
+    function byId(arr,id){ return (arr||[]).find(x=>String(x.id)===String(id)); }
+    function productImageUrl(ref,size){
+      const s=String(ref||'').trim();
+      if(!s) return '';
+      if(/^data:image\//i.test(s)) return s;
+      if(/^drive:[\w-]+$/.test(s)) return 'https://drive.google.com/thumbnail?id='+encodeURIComponent(s.slice(6))+'&sz=w'+(size||600);
+      const dm=s.match(/drive\.google\.com\/file\/d\/([\w-]+)/) || s.match(/[?&]id=([\w-]+)/);
+      if(dm) return 'https://drive.google.com/thumbnail?id='+encodeURIComponent(dm[1])+'&sz=w'+(size||600);
+      if(/^https?:\/\//i.test(s)) return s;
+      return '';
+    }
+    function integerOnly(el){
+      el.value=String(el.value||'').replace(/[^\d]/g,'');
+    }
+
+    /* ------------------------------ boot ------------------------------ */
+    async function boot(){
+      try{
+        const loaded = await loadData(true);
+        if(!loaded){ state.loading=false; render(); return; }
+        const requested = (location.hash||'').replace('#','') || INITIAL_VIEW || 'visao';
+        state.view = VIEWS[requested] ? requested : 'visao';
+        state.loading=false;
+        render();
+        setInterval(()=>{ if(!document.hidden) refreshSilent(); },60000);
+      }catch(e){
+        state.loading=false;
+        state.error=e.message||String(e);
+        render();
+      }
+    }
+
+    async function loadData(showBusy){
+      if(showBusy) setBusy(true);
+      try{
+        const res = await api('getBootstrap');
+        if(res && res.authRequired){
+          setSessionToken('');
+          state.auth=res.auth || {state:'login'};
+          state.authForm='login';
+          state.data=null; state.user=null; state.dashboard=null; state.meta=null;
+          state.canEdit=false; state.isAdmin=false; state.error='';
+          return false;
+        }
+        if(!res || !res.ok) throw new Error((res&&res.error)||'Falha ao carregar os dados.');
+        state.auth=null;
+        state.data=res.data; state.user=res.user; state.dashboard=res.dashboard;
+        state.meta=res.meta; state.canEdit=!!res.canEdit; state.isAdmin=!!res.isAdmin;
+        state.error='';
+        return true;
+      } finally { if(showBusy) setBusy(false); }
+    }
+
+    async function refreshSilent(){
+      if(state.auth) return;
+      try{
+        await loadData(false);
+        if(state.auth){ render(); return; }
+        render();
+        $('#syncText').textContent='Atualizado '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+      }catch(e){ $('#syncText').textContent='Falha na atualização'; }
+    }
+
+    /* ------------------------------ render ------------------------------ */
+    function render(){
+      document.body.classList.toggle('auth-mode', !!state.auth);
+      if(state.auth){ renderAuth(); return; }
+      if(state.error){ renderError(); return; }
+      if(state.loading){ $('#content').innerHTML='<div class="loading"><div class="spinner"></div>Carregando o sistema...</div>'; return; }
+      const v = VIEWS[state.view] || VIEWS.visao;
+      $('#pageTitle').textContent = v[0];
+      $('#pageSub').textContent = v[1];
+      $('#sideUser').textContent = state.user ? (state.user.nome || state.user.email) : '—';
+      $('#sideRole').textContent = state.user ? roleLabel(state.user.perfil)+' · '+(state.user.email||'') : '—';
+      $('#sideVersion').textContent = (state.meta && state.meta.version) || '2.0.0';
+      $('#userChip').innerHTML = state.user ? '<div class="avatar">'+esc(initial(state.user.nome||state.user.email))+'</div><div class="who"><b>'+esc(state.user.nome||state.user.email)+'</b><span>'+esc(roleLabel(state.user.perfil))+'</span></div>' : '';
+      $('#navConfig').classList.toggle('hidden', !state.isAdmin);
+      $('#navUsuarios').classList.toggle('hidden', !state.isAdmin);
+      $$('.nav-item').forEach(b=>b.classList.toggle('active', b.getAttribute('data-view')===state.view));
+      $('#syncText').textContent = state.meta ? 'Atualizado '+String(state.meta.serverTime||'').slice(11,16) : 'Conectado';
+      const fn = ({
+        visao:renderVisao, fornecedores:renderFornecedores, produtos:renderProdutos,
+        cotacoes:renderCotacoes, comparacao:renderComparacao, precos:renderPrecos,
+        compras:renderCompras, atividades:renderAtividades, relatorios:renderRelatorios,
+        usuarios:renderUsuarios, configuracoes:renderConfiguracoes
+      })[state.view] || renderVisao;
+      $('#content').innerHTML = fn();
+    }
+
+    function renderError(){
+      $('#content').innerHTML = '<div class="error-box"><h2>Não foi possível abrir o sistema</h2><p class="muted">'+esc(state.error)+'</p><pre>'+esc(state.error)+'</pre><button class="btn primary" onclick="location.reload()">Tentar novamente</button></div>';
+    }
+
+    function setAuthMessage(type,text){
+      const el=$('#authMsg');
+      if(!el) return;
+      el.className='auth-msg '+type;
+      el.textContent=text;
+    }
+
+    function setAuthBusy(busy,label){
+      const btn=$('#authSubmit');
+      if(!btn) return;
+      btn.disabled=!!busy;
+      if(busy){ btn.dataset.old=btn.textContent; btn.textContent=label||'Aguarde...'; }
+      else { btn.textContent=state.authForm==='register'?'Criar cadastro':'Entrar'; }
+    }
+
+    function renderAuth(){
+      let body='';
+      if(state.authForm==='register'){
+        body='<h2>Criar cadastro</h2><p class="auth-desc">Seu cadastro será enviado para aprovação da gestão.</p>'+
+          '<form id="authForm" onsubmit="app.submitRegister(event)">'+
+          '<label class="auth-field"><span>Nome e sobrenome</span><input name="nome" autocomplete="name" required placeholder="Ex.: João Silva"></label>'+
+          '<label class="auth-field"><span>E-mail</span><input name="email" type="email" autocomplete="email" required placeholder="seu@email.com"></label>'+
+          '<label class="auth-field"><span>Senha</span><input name="senha" type="password" autocomplete="new-password" required placeholder="Crie uma senha"></label>'+
+          '<label class="auth-field"><span>Confirmar senha</span><input name="confirmar" type="password" autocomplete="new-password" required placeholder="Repita a senha"></label>'+
+          '<button id="authSubmit" class="auth-btn" type="submit">Criar cadastro</button>'+
+          '<div id="authMsg" class="auth-msg hidden"></div>'+
+          '<p class="auth-switch">Já tem cadastro? <a onclick="app.showLogin()">Entrar</a></p>'+
+          '<p class="auth-note">A senha é armazenada com hash e salt; nunca em texto puro.</p></form>';
+      } else {
+        body='<h2>Entrar no sistema</h2><p class="auth-desc">Use o e-mail e a senha cadastrados para acessar o painel.</p>'+
+          '<form id="authForm" onsubmit="app.submitLogin(event)">'+
+          '<label class="auth-field"><span>E-mail</span><input name="email" type="email" autocomplete="username" required placeholder="seu@email.com"></label>'+
+          '<label class="auth-field"><span>Senha</span><input name="senha" type="password" autocomplete="current-password" required placeholder="Sua senha"></label>'+
+          '<button id="authSubmit" class="auth-btn" type="submit">Entrar</button>'+
+          '<div id="authMsg" class="auth-msg hidden"></div>'+
+          '<p class="auth-switch">Ainda não tem cadastro? <a onclick="app.showRegister()">Criar cadastro</a></p></form>';
+      }
+      $('#content').innerHTML='<div class="auth-wrap"><div class="auth-card"><div class="auth-logo">GVG<span>&amp;</span>ARTEFAL</div><div class="auth-sub">APP DE FORNECEDORES</div>'+body+'</div></div>';
+    }
+
+    /* ------------------------------ visão geral ------------------------------ */
+    function renderVisao(){
+      const d=state.dashboard||{};
+      const cards = [
+        card('Fornecedores', d.totalFornecedores||0, (d.fornecedoresAtivos||0)+' ativos', '🏢'),
+        card('Produtos e serviços', d.totalProdutos||0, (d.produtosAtivos||0)+' ativos', '📦'),
+        card('Cotações', d.totalCotacoes||0, 'propostas registradas', '📋'),
+        card('Compras', d.totalCompras||0, money(d.valorCompras||0), '🛒'),
+        card('Economia potencial', money(d.economia||0), 'comparando ofertas', '💡')
+      ].join('');
+      const cats = Object.entries(d.fornecedoresPorCategoria||{}).sort((a,b)=>b[1]-a[1]).slice(0,8);
+      const maxCat = Math.max(1,...cats.map(c=>Number(c[1])||0));
+      const catHtml = cats.length ? cats.map(([name,count])=>
+        '<div class="bar-row"><div class="name" title="'+escAttr(name)+'">'+esc(name)+'</div><div class="bar-track"><div class="bar-fill" style="width:'+Math.max(3,(Number(count)/maxCat)*100)+'%"></div></div><div class="num">'+esc(count)+'</div></div>'
+      ).join('') : '<div class="empty" style="padding:25px"><p>Nenhuma categoria cadastrada.</p></div>';
+      const statuses = Object.entries(d.cotacoesPorStatus||{});
+      const statusHtml = statuses.length ? '<div class="chips">'+statuses.map(([s,n])=>'<span class="chip">'+esc(s)+' <b>'+esc(n)+'</b></span>').join('')+'</div>' : '<p class="muted">Nenhuma cotação registrada ainda.</p>';
+      const opps = d.oportunidades||[];
+      const oppsHtml = opps.length ? '<div class="table-wrap"><table class="table compact"><thead><tr><th>Produto</th><th>Melhor fornecedor</th><th class="num">Economia</th></tr></thead><tbody>'+opps.map(o=>
+        '<tr><td><div class="main-cell">'+esc(o.produtoNome)+'</div><div class="small">'+esc(o.ofertas)+' ofertas comparadas</div></td><td>'+esc(o.fornecedorNome)+'</td><td class="num" style="color:var(--green);font-weight:900">'+money(o.economia)+'</td></tr>'
+      ).join('')+'</tbody></table></div>' : empty('⚖','Sem oportunidades ainda','Cadastre cotações de um mesmo produto com fornecedores diferentes para comparar.',(state.canEdit?'<button class="btn primary" onclick="app.openQuote()">Nova cotação</button>':''));
+      const events = d.ultimasAlteracoes||[];
+      const eventsHtml = events.length ? '<div class="timeline">'+events.map(e=>
+        '<div class="timeline-item"><div class="timeline-dot">'+esc(initial(e.usuario))+'</div><div><b>'+esc(e.acao)+' · '+esc(e.tabela)+'</b><span>'+esc(e.usuario)+' · '+esc(dateTimeBR(e.dataHora))+'</span></div></div>'
+      ).join('')+'</div>' : '<p class="muted">Nenhuma alteração registrada.</p>';
+      const heroActions = state.canEdit
+        ? '<button class="btn gold" onclick="app.openSupplier()">+ Fornecedor</button><button class="btn gold" onclick="app.openProduct()">+ Produto</button><button class="btn gold" onclick="app.openQuote()">+ Cotação</button>'
+        : '<span class="chip">Somente leitura</span>';
+      const hero = '<section class="hero"><div><h2>Controle de fornecedores, cotações e compras</h2><p>Base conectada ao Google Sheets. Os preços atuais podem ser alterados pelo dashboard, mas cada mudança fica registrada no histórico.</p></div><div class="actions">'+heroActions+'</div></section>';
+      return hero+'<div class="grid cards">'+cards+'</div><div class="grid two" style="margin-top:16px">'+panel('Fornecedores por categoria','Distribuição dos fornecedores ativos',catHtml)+panel('Cotações por status','Situação atual das propostas',statusHtml)+'</div><div class="grid two" style="margin-top:16px">'+panel('Oportunidades de economia','Diferença entre a maior e a menor oferta por produto',oppsHtml)+panel('Últimas alterações','Auditoria recente do sistema',eventsHtml)+'</div>';
+    }
+
+    /* ------------------------------ fornecedores ------------------------------ */
+    function renderFornecedores(){
+      const f=state.filters;
+      let rows=(state.data.fornecedores||[]).slice();
+      const q=norm(f.fornecedores);
+      if(q) rows=rows.filter(x=>[x.nome,x.categoria,x.contato,x.telefone,x.email,x.cnpj,x.razaoSocial].some(v=>norm(v).includes(q)));
+      if(f.fornecedoresStatus) rows=rows.filter(x=>norm(x.status)===norm(f.fornecedoresStatus));
+      if(f.fornecedoresCategoria) rows=rows.filter(x=>x.categoria===f.fornecedoresCategoria);
+      rows.sort((a,b)=>String(a.nome).localeCompare(String(b.nome),'pt-BR'));
+      const cats=Array.from(new Set((state.data.fornecedores||[]).map(x=>x.categoria).filter(Boolean))).sort();
+      const toolbar='<div class="toolbar"><div class="grow"><input class="field" style="width:100%;border:1px solid #d3e0e9;border-radius:10px;padding:10px 12px" placeholder="Pesquisar fornecedor, contato, CNPJ..." value="'+escAttr(f.fornecedores)+'" onchange="app.setFilter(\'fornecedores\',this.value)"></div><select style="border:1px solid #d3e0e9;border-radius:10px;padding:10px" onchange="app.setFilter(\'fornecedoresStatus\',this.value)"><option value="">Todos os status</option>'+['Ativo','Inativo'].map(x=>'<option '+(f.fornecedoresStatus===x?'selected':'')+'>'+x+'</option>').join('')+'</select><select style="border:1px solid #d3e0e9;border-radius:10px;padding:10px" onchange="app.setFilter(\'fornecedoresCategoria\',this.value)"><option value="">Todas as categorias</option>'+cats.map(x=>'<option '+(f.fornecedoresCategoria===x?'selected':'')+'>'+esc(x)+'</option>').join('')+'</select>'+(state.canEdit?'<button class="btn primary" onclick="app.openSupplier()">+ Novo fornecedor</button>':'')+'</div>';
+      const table=rows.length?'<div class="table-wrap"><table class="table"><thead><tr><th>Fornecedor</th><th>Contato</th><th>Telefone</th><th>E-mail</th><th>Status</th><th class="actions">Ações</th></tr></thead><tbody>'+rows.map(x=>
+        '<tr><td><div class="main-cell">'+esc(x.nome)+'</div><div class="small">'+esc(x.id)+' · '+esc(x.categoria||'Sem categoria')+(x.cnpj?' · '+esc(x.cnpj):'')+'</div></td><td>'+esc(x.contato||'—')+'<div class="small">'+esc(x.pagamento||'')+'</div></td><td>'+esc(x.telefone||'—')+'</td><td>'+esc(x.email||'—')+'</td><td>'+badge(x.status)+'</td><td class="actions">'+(state.canEdit?'<button class="btn sm" onclick="app.openSupplier(\''+jsq(x.id)+'\')">Editar</button> <button class="btn sm '+(active_(x.status)?'danger':'')+'" onclick="app.toggleSupplier(\''+jsq(x.id)+'\')">'+(active_(x.status)?'Desativar':'Reativar')+'</button>':'<span class="muted">Consulta</span>')+'</td></tr>'
+      ).join('')+'</tbody></table></div>':empty('🏢','Nenhum fornecedor encontrado','Ajuste os filtros ou cadastre um novo fornecedor.',state.canEdit?'<button class="btn primary" onclick="app.openSupplier()">+ Novo fornecedor</button>':'');
+      return pageHead('Fornecedores',rows.length+' registro(s) exibido(s)','<button class="btn" onclick="app.exportFornecedores()">Exportar CSV</button>')+toolbar+table;
+    }
+
+    /* ------------------------------ produtos ------------------------------ */
+    function renderProdutos(){
+      const f=state.filters; let rows=(state.data.produtos||[]).slice();
+      const q=norm(f.produtos);
+      if(q) rows=rows.filter(x=>[x.nome,x.categoria,x.especificacao,x.observacoes].some(v=>norm(v).includes(q)));
+      if(f.produtosStatus) rows=rows.filter(x=>norm(x.status)===norm(f.produtosStatus));
+      else rows=rows.filter(x=>norm(x.status)!=='excluido');
+      if(f.produtosCategoria) rows=rows.filter(x=>x.categoria===f.produtosCategoria);
+      rows.sort((a,b)=>String(a.nome).localeCompare(String(b.nome),'pt-BR'));
+      const cats=Array.from(new Set((state.data.produtos||[]).map(x=>x.categoria).filter(Boolean))).sort();
+      const statusOpts=['Ativo','Inativo','Excluído'];
+      const toolbar='<div class="toolbar"><div class="grow"><input style="width:100%;border:1px solid #d3e0e9;border-radius:10px;padding:10px 12px" placeholder="Pesquisar produto, especificação..." value="'+escAttr(f.produtos)+'" onchange="app.setFilter(\'produtos\',this.value)"></div><select style="border:1px solid #d3e0e9;border-radius:10px;padding:10px" onchange="app.setFilter(\'produtosStatus\',this.value)"><option value="">Todos os ativos</option>'+statusOpts.map(x=>'<option '+(f.produtosStatus===x?'selected':'')+'>'+x+'</option>').join('')+'</select><select style="border:1px solid #d3e0e9;border-radius:10px;padding:10px" onchange="app.setFilter(\'produtosCategoria\',this.value)"><option value="">Todas as categorias</option>'+cats.map(x=>'<option '+(f.produtosCategoria===x?'selected':'')+'>'+esc(x)+'</option>').join('')+'</select>'+(state.canEdit?'<button class="btn primary" onclick="app.openProduct()">+ Novo produto</button>':'')+'</div>';
+      const table=rows.length?'<div class="table-wrap"><table class="table"><thead><tr><th>Produto / serviço</th><th>Categoria</th><th>Unidade</th><th>Ofertas</th><th>Status</th><th class="actions">Ações</th></tr></thead><tbody>'+rows.map(x=>{
+        const ofertas=(state.data.cotacoes||[]).filter(c=>c.produtoId===x.id).length;
+        const img=productImageUrl(x.imagem,180);
+        const thumb=img?'<img class="thumb" loading="lazy" src="'+escAttr(img)+'" alt="Imagem de '+escAttr(x.nome)+'" onclick="app.openProductImage(\''+jsq(x.id)+'\')" onerror="app.imageFallback(this,\''+jsq(x.id)+'\')">':'<div class="thumb placeholder" title="Sem imagem">📦</div>';
+        const excluido=norm(x.status)==='excluido';
+        return '<tr><td><div class="product-cell">'+thumb+'<div class="pc-body"><div class="main-cell"'+(state.canEdit&&!excluido?' style="cursor:pointer" onclick="app.openProduct(\''+jsq(x.id)+'\')" title="Editar produto"':'')+'>'+esc(x.nome)+'</div><div class="small">'+esc(x.id)+(x.especificacao?' · '+esc(short(x.especificacao,70)):'')+'</div></div></div></td><td>'+esc(x.categoria||'—')+'</td><td>'+esc(x.unidade||'—')+'</td><td>'+esc(ofertas)+'</td><td>'+badge(x.status)+'</td><td class="actions">'+(state.canEdit&&!excluido?'<button class="btn sm" onclick="app.openProduct(\''+jsq(x.id)+'\')">Editar</button> ':'')+'<button class="btn sm" onclick="app.viewProductPrices(\''+jsq(x.id)+'\')">Preços</button>'+(state.isAdmin&&!excluido?' <button class="btn sm danger" onclick="app.deleteProduct(\''+jsq(x.id)+'\')">Excluir</button>':'')+'</td></tr>';
+      }).join('')+'</tbody></table></div>':empty('📦','Nenhum produto cadastrado','Cadastre os materiais, equipamentos e serviços que a empresa compra.',state.canEdit?'<button class="btn primary" onclick="app.openProduct()">+ Novo produto</button>':'');
+      return pageHead('Produtos e Serviços',rows.length+' registro(s)','<button class="btn" onclick="app.exportProdutos()">Exportar CSV</button>')+toolbar+table;
+    }
+
+    /* ------------------------------ cotações ------------------------------ */
+    function renderCotacoes(){
+      const f=state.filters; const prods=state.data.produtos||[]; const forns=state.data.fornecedores||[];
+      const pm={}; prods.forEach(p=>pm[p.id]=p.nome); const fm={}; forns.forEach(x=>fm[x.id]=x.nome);
+      let rows=(state.data.cotacoes||[]).slice();
+      const q=norm(f.cotacoes);
+      if(q) rows=rows.filter(x=>[x.id,x.descricao,x.observacoes,x.responsavel,pm[x.produtoId],fm[x.fornecedorId]].some(v=>norm(v).includes(q)));
+      if(f.cotacoesStatus) rows=rows.filter(x=>x.status===f.cotacoesStatus);
+      if(f.cotacoesProduto) rows=rows.filter(x=>x.produtoId===f.cotacoesProduto);
+      if(f.cotacoesFornecedor) rows=rows.filter(x=>x.fornecedorId===f.cotacoesFornecedor);
+      rows.sort((a,b)=>String(b.data||'').localeCompare(String(a.data||'')) || String(b.id).localeCompare(String(a.id)));
+      const toolbar='<div class="toolbar"><div class="grow"><input style="width:100%;border:1px solid #d3e0e9;border-radius:10px;padding:10px 12px" placeholder="Pesquisar cotação..." value="'+escAttr(f.cotacoes)+'" onchange="app.setFilter(\'cotacoes\',this.value)"></div><select style="border:1px solid #d3e0e9;border-radius:10px;padding:10px" onchange="app.setFilter(\'cotacoesStatus\',this.value)"><option value="">Todos os status</option>'+['Em elaboração','Aguardando resposta','Recebida','Em análise','Aprovada','Rejeitada','Cancelada'].map(x=>'<option '+(f.cotacoesStatus===x?'selected':'')+'>'+esc(x)+'</option>').join('')+'</select><select style="border:1px solid #d3e0e9;border-radius:10px;padding:10px" onchange="app.setFilter(\'cotacoesProduto\',this.value)"><option value="">Todos os produtos</option>'+prods.map(p=>'<option value="'+escAttr(p.id)+'" '+(f.cotacoesProduto===p.id?'selected':'')+'>'+esc(p.nome)+'</option>').join('')+'</select><select style="border:1px solid #d3e0e9;border-radius:10px;padding:10px" onchange="app.setFilter(\'cotacoesFornecedor\',this.value)"><option value="">Todos os fornecedores</option>'+forns.map(x=>'<option value="'+escAttr(x.id)+'" '+(f.cotacoesFornecedor===x.id?'selected':'')+'>'+esc(x.nome)+'</option>').join('')+'</select>'+(state.canEdit?(state.canEdit?'<button class="btn primary" onclick="app.openQuote()">+ Nova cotação</button>':''):'')+'</div>';
+      const table=rows.length?'<div class="table-wrap"><table class="table"><thead><tr><th>Data / ID</th><th>Produto</th><th>Fornecedor</th><th class="num">Qtd</th><th class="num">Unitário</th><th class="num">Total</th><th>Status</th><th class="actions">Ações</th></tr></thead><tbody>'+rows.map(x=>
+        '<tr><td><div class="main-cell">'+esc(dateBR(x.data))+'</div><div class="small">'+esc(x.id)+'</div></td><td><div class="main-cell">'+esc(pm[x.produtoId]||x.produtoId)+'</div><div class="small">'+esc(short(x.descricao||'',65))+'</div></td><td>'+esc(fm[x.fornecedorId]||x.fornecedorId)+'</td><td class="num">'+esc(number(x.quantidade))+' '+esc(x.unidade||'')+'</td><td class="num">'+money(x.precoUnitario)+'</td><td class="num" style="font-weight:900">'+money(x.precoTotal)+'</td><td>'+badge(x.status)+(x.vencedor?' <span class="badge ok">Vencedora</span>':'')+'</td><td class="actions">'+(state.canEdit?'<button class="btn sm" onclick="app.openQuote(\''+jsq(x.id)+'\')">Editar</button> <button class="btn sm gold" onclick="app.openPrice(\''+jsq(x.id)+'\')">Alterar preço</button>':'<span class="muted">Consulta</span>')+(state.isAdmin?' <button class="btn sm danger" onclick="app.deleteQuote(\''+jsq(x.id)+'\')">Excluir</button>':'')+'</td></tr>'
+      ).join('')+'</tbody></table></div>':empty('📋','Nenhuma cotação encontrada','Registre propostas para comparar preços e escolher o melhor fornecedor.',state.canEdit?(state.canEdit?'<button class="btn primary" onclick="app.openQuote()">+ Nova cotação</button>':''):'');
+      return pageHead('Cotações',rows.length+' registro(s)','<button class="btn" onclick="app.exportCotacoes()">Exportar CSV</button>')+toolbar+table;
+    }
+
+    /* ------------------------------ comparação ------------------------------ */
+    function latestOffersForProduct(pid){
+      const map={};
+      (state.data.cotacoes||[]).filter(q=>q.produtoId===pid && ['CANCELADA','REJEITADA'].indexOf(norm(q.status).toUpperCase())<0)
+        .sort((a,b)=>((a.data||'')+' '+(a.atualizadoEm||'')).localeCompare((b.data||'')+' '+(b.atualizadoEm||'')))
+        .forEach(q=>{ map[q.fornecedorId]=q; });
+      return Object.keys(map).map(k=>{
+        const q=map[k]; const total=round2(q.quantidade*q.precoUnitario*(1-q.desconto/100)+q.frete);
+        return Object.assign({},q,{total:total});
+      }).sort((a,b)=>a.total-b.total);
+    }
+    function renderComparacao(){
+      const prods=(state.data.produtos||[]);
+      const withOffers=prods.filter(p=>(state.data.cotacoes||[]).some(q=>q.produtoId===p.id));
+      if(!prods.length) return pageHead('Comparação de Preços','Compare o custo total do mesmo produto entre fornecedores')+empty('⚖','Nenhum produto cadastrado','Cadastre produtos e cotações para comparar.',(state.canEdit?'<button class="btn primary" onclick="app.openProduct()">+ Novo produto</button>':''));
+      if(!withOffers.length) return pageHead('Comparação de Preços','Compare o custo total do mesmo produto entre fornecedores')+empty('⚖','Nenhuma cotação registrada','Registre cotações de um mesmo produto com fornecedores diferentes.',(state.canEdit?'<button class="btn primary" onclick="app.openQuote()">+ Nova cotação</button>':''));
+      if(!state.filters.comparacaoProduto || !withOffers.some(p=>p.id===state.filters.comparacaoProduto)) state.filters.comparacaoProduto=withOffers[0].id;
+      const pid=state.filters.comparacaoProduto; const product=byId(prods,pid);
+      let offers=latestOffersForProduct(pid); const fm={}; (state.data.fornecedores||[]).forEach(f=>fm[f.id]=f);
+      const sort=state.filters.comparacaoSort||'total';
+      offers=offers.slice().sort((a,b)=>{
+        if(sort==='prazo') return String(a.prazoEntrega||'').localeCompare(String(b.prazoEntrega||''));
+        if(sort==='validade') return String(a.validade||'').localeCompare(String(b.validade||''));
+        return a.total-b.total;
+      });
+      const best=offers.length?Math.min(...offers.map(o=>o.total)):0;
+      const max=offers.length?Math.max(...offers.map(o=>o.total)):0;
+      const economy=round2(max-best);
+      const select='<select style="border:1px solid #d3e0e9;border-radius:10px;padding:10px;min-width:260px" onchange="app.setComparison(this.value)">'+withOffers.map(p=>'<option value="'+escAttr(p.id)+'" '+(p.id===pid?'selected':'')+'>'+esc(p.nome)+'</option>').join('')+'</select><select class="sort-select" style="border:1px solid #d3e0e9;border-radius:10px;padding:10px" onchange="app.setComparisonSort(this.value)"><option value="total" '+(sort==='total'?'selected':'')+'>Ordenar por preço total</option><option value="prazo" '+(sort==='prazo'?'selected':'')+'>Ordenar por prazo</option><option value="validade" '+(sort==='validade'?'selected':'')+'>Ordenar por validade</option></select>';
+      const bars=offers.map(o=>{
+        const pct=max?Math.max(4,(o.total/max)*100):4;
+        const f=fm[o.fornecedorId]||{nome:o.fornecedorId};
+        return '<div class="compare-bar '+(o.total===best?'best':'')+'"><div class="who" title="'+escAttr(f.nome)+'">'+esc(f.nome)+'</div><div class="track"><div class="fill" style="width:'+pct+'%"></div></div><div class="amount">'+money(o.total)+'</div></div>';
+      }).join('');
+      const table=offers.length?'<div class="table-wrap" style="margin-top:14px"><table class="table"><thead><tr><th>Fornecedor</th><th class="num">Unitário</th><th class="num">Desconto</th><th class="num">Frete</th><th class="num">Custo total</th><th>Prazo</th><th>Validade</th><th>Status</th><th class="actions">Ação</th></tr></thead><tbody>'+offers.map(o=>{
+        const f=fm[o.fornecedorId]||{nome:o.fornecedorId};
+        return '<tr'+(o.total===best?' style="background:#f2fbf6"':'')+'><td><div class="main-cell">'+esc(f.nome)+'</div><div class="small">'+esc(o.id)+(o.vencedor?' · vencedora':'')+'</div></td><td class="num">'+money(o.precoUnitario)+'</td><td class="num">'+esc(number(o.desconto))+'%</td><td class="num">'+money(o.frete)+'</td><td class="num" style="font-weight:900;'+(o.total===best?'color:var(--green)':'')+'">'+money(o.total)+'</td><td>'+esc(o.prazoEntrega||'—')+'</td><td>'+esc(dateBR(o.validade))+'</td><td>'+badge(o.status)+'</td><td class="actions">'+(state.canEdit?'<button class="btn sm gold" onclick="app.openPrice(\''+jsq(o.id)+'\')">Alterar preço</button>':'')+'</td></tr>';
+      }).join('')+'</tbody></table></div>':'<p class="muted">Nenhuma oferta válida.</p>';
+      return pageHead('Comparação de Preços','Custo total = quantidade × preço unitário × (1 − desconto) + frete')+'<div class="toolbar">'+select+'</div><div class="grid three"><section class="stat"><div class="label">Produto</div><div class="value" style="font-size:16px;letter-spacing:0">'+esc(product?product.nome:'')+'</div><div class="hint">'+esc(product?product.especificacao||'':'')+'</div></section><section class="stat"><div class="label">Melhor custo total</div><div class="value" style="color:var(--green)">'+money(best)+'</div><div class="hint">'+esc(offers.length)+' oferta(s) válida(s)</div></section><section class="stat"><div class="label">Economia possível</div><div class="value">'+money(economy)+'</div><div class="hint">em relação à maior oferta</div></section></div>'+panel('Comparativo visual','Quanto menor, melhor',bars)+table+'<p class="note" style="margin-top:14px">O destaque verde indica a menor proposta válida. O sistema não soma produtos diferentes; a comparação é feita dentro do mesmo produto.</p>';
+    }
+
+    /* ------------------------------ histórico de preços ------------------------------ */
+    function renderPrecos(){
+      const f=state.filters; const prods=state.data.produtos||[]; const forns=state.data.fornecedores||[];
+      const pm={};prods.forEach(p=>pm[p.id]=p.nome); const fm={};forns.forEach(x=>fm[x.id]=x.nome);
+      let rows=(state.data.historicoPrecos||[]).slice();
+      if(f.precosProduto) rows=rows.filter(x=>x.produtoId===f.precosProduto);
+      if(f.precosFornecedor) rows=rows.filter(x=>x.fornecedorId===f.precosFornecedor);
+      rows.sort((a,b)=>String(b.dataHora||'').localeCompare(String(a.dataHora||'')));
+      const toolbar='<div class="toolbar"><select style="border:1px solid #d3e0e9;border-radius:10px;padding:10px" onchange="app.setFilter(\'precosProduto\',this.value)"><option value="">Todos os produtos</option>'+prods.map(p=>'<option value="'+escAttr(p.id)+'" '+(f.precosProduto===p.id?'selected':'')+'>'+esc(p.nome)+'</option>').join('')+'</select><select style="border:1px solid #d3e0e9;border-radius:10px;padding:10px" onchange="app.setFilter(\'precosFornecedor\',this.value)"><option value="">Todos os fornecedores</option>'+forns.map(x=>'<option value="'+escAttr(x.id)+'" '+(f.precosFornecedor===x.id?'selected':'')+'>'+esc(x.nome)+'</option>').join('')+'</select><button class="btn" onclick="app.exportPrecos()">Exportar CSV</button></div>';
+      const table=rows.length?'<div class="table-wrap"><table class="table"><thead><tr><th>Data / hora</th><th>Produto</th><th>Fornecedor</th><th class="num">Anterior</th><th class="num">Novo</th><th class="num">Variação</th><th>Responsável</th><th>Motivo</th></tr></thead><tbody>'+rows.map(x=>{
+        const diff=x.precoNovo-x.precoAnterior; const pct=x.precoAnterior?diff/x.precoAnterior*100:0; const cls=diff<0?'var(--green)':diff>0?'var(--red)':'var(--muted)';
+        return '<tr><td>'+esc(dateTimeBR(x.dataHora))+'</td><td><div class="main-cell">'+esc(pm[x.produtoId]||x.produtoId)+'</div><div class="small">'+esc(x.cotacaoId)+'</div></td><td>'+esc(fm[x.fornecedorId]||x.fornecedorId)+'</td><td class="num">'+money(x.precoAnterior)+'</td><td class="num" style="font-weight:900">'+money(x.precoNovo)+'</td><td class="num" style="color:'+cls+'">'+money(diff)+'<div class="small">'+number(pct)+'%</div></td><td>'+esc(x.responsavel||'—')+'</td><td>'+esc(short(x.motivo||'',60))+'</td></tr>';
+      }).join('')+'</tbody></table></div>':empty('📈','Nenhuma alteração de preço','O histórico aparece quando uma cotação é criada com preço ou quando um preço é alterado.',(state.canEdit?'<button class="btn primary" onclick="app.openQuote()">Registrar cotação</button>':''));
+      return pageHead('Histórico de Preços',rows.length+' registro(s)','<button class="btn" onclick="app.setView(\'comparacao\')">Comparar preços</button>')+toolbar+table;
+    }
+
+    /* ------------------------------ compras ------------------------------ */
+    function renderCompras(){
+      const f=state.filters; const prods=state.data.produtos||[]; const forns=state.data.fornecedores||[];
+      const pm={};prods.forEach(p=>pm[p.id]=p.nome); const fm={};forns.forEach(x=>fm[x.id]=x.nome);
+      let rows=(state.data.compras||[]).slice();
+      const q=norm(f.compras);
+      if(q) rows=rows.filter(x=>[x.id,x.pedido,x.notaFiscal,x.observacoes,pm[x.produtoId],fm[x.fornecedorId]].some(v=>norm(v).includes(q)));
+      if(f.comprasStatus) rows=rows.filter(x=>x.situacao===f.comprasStatus);
+      rows.sort((a,b)=>String(b.data||'').localeCompare(String(a.data||'')));
+      const toolbar='<div class="toolbar"><div class="grow"><input style="width:100%;border:1px solid #d3e0e9;border-radius:10px;padding:10px 12px" placeholder="Pesquisar compra, pedido, nota..." value="'+escAttr(f.compras)+'" onchange="app.setFilter(\'compras\',this.value)"></div><select style="border:1px solid #d3e0e9;border-radius:10px;padding:10px" onchange="app.setFilter(\'comprasStatus\',this.value)"><option value="">Todas as situações</option>'+['Pendente','Em trânsito','Entregue','Atrasada','Cancelada'].map(x=>'<option '+(f.comprasStatus===x?'selected':'')+'>'+esc(x)+'</option>').join('')+'</select>'+(state.canEdit?(state.canEdit?'<button class="btn primary" onclick="app.openPurchase()">+ Nova compra</button>':''):'')+'</div>';
+      const table=rows.length?'<div class="table-wrap"><table class="table"><thead><tr><th>Data / ID</th><th>Fornecedor</th><th>Produto</th><th class="num">Qtd</th><th class="num">Total</th><th>Pedido / NF</th><th>Entrega</th><th class="actions">Ações</th></tr></thead><tbody>'+rows.map(x=>
+        '<tr><td><div class="main-cell">'+esc(dateBR(x.data))+'</div><div class="small">'+esc(x.id)+'</div></td><td>'+esc(fm[x.fornecedorId]||x.fornecedorId)+'</td><td>'+esc(pm[x.produtoId]||x.produtoId)+'</td><td class="num">'+esc(number(x.quantidade))+'</td><td class="num" style="font-weight:900">'+money(x.precoTotal)+'</td><td>'+esc(x.pedido||'—')+'<div class="small">'+esc(x.notaFiscal||'')+'</div></td><td>'+badge(x.situacao)+'</td><td class="actions">'+(state.canEdit?'<button class="btn sm" onclick="app.openPurchase(\''+jsq(x.id)+'\')">Editar</button>':'<span class="muted">Consulta</span>')+'</td></tr>'
+      ).join('')+'</tbody></table></div>':empty('🛒','Nenhuma compra registrada','Registre os pedidos realizados para acompanhar a evolução dos preços e a economia.',(state.canEdit?'<button class="btn primary" onclick="app.openPurchase()">+ Nova compra</button>':''));
+      return pageHead('Compras',rows.length+' registro(s)','<button class="btn" onclick="app.exportCompras()">Exportar CSV</button>')+toolbar+table;
+    }
+
+    /* ------------------------------ atividades ------------------------------ */
+    function renderAtividades(){
+      const f=state.filters; let rows=(state.data.historicoAcoes||[]).slice();
+      const q=norm(f.atividades);
+      if(q) rows=rows.filter(x=>[x.usuario,x.acao,x.tabela,x.registroId,x.antes,x.depois].some(v=>norm(v).includes(q)));
+      if(f.atividadesTabela) rows=rows.filter(x=>x.tabela===f.atividadesTabela);
+      rows.sort((a,b)=>String(b.dataHora||'').localeCompare(String(a.dataHora||'')));
+      const tables=Array.from(new Set((state.data.historicoAcoes||[]).map(x=>x.tabela).filter(Boolean))).sort();
+      const toolbar='<div class="toolbar"><div class="grow"><input style="width:100%;border:1px solid #d3e0e9;border-radius:10px;padding:10px 12px" placeholder="Pesquisar usuário, ação, registro..." value="'+escAttr(f.atividades)+'" onchange="app.setFilter(\'atividades\',this.value)"></div><select style="border:1px solid #d3e0e9;border-radius:10px;padding:10px" onchange="app.setFilter(\'atividadesTabela\',this.value)"><option value="">Todas as tabelas</option>'+tables.map(x=>'<option '+(f.atividadesTabela===x?'selected':'')+'>'+esc(x)+'</option>').join('')+'</select></div>';
+      const table=rows.length?'<div class="table-wrap"><table class="table"><thead><tr><th>Data / hora</th><th>Usuário</th><th>Ação</th><th>Tabela</th><th>Registro</th><th>Resumo</th><th></th></tr></thead><tbody>'+rows.slice(0,300).map(x=>
+        '<tr><td>'+esc(dateTimeBR(x.dataHora))+'</td><td>'+esc(x.usuario)+'</td><td><b>'+esc(x.acao)+'</b></td><td>'+esc(x.tabela)+'</td><td>'+esc(x.registroId)+'</td><td>'+esc(short(x.depois||x.antes||'',70))+'</td><td class="actions"><button class="btn sm" onclick="app.viewEvent(\''+jsq(x.id)+'\')">Ver</button></td></tr>'
+      ).join('')+'</tbody></table></div>':'<p class="muted">Nenhuma atividade encontrada.</p>';
+      return pageHead('Histórico de Atividades',rows.length+' evento(s) — exibindo até 300','')+toolbar+table;
+    }
+
+    /* ------------------------------ relatórios ------------------------------ */
+    function renderRelatorios(){
+      const f=state.reportFilters; const forns=state.data.fornecedores||[];
+      const cats=Array.from(new Set((state.data.produtos||[]).map(p=>p.categoria).filter(Boolean))).sort();
+      const filters='<div class="toolbar"><input type="date" value="'+escAttr(f.inicio)+'" onchange="app.setReportFilter(\'inicio\',this.value)" style="border:1px solid #d3e0e9;border-radius:10px;padding:9px"><input type="date" value="'+escAttr(f.fim)+'" onchange="app.setReportFilter(\'fim\',this.value)" style="border:1px solid #d3e0e9;border-radius:10px;padding:9px"><select style="border:1px solid #d3e0e9;border-radius:10px;padding:10px" onchange="app.setReportFilter(\'fornecedorId\',this.value)"><option value="">Todos os fornecedores</option>'+forns.map(x=>'<option value="'+escAttr(x.id)+'" '+(f.fornecedorId===x.id?'selected':'')+'>'+esc(x.nome)+'</option>').join('')+'</select><select style="border:1px solid #d3e0e9;border-radius:10px;padding:10px" onchange="app.setReportFilter(\'categoria\',this.value)"><option value="">Todas as categorias</option>'+cats.map(x=>'<option '+(f.categoria===x?'selected':'')+'>'+esc(x)+'</option>').join('')+'</select><button class="btn primary" onclick="app.loadReport()">Atualizar</button><button class="btn" onclick="app.exportReport()">Exportar CSV</button></div>';
+      if(state.reportLoading) return pageHead('Relatórios','Indicadores por período, fornecedor, categoria e produto','')+filters+'<div class="loading"><div class="spinner"></div>Calculando indicadores...</div>';
+      if(state.reportError) return pageHead('Relatórios','Indicadores por período, fornecedor, categoria e produto','')+filters+'<div class="empty"><div class="big">⚠</div><h3>Não foi possível calcular</h3><p>'+esc(state.reportError)+'</p><button class="btn primary" onclick="app.loadReport()">Tentar novamente</button></div>';
+      if(!state.report){
+        setTimeout(()=>{ if(!state.reportLoading && !state.reportError) app.loadReport(); },100);
+        return pageHead('Relatórios','Indicadores por período, fornecedor, categoria e produto','')+filters+'<div class="loading"><div class="spinner"></div>Preparando relatório...</div>';
+      }
+      const r=state.report; const t=r.totais||{};
+      const cards=[card('Cotações',t.cotacoes||0,'no período', '📋'),card('Valor cotado',money(t.valorCotacoes||0),'propostas válidas','💰'),card('Valor aprovado',money(t.valorAprovado||0),'cotações aprovadas','✅'),card('Compras',t.compras||0,money(t.valorCompras||0),'🛒'),card('Economia',money(t.economia||0),'comparando ofertas','💡')].join('');
+      const maxSeries=Math.max(1,...(r.serieMensal||[]).map(x=>Math.max(x.valorCotacoes||0,x.valorCompras||0)));
+      const series='<div class="mini-chart">'+(r.serieMensal||[]).map(x=>'<div class="col"><div class="val">'+esc(short(money(x.valorCotacoes),12))+'</div><div class="bar" style="height:'+Math.max(4,(x.valorCotacoes/maxSeries)*78)+'px" title="Cotações: '+esc(money(x.valorCotacoes))+'"></div><div class="lbl">'+esc(x.mes)+'</div></div>').join('')+'</div>';
+      const topF=(r.topFornecedores||[]).length?'<div class="table-wrap"><table class="table compact"><thead><tr><th>Fornecedor</th><th class="num">Cotações</th><th class="num">Valor</th></tr></thead><tbody>'+r.topFornecedores.map(x=>'<tr><td>'+esc(x.nome)+'</td><td class="num">'+esc(x.quantidade)+'</td><td class="num">'+money(x.total)+'</td></tr>').join('')+'</tbody></table></div>':'<p class="muted">Sem dados no período.</p>';
+      const topP=(r.topProdutos||[]).length?'<div class="table-wrap"><table class="table compact"><thead><tr><th>Produto</th><th class="num">Cotações</th><th class="num">Valor</th></tr></thead><tbody>'+r.topProdutos.map(x=>'<tr><td>'+esc(x.nome)+'</td><td class="num">'+esc(x.quantidade)+'</td><td class="num">'+money(x.total)+'</td></tr>').join('')+'</tbody></table></div>':'<p class="muted">Sem dados no período.</p>';
+      return pageHead('Relatórios','Indicadores por período, fornecedor, categoria e produto','')+filters+'<div class="grid cards">'+cards+'</div><div class="grid two" style="margin-top:16px">'+panel('Evolução mensal','Valor cotado por mês',series)+panel('Cotações por status','Distribuição no período','<div class="chips">'+Object.entries(r.porStatus||{}).map(([s,n])=>'<span class="chip">'+esc(s)+' <b>'+esc(n)+'</b></span>').join('')+'</div>')+'</div><div class="grid two" style="margin-top:16px">'+panel('Top fornecedores','Por valor cotado',topF)+panel('Top produtos','Por valor cotado',topP)+'</div>';
+    }
+
+    /* ------------------------------ gestão de usuários ------------------------------ */
+    function renderUsuarios(){
+      if(!state.isAdmin) return pageHead('Gestão de Usuários','Acesso restrito','')+empty('🔒','Apenas administradores','Seu perfil não permite gerenciar usuários.','');
+      const users=state.data.usuarios||[];
+      const pending=users.filter(u=>u.status==='PENDENTE');
+      const active=users.filter(u=>u.status==='ATIVO');
+      const other=users.filter(u=>['PENDENTE','ATIVO'].indexOf(u.status)<0);
+      const pendingTable=pending.length?'<div class="table-wrap"><table class="table compact"><thead><tr><th>Nome</th><th>E-mail</th><th>Solicitado</th><th class="actions">Ações</th></tr></thead><tbody>'+pending.map(u=>
+        '<tr><td><b>'+esc(u.nome||'—')+'</b></td><td>'+esc(u.email)+'</td><td>'+esc(dateTimeBR(u.solicitadoEm))+'</td><td class="actions"><button class="btn sm primary" onclick="app.openApprove(\''+jsq(u.email)+'\')">Aprovar</button> <button class="btn sm danger" onclick="app.rejectUser(\''+jsq(u.email)+'\')">Recusar</button></td></tr>'
+      ).join('')+'</tbody></table></div>':'<p class="muted">Nenhum cadastro aguardando aprovação.</p>';
+      const activeTable=active.length?'<div class="table-wrap"><table class="table"><thead><tr><th>Usuário</th><th>Perfil</th><th>Último acesso</th><th class="actions">Ações</th></tr></thead><tbody>'+active.map(u=>{
+        const self=state.user && u.email.toLowerCase()===state.user.email.toLowerCase();
+        return '<tr><td><div class="main-cell">'+esc(u.nome||u.email)+'</div><div class="small">'+esc(u.email)+(self?' · você':'')+'</div></td><td>'+badge(u.perfil==='ADMIN'?'Administrador':'Usuário Comum')+'</td><td>'+esc(dateTimeBR(u.ultimoAcesso))+'</td><td class="actions">'+(self?'<button class="btn sm" onclick="app.openMyPassword()">Trocar senha</button>':'<button class="btn sm" onclick="app.openRole(\''+jsq(u.email)+'\')">Trocar perfil</button> <button class="btn sm" onclick="app.openPassword(\''+jsq(u.email)+'\')">Redefinir senha</button> <button class="btn sm danger" onclick="app.toggleBlock(\''+jsq(u.email)+'\')">Bloquear</button> <button class="btn sm danger" onclick="app.deleteUser(\''+jsq(u.email)+'\')">Excluir</button>')+'</td></tr>';
+      }).join('')+'</tbody></table></div>':'<p class="muted">Nenhum usuário ativo.</p>';
+      const otherTable=other.length?'<div class="table-wrap"><table class="table compact"><thead><tr><th>Usuário</th><th>Status</th><th class="actions">Ações</th></tr></thead><tbody>'+other.map(u=>
+        '<tr><td><div class="main-cell">'+esc(u.nome||u.email)+'</div><div class="small">'+esc(u.email)+'</div></td><td>'+badge(u.status)+'</td><td class="actions"><button class="btn sm" onclick="app.toggleBlock(\''+jsq(u.email)+'\')">Reativar</button> <button class="btn sm" onclick="app.openPassword(\''+jsq(u.email)+'\')">Redefinir senha</button> <button class="btn sm danger" onclick="app.deleteUser(\''+jsq(u.email)+'\')">Excluir</button></td></tr>'
+      ).join('')+'</tbody></table></div>':'<p class="muted">Nenhum usuário bloqueado ou recusado.</p>';
+      return pageHead('Gestão de Usuários',pending.length+' pendente(s) · '+active.length+' ativo(s)','<button class="btn" onclick="app.refresh()">Atualizar</button>')+
+        panel('Cadastros pendentes','Aprove ou recuse. O usuário só entra após aprovação.',pendingTable)+
+        panel('Usuários ativos','Perfis: Administrador tem acesso total; Usuário Comum é somente leitura.',activeTable)+
+        panel('Bloqueados e recusados','Reative ou exclua definitivamente.',otherTable);
+    }
+
+    /* ------------------------------ configurações ------------------------------ */
+    function renderConfiguracoes(){
+      if(!state.isAdmin) return pageHead('Configurações','Acesso restrito','')+empty('🔒','Apenas administradores','Seu perfil não permite alterar parâmetros do sistema.','');
+      const cfg=state.data.configuracoes||[];
+      const cfgTable=cfg.length?'<div class="table-wrap"><table class="table compact"><thead><tr><th>Chave</th><th>Valor</th><th>Descrição</th><th class="actions"></th></tr></thead><tbody>'+cfg.map(c=>
+        '<tr><td><b>'+esc(c.chave)+'</b></td><td>'+esc(c.valor)+'</td><td>'+esc(c.descricao||'')+'</td><td class="actions"><button class="btn sm" onclick="app.editConfig(\''+jsq(c.chave)+'\')">Editar</button></td></tr>'
+      ).join('')+'</tbody></table></div>':'<p class="muted">Nenhuma configuração.</p>';
+      return pageHead('Configurações','Parâmetros do sistema e backup','<button class="btn" onclick="app.selfTest()">Executar autoteste</button><button class="btn gold" onclick="app.backup()">Criar backup agora</button>')+panel('Usuários e permissões','Aprovação de cadastros, perfis, bloqueios e exclusão ficam na Gestão de Usuários.','<button class="btn primary" onclick="app.setView(\'usuarios\')">👥 Abrir Gestão de Usuários</button>')+panel('Parâmetros do sistema','Chaves usadas pelo aplicativo',cfgTable)+panel('Informações técnicas','Conexão e versão','<div class="kpi-inline"><span>Planilha: <b>'+esc((state.meta&&state.meta.spreadsheetId)||'')+'</b></span><span>Fuso: <b>'+esc((state.meta&&state.meta.timezone)||'')+'</b></span><span>Versão: <b>'+esc((state.meta&&state.meta.version)||'')+'</b></span></div><div style="margin-top:12px"><a class="btn" href="'+escAttr((state.meta&&state.meta.spreadsheetUrl)||'#')+'" target="_blank">Abrir planilha</a></div>');
+    }
+
+    /* ------------------------------ modais e formulários ------------------------------ */
+    function openModal(title,body,wide){
+      $('#modalTitle').textContent=title;
+      $('#modalBody').innerHTML=body;
+      $('#modalCard').classList.toggle('wide',!!wide);
+      $('#modal').classList.remove('hidden');
+      const first=$('#modalBody input,#modalBody select,#modalBody textarea');
+      if(first) setTimeout(()=>first.focus(),60);
+    }
+    function closeModal(){ $('#modal').classList.add('hidden'); $('#modalBody').innerHTML=''; }
+
+    function supplierForm(f){
+      f=f||{};
+      const cats=Array.from(new Set((state.data.fornecedores||[]).map(x=>x.categoria).filter(Boolean))).sort();
+      return '<form id="modalForm" onsubmit="app.submitSupplier(event)"><input type="hidden" name="id" value="'+escAttr(f.id||'')+'"><div class="form-grid">'+
+        field('nome','Fornecedor / Empresa',f.nome,'text',{required:true,full:true})+
+        field('categoria','Categoria / Segmento',f.categoria,'text',{attrs:'list="catList"'})+
+        '<datalist id="catList">'+cats.map(c=>'<option value="'+escAttr(c)+'">').join('')+'</datalist>'+
+        field('contato','Contato comercial',f.contato)+
+        field('telefone','Telefone / WhatsApp',f.telefone)+
+        field('email','E-mail',f.email,'email')+
+        field('site','Website / Catálogo',f.site,'url')+
+        field('razaoSocial','Razão social',f.razaoSocial)+
+        field('cnpj','CNPJ',f.cnpj)+
+        field('inscricaoEstadual','Inscrição estadual',f.inscricaoEstadual)+
+        field('endereco','Endereço',f.endereco,'text',{full:true})+
+        field('pagamento','Condições de pagamento',f.pagamento)+
+        field('descontos','Descontos comerciais',f.descontos)+
+        selectField('entrega','Entrega / retirada',f.entrega||'',[{value:'',label:'—'},{value:'Entrega',label:'Entrega'},{value:'Retirada',label:'Retirada'},{value:'Entrega e retirada',label:'Entrega e retirada'}])+
+        field('prazoEntrega','Prazo de entrega',f.prazoEntrega)+
+        selectField('status','Status',f.status||'Ativo',[{value:'Ativo',label:'Ativo'},{value:'Inativo',label:'Inativo'}])+
+        textArea('observacoes','Observações',f.observacoes,{full:true})+
+        '</div>'+formActions(f.id?'Salvar alterações':'Cadastrar fornecedor')+'</form>';
+    }
+    function productForm(p){
+      p=p||{};
+      const units=['un','par','kg','L','m','m²','caixa','pacote','serviço','outro'];
+      const cats=Array.from(new Set((state.data.produtos||[]).map(x=>x.categoria).filter(Boolean))).sort();
+      const external=/^https?:\/\//i.test(p.imagem||'')?p.imagem:'';
+      const embedded=external?'':(p.imagem||'');
+      const preview=state.pendingImage ? state.pendingImage.dataUrl : (state.removeImage ? '' : productImageUrl(p.imagem,600));
+      const previewHtml=preview?'<img id="prodImgPreview" class="image-preview" src="'+escAttr(preview)+'" alt="Imagem do produto">':'<div id="prodImgPreview" class="image-preview placeholder">🖼️</div>';
+      return '<form id="modalForm" onsubmit="app.submitProduct(event)"><input type="hidden" name="id" value="'+escAttr(p.id||'')+'"><input type="hidden" name="imagem" value="'+escAttr(embedded)+'"><div class="form-grid">'+
+        field('nome','Descrição do produto / serviço',p.nome,'text',{required:true,full:true})+
+        field('categoria','Categoria',p.categoria,'text',{attrs:'list="prodCatList"'})+
+        '<datalist id="prodCatList">'+cats.map(c=>'<option value="'+escAttr(c)+'">').join('')+'</datalist>'+
+        selectField('unidade','Unidade',p.unidade||'un',units.map(u=>({value:u,label:u})),{required:true})+
+        selectField('status','Status',p.status||'Ativo',[{value:'Ativo',label:'Ativo'},{value:'Inativo',label:'Inativo'}])+
+        textArea('especificacao','Especificação / equivalência',p.especificacao,{full:true,rows:3})+
+        textArea('observacoes','Observações',p.observacoes,{full:true})+
+        '<div class="field full"><span>Imagem do produto</span><div class="image-editor">'+previewHtml+'<div class="image-actions"><label class="btn sm" for="prodImgFile">Escolher imagem</label><input id="prodImgFile" type="file" accept="image/jpeg,image/png,image/webp" onchange="app.handleProductImage(this)"><button type="button" class="btn sm danger" onclick="app.removeProductImage()">Remover imagem</button><p class="image-hint">JPG, PNG ou WebP. O upload local gera uma miniatura otimizada; para alta resolução, use um link do Google Drive ou site.</p></div></div></div>'+
+        field('imagemUrl','URL da imagem / link do Drive',external,'url',{full:true,attrs:'placeholder="https://drive.google.com/file/d/..." onchange="app.setImageUrl(this.value)"'})+
+        '</div><div class="modal-actions" style="justify-content:space-between"><div>'+(p.id&&state.isAdmin?'<button type="button" class="btn danger" onclick="app.deleteProduct(\''+jsq(p.id)+'\')">Excluir produto</button>':'')+'</div><div style="display:flex;gap:8px"><button type="button" class="btn" onclick="app.closeModal()">Cancelar</button><button type="submit" class="btn primary">'+esc(p.id?'Salvar alterações':'Cadastrar produto')+'</button></div></div></form>';
+    }
+    function quoteForm(q){
+      q=q||{};
+      const prods=(state.data.produtos||[]).filter(p=>active_(p.status)||p.id===q.produtoId);
+      const forns=(state.data.fornecedores||[]).filter(f=>active_(f.status)||f.id===q.fornecedorId);
+      if(!prods.length||!forns.length) return '<div class="empty"><div class="big">⚠</div><h3>Cadastre produto e fornecedor primeiro</h3><p>É necessário ter pelo menos um produto e um fornecedor ativo.</p></div>';
+      const prod=q.produtoId||prods[0].id;
+      const p=byId(prods,prod)||prods[0];
+      return '<form id="modalForm" onsubmit="app.submitQuote(event)"><input type="hidden" name="id" value="'+escAttr(q.id||'')+'">'+
+        '<div class="form-grid">'+
+        selectField('produtoId','Produto / serviço',prod,prods.map(x=>({value:x.id,label:x.nome})),{required:true,full:true,attrs:'onchange="app.fillQuoteProduct(this.value)"'})+
+        field('descricao','Descrição na cotação',q.descricao||(p.nome+(p.especificacao?' — '+p.especificacao:'')),'text',{full:true})+
+        selectField('fornecedorId','Fornecedor',q.fornecedorId||forns[0].id,forns.map(x=>({value:x.id,label:x.nome})),{required:true})+
+        field('quantidade','Quantidade',q.quantidade||1,'number',{required:true,attrs:'min="1" step="1" inputmode="numeric" oninput="app.integerOnly(this);app.calcQuoteTotal()"'})+
+        field('unidade','Unidade',q.unidade||p.unidade||'un')+
+        field('precoUnitario','Preço unitário (R$)',q.precoUnitario||'','number',{required:true,attrs:'min="0" step="0.01" oninput="app.calcQuoteTotal()"'})+
+        field('desconto','Desconto (%)',q.desconto||0,'number',{attrs:'min="0" max="100" step="0.01" oninput="app.calcQuoteTotal()"'})+
+        field('frete','Frete (R$)',q.frete||0,'number',{attrs:'min="0" step="0.01" oninput="app.calcQuoteTotal()"'})+
+        field('data','Data da cotação',q.data||todayISO(),'date',{required:true})+
+        field('validade','Validade',q.validade||'','date')+
+        field('formaPagamento','Forma de pagamento',q.formaPagamento||'')+
+        field('prazoEntrega','Prazo de entrega',q.prazoEntrega||'')+
+        selectField('status','Status',q.status||'Em elaboração',['Em elaboração','Aguardando resposta','Recebida','Em análise','Aprovada','Rejeitada','Cancelada'].map(x=>({value:x,label:x})),{required:true})+
+        field('linkProposta','Link da proposta / catálogo',q.linkProposta||'','url',{full:true})+
+        field('motivoEscolha','Motivo da escolha / observação comercial',q.motivoEscolha||'','text',{full:true})+
+        checkField('vencedor','Marcar como proposta vencedora',!!q.vencedor)+
+        textArea('observacoes','Observações',q.observacoes,{full:true})+
+        '</div><div class="note" id="quoteTotalPreview" style="margin-top:12px">Preencha quantidade, preço, desconto e frete para calcular o total.</div><div class="modal-actions" style="justify-content:space-between"><div>'+(q.id&&state.isAdmin?'<button type="button" class="btn danger" onclick="app.deleteQuote(\''+jsq(q.id)+'\')">Excluir cotação</button>':'')+'</div><div style="display:flex;gap:8px"><button type="button" class="btn" onclick="app.closeModal()">Cancelar</button><button type="submit" class="btn primary">'+esc(q.id?'Salvar cotação':'Registrar cotação')+'</button></div></div></form>';
+    }
+    function purchaseForm(c){
+      c=c||{};
+      const prods=(state.data.produtos||[]).filter(p=>active_(p.status)||p.id===c.produtoId);
+      const forns=(state.data.fornecedores||[]).filter(f=>active_(f.status)||f.id===c.fornecedorId);
+      if(!prods.length||!forns.length) return '<div class="empty"><div class="big">⚠</div><h3>Cadastre produto e fornecedor primeiro</h3></div>';
+      return '<form id="modalForm" onsubmit="app.submitPurchase(event)"><input type="hidden" name="id" value="'+escAttr(c.id||'')+'"><div class="form-grid">'+
+        field('data','Data da compra',c.data||todayISO(),'date',{required:true})+
+        selectField('fornecedorId','Fornecedor',c.fornecedorId||forns[0].id,forns.map(x=>({value:x.id,label:x.nome})),{required:true})+
+        selectField('produtoId','Produto / serviço',c.produtoId||prods[0].id,prods.map(x=>({value:x.id,label:x.nome})),{required:true})+
+        field('quantidade','Quantidade',c.quantidade||1,'number',{required:true,attrs:'min="0.0001" step="0.01" oninput="app.calcPurchaseTotal()"'})+
+        field('precoUnitario','Preço unitário (R$)',c.precoUnitario||'','number',{required:true,attrs:'min="0" step="0.01" oninput="app.calcPurchaseTotal()"'})+
+        field('frete','Frete (R$)',c.frete||0,'number',{attrs:'min="0" step="0.01" oninput="app.calcPurchaseTotal()"'})+
+        field('pedido','Número do pedido',c.pedido||'')+
+        field('notaFiscal','Número da nota fiscal',c.notaFiscal||'')+
+        selectField('situacao','Situação da entrega',c.situacao||'Pendente',['Pendente','Em trânsito','Entregue','Atrasada','Cancelada'].map(x=>({value:x,label:x})),{required:true})+
+        field('cotacaoId','ID da cotação (opcional)',c.cotacaoId||'')+
+        field('responsavel','Responsável',c.responsavel||(state.user&&(state.user.nome||state.user.email))||'')+
+        textArea('observacoes','Observações',c.observacoes,{full:true})+
+        '</div><div class="note" id="purchaseTotalPreview" style="margin-top:12px">Total será calculado automaticamente.</div>'+formActions(c.id?'Salvar compra':'Registrar compra')+'</form>';
+    }
+    function userForm(u){
+      u=u||{};
+      return '<form id="modalForm" onsubmit="app.submitUser(event)"><input type="hidden" name="originalEmail" value="'+escAttr(u.email||'')+'"><div class="form-grid">'+
+        field('email','E-mail',u.email||'','email',{required:true,full:true})+
+        field('nome','Nome',u.nome||'')+
+        selectField('perfil','Perfil',u.perfil||'CONSULTA',[{value:'ADMIN',label:'Administrador'},{value:'COMPRAS',label:'Compras'},{value:'CONSULTA',label:'Consulta'}],{required:true})+
+        selectField('status','Status',u.status||'ATIVO',[{value:'ATIVO',label:'Ativo'},{value:'INATIVO',label:'Inativo'}],{required:true})+
+        '</div>'+formActions(u.email?'Salvar usuário':'Adicionar usuário')+'</form>';
+    }
+    function approveForm(u){
+      return '<form id="modalForm" onsubmit="app.submitApprove(event)"><input type="hidden" name="email" value="'+escAttr(u.email)+'"><div class="form-grid">'+
+        field('nome','Usuário',u.nome||u.email,'text',{attrs:'readonly',full:true})+
+        selectField('perfil','Nível de acesso',u.perfil||'CONSULTA',[{value:'CONSULTA',label:'Usuário Comum — somente leitura'},{value:'ADMIN',label:'Administrador — acesso completo'}],{required:true,full:true})+
+        '</div><div class="note" style="margin-top:12px">O usuário só poderá entrar depois desta aprovação e do login com a senha cadastrada.</div>'+formActions('Aprovar cadastro')+'</form>';
+    }
+    function roleForm(u){
+      return '<form id="modalForm" onsubmit="app.submitRole(event)"><input type="hidden" name="email" value="'+escAttr(u.email)+'"><div class="form-grid">'+
+        field('nome','Usuário',u.nome||u.email,'text',{attrs:'readonly',full:true})+
+        selectField('perfil','Nível de acesso',u.perfil||'CONSULTA',[{value:'CONSULTA',label:'Usuário Comum — somente leitura'},{value:'ADMIN',label:'Administrador — acesso completo'}],{required:true,full:true})+
+        '</div>'+formActions('Salvar permissão')+'</form>';
+    }
+    function passwordForm(u){
+      return '<form id="modalForm" onsubmit="app.submitPassword(event)"><input type="hidden" name="email" value="'+escAttr(u.email)+'"><div class="form-grid">'+
+        field('nome','Usuário',u.nome||u.email,'text',{attrs:'readonly',full:true})+
+        field('nova','Nova senha','','password',{required:true,full:true,attrs:'autocomplete="new-password" placeholder="Digite a nova senha"'})+
+        field('confirmar','Confirmar nova senha','','password',{required:true,full:true,attrs:'autocomplete="new-password" placeholder="Repita a nova senha"'})+
+        '</div><div class="note" style="margin-top:12px">Sem regra de tamanho: você pode definir qualquer senha. As sessões abertas desse usuário serão encerradas.</div>'+formActions('Redefinir senha')+'</form>';
+    }
+    function myPasswordForm(){
+      return '<form id="modalForm" onsubmit="app.submitMyPassword(event)"><div class="form-grid">'+
+        field('atual','Senha atual','','password',{required:true,full:true,attrs:'autocomplete="current-password"'})+
+        field('nova','Nova senha','','password',{required:true,full:true,attrs:'autocomplete="new-password" placeholder="Digite a nova senha"'})+
+        field('confirmar','Confirmar nova senha','','password',{required:true,full:true,attrs:'autocomplete="new-password" placeholder="Repita a nova senha"'})+
+        '</div><div class="note" style="margin-top:12px">Sem regra de tamanho. Sua sessão atual será renovada automaticamente.</div>'+formActions('Salvar nova senha')+'</form>';
+    }
+    function configForm(c){
+      c=c||{};
+      return '<form id="modalForm" onsubmit="app.submitConfig(event)"><div class="form-grid">'+
+        field('chave','Chave',c.chave||'','text',{required:true})+
+        field('valor','Valor',c.valor||'','text',{required:true})+
+        field('descricao','Descrição',c.descricao||'','text',{full:true})+
+        '</div>'+formActions('Salvar parâmetro')+'</form>';
+    }
+    function priceForm(q){
+      return '<form id="modalForm" onsubmit="app.submitPrice(event)"><input type="hidden" name="id" value="'+escAttr(q.id)+'"><div class="form-grid">'+
+        field('precoAtual','Preço atual',money(q.precoUnitario),'text',{attrs:'readonly'})+
+        field('novoPreco','Novo preço unitário (R$)',q.precoUnitario,'number',{required:true,attrs:'min="0" step="0.01"'})+
+        field('motivo','Motivo da alteração','','text',{full:true,attrs:'placeholder="Ex.: reajuste do fornecedor, negociação, correção"'} )+
+        '</div><div class="note" style="margin-top:12px">O preço anterior será mantido no Histórico de Preços com data, hora e responsável.</div>'+formActions('Salvar novo preço')+'</form>';
+    }
+
+    /* ------------------------------ ações ------------------------------ */
+    async function saveAndRefresh(fn,payload,msg){
+      setBusy(true);
+      try{
+        const r=await api(fn,payload);
+        if(!r || !r.ok) throw new Error((r&&r.error)||'Não foi possível salvar.');
+        toast(msg||'Salvo com sucesso.','success');
+        closeModal();
+        await loadData(false);
+        render();
+      }catch(e){ toast(e.message||String(e),'error'); }
+      finally{ setBusy(false); }
+    }
+
+    async function runUserAction(fn,payload,msg){
+      setBusy(true);
+      try{
+        const r=await api(fn,payload);
+        if(!r || !r.ok) throw new Error((r&&r.error)||'Não foi possível concluir.');
+        closeModal();
+        await loadData(false);
+        render();
+        toast(msg||'Operação concluída.','success');
+      }catch(e){ toast(e.message||String(e),'error'); }
+      finally{ setBusy(false); }
+    }
+
+    const app = {
+      setView(v){
+        if((v==='configuracoes' || v==='usuarios') && !state.isAdmin){ toast('Apenas administradores.','error'); return; }
+        state.view=v; location.hash=v; this.closeMenu(); window.scrollTo({top:0,behavior:'smooth'});
+        if(v==='relatorios' && !state.report) this.loadReport(); else render();
+      },
+      refresh: async function(){ try{ await loadData(true); render(); toast('Dados atualizados.','success'); }catch(e){ toast(e.message,'error'); } },
+      toggleMenu(){ $('#sidebar').classList.toggle('open'); $('#overlay').classList.toggle('hidden',!$('#sidebar').classList.contains('open')); },
+      closeMenu(){ $('#sidebar').classList.remove('open'); $('#overlay').classList.add('hidden'); },
+      setFilter(key,value){ state.filters[key]=value; render(); },
+      setComparison(value){ state.filters.comparacaoProduto=value; render(); },
+      setComparisonSort(value){ state.filters.comparacaoSort=value; render(); },
+      setReportFilter(key,value){ state.reportFilters[key]=value; state.report=null; state.reportError=''; },
+      openModal, closeModal,
+
+      showRegister(){
+        state.authForm='register';
+        if(state.auth && state.auth.state==='login') state.auth.state='register';
+        render();
+      },
+      showLogin(){
+        state.authForm='login';
+        if(state.auth && state.auth.state==='register') state.auth.state='login';
+        render();
+      },
+      async submitRegister(e){
+        e.preventDefault();
+        const data=formObj(e.target);
+        setAuthBusy(true,'⏳ Realizando cadastro...');
+        setAuthMessage('info','⏳ Realizando cadastro...');
+        try{
+          const r=await api('registrarUsuario',data);
+          if(!r || !r.ok) throw new Error((r&&r.error)||'Falha no cadastro.');
+          setAuthMessage('success','✅ Cadastro realizado com sucesso! Aguarde a aprovação do administrador para acessar o sistema.');
+          const btn=$('#authSubmit');
+          if(btn){ btn.disabled=true; btn.textContent='Cadastro enviado'; }
+        }catch(err){
+          const msg=err.message||String(err);
+          if(/já está cadastrado|já cadastrado/i.test(msg)) setAuthMessage('warn','⚠️ Este e-mail já está cadastrado no sistema.');
+          else setAuthMessage('error','❌ Não foi possível realizar seu cadastro. Verifique os dados e tente novamente.');
+          setAuthBusy(false);
+        }
+      },
+      async submitLogin(e){
+        e.preventDefault();
+        const data=formObj(e.target);
+        setAuthBusy(true,'Entrando...');
+        setAuthMessage('info','⏳ Verificando acesso...');
+        try{
+          const r=await api('loginUsuario',data);
+          if(!r || !r.ok) throw new Error((r&&r.error)||'Falha no login.');
+          setSessionToken(r.token);
+          state.auth=null; state.authForm='login';
+          const loaded=await loadData(true);
+          state.loading=false;
+          render();
+        }catch(err){
+          const msg=err.message||'Não foi possível entrar.';
+          if(/aguardando aprovação|recusado|bloqueado/i.test(msg)) setAuthMessage('warn','⚠️ '+msg);
+          else setAuthMessage('error','❌ '+msg);
+          setAuthBusy(false);
+        }
+      },
+      async logout(){
+        try{ await api('logoutUsuario'); }catch(e){}
+        setSessionToken('');
+        state.auth={state:'login'}; state.authForm='login'; state.data=null; state.user=null;
+        const loaded=await loadData(true);
+        state.loading=false;
+        render();
+      },
+
+      openSupplier(id){
+        if(!state.canEdit) return toast('Seu perfil é somente consulta.','error');
+        const f=id?byId(state.data.fornecedores,id):null;
+        openModal(id?'Editar fornecedor':'Novo fornecedor',supplierForm(f),true);
+      },
+      async submitSupplier(e){
+        e.preventDefault();
+        await saveAndRefresh('salvarFornecedor',formObj(e.target),'Fornecedor salvo.');
+      },
+      async toggleSupplier(id){
+        if(!state.canEdit) return;
+        if(!confirm('Alterar o status deste fornecedor? O histórico será preservado.')) return;
+        setBusy(true);
+        try{ await api('desativarFornecedor',id); await loadData(false); render(); toast('Status atualizado.','success'); }
+        catch(e){ toast(e.message,'error'); } finally{ setBusy(false); }
+      },
+      openProduct(id){
+        if(!state.canEdit) return toast('Seu perfil é somente consulta.','error');
+        state.pendingImage=null; state.removeImage=false;
+        const p=id?byId(state.data.produtos,id):null;
+        openModal(id?'Editar produto':'Novo produto',productForm(p),true);
+      },
+      async submitProduct(e){
+        e.preventDefault();
+        const payload=formObj(e.target);
+        const external=String(payload.imagemUrl||'').trim();
+        if(external) payload.imagem=external;
+        else if(state.pendingImage) payload.imagem=state.pendingImage.dataUrl;
+        else if(state.removeImage) payload.imagem='';
+        setBusy(true);
+        try{
+          const r=await api('salvarProduto',payload);
+          if(!r || !r.ok) throw new Error((r&&r.error)||'Não foi possível salvar.');
+          toast('Produto salvo.','success');
+          state.pendingImage=null; state.removeImage=false;
+          closeModal();
+          await loadData(false); render();
+        }catch(err){ toast(err.message||String(err),'error'); }
+        finally{ setBusy(false); }
+      },
+      handleProductImage(input){
+        const file=input.files&&input.files[0]; if(!file) return;
+        if(!/^image\/(jpeg|png|webp)$/i.test(file.type)) return toast('Use JPG, PNG ou WebP.','error');
+        if(file.size>12*1024*1024) return toast('Imagem muito grande. Use até 12 MB.','error');
+        const reader=new FileReader();
+        reader.onload=()=>{
+          const img=new Image();
+          img.onload=()=>{
+            let max=560, quality=0.62, dataUrl='';
+            for(let attempt=0; attempt<6; attempt++){
+              let w=img.width,h=img.height;
+              if(w>max||h>max){ const r=Math.min(max/w,max/h); w=Math.round(w*r); h=Math.round(h*r); }
+              const canvas=document.createElement('canvas'); canvas.width=w; canvas.height=h;
+              const ctx=canvas.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h); ctx.drawImage(img,0,0,w,h);
+              dataUrl=canvas.toDataURL('image/webp',quality);
+              if(dataUrl.length<=44000) break;
+              max=Math.round(max*0.82); quality=Math.max(0.32,quality-0.07);
+            }
+            if(dataUrl.length>47000){ toast('Imagem muito detalhada. Use um link do Drive para alta resolução.','error'); return; }
+            state.pendingImage={dataUrl:dataUrl,base64:dataUrl.split(',')[1],mimeType:(dataUrl.match(/^data:([^;]+)/)||[])[1]||'image/webp'};
+            state.removeImage=false;
+            const hidden=$('#modalForm [name=imagem]'); if(hidden) hidden.value=dataUrl;
+            const urlField=$('#modalForm [name=imagemUrl]'); if(urlField) urlField.value='';
+            const prev=$('#prodImgPreview');
+            if(prev){ const im=document.createElement('img'); im.id='prodImgPreview'; im.className='image-preview'; im.src=dataUrl; prev.replaceWith(im); }
+          };
+          img.onerror=()=>toast('Não foi possível ler a imagem.','error');
+          img.src=reader.result;
+        };
+        reader.onerror=()=>toast('Não foi possível ler o arquivo.','error');
+        reader.readAsDataURL(file);
+      },
+      removeProductImage(){
+        state.pendingImage=null; state.removeImage=true;
+        const prev=$('#prodImgPreview');
+        if(prev){ const d=document.createElement('div'); d.id='prodImgPreview'; d.className='image-preview placeholder'; d.textContent='🖼️'; prev.replaceWith(d); }
+        const hidden=$('#modalForm [name=imagem]'); if(hidden) hidden.value='';
+        const urlField=$('#modalForm [name=imagemUrl]'); if(urlField) urlField.value='';
+      },
+      setImageUrl(url){
+        state.pendingImage=null; state.removeImage=false;
+        const hidden=$('#modalForm [name=imagem]'); if(hidden) hidden.value='';
+        const prev=$('#prodImgPreview'); if(!prev) return;
+        if(url){ const im=document.createElement('img'); im.id='prodImgPreview'; im.className='image-preview'; im.src=url; im.onerror=()=>{ im.className='image-preview placeholder'; im.removeAttribute('src'); im.textContent='🖼️'; }; prev.replaceWith(im); }
+        else { const d=document.createElement('div'); d.id='prodImgPreview'; d.className='image-preview placeholder'; d.textContent='🖼️'; prev.replaceWith(d); }
+      },
+      imageFallback(img,id){
+        const p=byId(state.data.produtos,id); if(!p||!p.imagem||img.dataset.loaded) return;
+        img.dataset.loaded='1';
+        api('getProductImage',p.imagem).then(r=>{ if(r&&r.src) img.src=r.src; }).catch(()=>{ img.style.display='none'; });
+      },
+      openProductImage(id){
+        const p=byId(state.data.produtos,id); if(!p) return;
+        const src=state.pendingImage?state.pendingImage.dataUrl:productImageUrl(p.imagem,1600);
+        if(!src) return toast('Este produto ainda não tem imagem. Edite o produto para adicionar.','error');
+        state.imageViewer={scale:1,x:0,y:0,drag:false,startX:0,startY:0};
+        openModal('Imagem — '+p.nome,'<div class="image-viewer"><div class="image-stage" id="imageStage" onmousedown="app.startImageDrag(event)" onmousemove="app.dragImage(event)" onmouseup="app.endImageDrag()" onmouseleave="app.endImageDrag()" onwheel="app.zoomImage(event.deltaY>0?-0.12:0.12);return false"><img id="zoomImage" src="'+escAttr(src)+'" alt="'+escAttr(p.nome)+'" draggable="false"></div><div class="image-controls"><button class="btn" onclick="app.zoomImage(-0.15)">−</button><button class="btn" onclick="app.resetImage()">100%</button><button class="btn" onclick="app.zoomImage(0.15)">+</button><button class="btn" onclick="app.resetImage()">Centralizar</button></div><p class="image-viewer-note">Arraste para movimentar · use a roda do mouse ou os botões para zoom · imagem real do produto</p></div>',true);
+        setTimeout(()=>this.applyImageTransform(),20);
+      },
+      zoomImage(delta){
+        const v=state.imageViewer; v.scale=Math.min(4,Math.max(1,v.scale+Number(delta||0)));
+        if(v.scale===1){v.x=0;v.y=0;}
+        this.applyImageTransform();
+      },
+      resetImage(){ state.imageViewer={scale:1,x:0,y:0,drag:false,startX:0,startY:0}; this.applyImageTransform(); },
+      applyImageTransform(){
+        const img=$('#zoomImage'), stage=$('#imageStage'); if(!img) return;
+        const v=state.imageViewer;
+        img.style.transform='translate3d('+v.x+'px,'+v.y+'px,0) scale('+v.scale+')';
+        stage.classList.toggle('grabbing',!!v.drag);
+      },
+      startImageDrag(e){
+        if(state.imageViewer.scale<=1) return;
+        state.imageViewer.drag=true; state.imageViewer.startX=e.clientX-state.imageViewer.x; state.imageViewer.startY=e.clientY-state.imageViewer.y;
+        this.applyImageTransform(); e.preventDefault();
+      },
+      dragImage(e){
+        if(!state.imageViewer.drag) return;
+        state.imageViewer.x=e.clientX-state.imageViewer.startX; state.imageViewer.y=e.clientY-state.imageViewer.startY;
+        this.applyImageTransform();
+      },
+      endImageDrag(){ state.imageViewer.drag=false; this.applyImageTransform(); },
+      async deleteQuote(id){
+        if(!state.isAdmin) return toast('Apenas administradores podem excluir cotações.','error');
+        const q=byId(state.data.cotacoes,id); if(!q) return;
+        if(!confirm('Excluir a cotação '+q.id+'?\\n\\nA linha será removida da aba COTACOES. O histórico de preços será preservado. Esta ação não pode ser desfeita pela interface.')) return;
+        setBusy(true);
+        try{
+          const r=await api('excluirCotacao',id);
+          if(!r||!r.ok) throw new Error((r&&r.error)||'Falha ao excluir.');
+          toast(r.message||'Cotação excluída.','success');
+          closeModal();
+          await loadData(false); render();
+        }catch(e){ toast(e.message,'error'); }
+        finally{ setBusy(false); }
+      },
+      async deleteProduct(id){
+        if(!state.isAdmin) return toast('Apenas administradores podem excluir produtos.','error');
+        const p=byId(state.data.produtos,id); if(!p) return;
+        if(!confirm('Excluir o produto "'+p.nome+'"?\\n\\nSe houver cotações, compras ou histórico, o produto será ocultado e preservado para manter a integridade. Esta ação não pode ser desfeita pela interface.')) return;
+        setBusy(true);
+        try{
+          const r=await api('excluirProduto',id);
+          if(!r||!r.ok) throw new Error((r&&r.error)||'Falha ao excluir.');
+          toast(r.message||'Produto excluído.','success');
+          closeModal();
+          await loadData(false); render();
+          if(r.modo==='logico') openModal('Produto com vínculos históricos','<p>O produto foi marcado como <b>Excluído</b> e não aparece mais na listagem normal.</p><p>Foram encontrados vínculos:</p><ul><li>Cotações: '+esc(r.vinculos.cotacoes)+'</li><li>Compras: '+esc(r.vinculos.compras)+'</li><li>Histórico de preços: '+esc(r.vinculos.historico)+'</li></ul><p class="muted">A linha foi preservada para manter a integridade dos históricos.</p>');
+        }catch(e){ toast(e.message,'error'); }
+        finally{ setBusy(false); }
+      },
+      viewProductPrices(id){ state.filters.precosProduto=id; state.view='precos'; location.hash='precos'; render(); },
+
+      openQuote(id){
+        if(!state.canEdit) return toast('Seu perfil é somente consulta.','error');
+        const q=id?byId(state.data.cotacoes,id):null;
+        if(!id){
+          const activeProducts=(state.data.produtos||[]).filter(p=>active_(p.status)&&norm(p.status)!=='excluido');
+          const activeSuppliers=(state.data.fornecedores||[]).filter(f=>active_(f.status));
+          if(!activeProducts.length || !activeSuppliers.length){
+            openModal('Nova cotação','<div class="empty"><div class="big">⚠</div><h3>Antes da cotação</h3><p>É necessário ter pelo menos um produto ativo e um fornecedor ativo.</p><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn primary" onclick="app.openProduct()">+ Cadastrar produto</button><button class="btn gold" onclick="app.openSupplier()">+ Cadastrar fornecedor</button></div></div>');
+            return;
+          }
+        }
+        openModal(id?'Editar cotação':'Nova cotação',quoteForm(q),true);
+      },
+      fillQuoteProduct(id){
+        const p=byId(state.data.produtos,id); if(!p) return;
+        const form=$('#modalForm'); if(!form) return;
+        const d=form.querySelector('[name=descricao]'); const u=form.querySelector('[name=unidade]');
+        if(d) d.value=p.nome+(p.especificacao?' — '+p.especificacao:'');
+        if(u) u.value=p.unidade||'un';
+      },
+      calcQuoteTotal(){
+        const f=$('#modalForm'); if(!f) return;
+        const q=parseNum(f.querySelector('[name=quantidade]').value);
+        const u=parseNum(f.querySelector('[name=precoUnitario]').value);
+        const d=parseNum(f.querySelector('[name=desconto]').value);
+        const fr=parseNum(f.querySelector('[name=frete]').value);
+        const total=round2(q*u*(1-Math.min(Math.max(d,0),100)/100)+fr);
+        const el=$('#quoteTotalPreview'); if(el) el.innerHTML='Custo total calculado: <b>'+money(total)+'</b> · quantidade '+number(q)+' × unitário '+money(u)+' − desconto '+number(d)+'% + frete '+money(fr);
+      },
+      async submitQuote(e){ e.preventDefault(); await saveAndRefresh('salvarCotacao',formObj(e.target),'Cotação salva.'); },
+      openPrice(id){
+        if(!state.canEdit) return toast('Seu perfil é somente consulta.','error');
+        const q=byId(state.data.cotacoes,id); if(!q) return;
+        openModal('Alterar preço — '+q.id,priceForm(q));
+      },
+      async submitPrice(e){ e.preventDefault(); await saveAndRefresh('alterarPreco',formObj(e.target),'Preço alterado e histórico registrado.'); },
+
+      openPurchase(id){
+        if(!state.canEdit) return toast('Seu perfil é somente consulta.','error');
+        const c=id?byId(state.data.compras,id):null;
+        openModal(id?'Editar compra':'Nova compra',purchaseForm(c),true);
+      },
+      calcPurchaseTotal(){
+        const f=$('#modalForm'); if(!f) return;
+        const q=parseNum(f.querySelector('[name=quantidade]').value);
+        const u=parseNum(f.querySelector('[name=precoUnitario]').value);
+        const fr=parseNum(f.querySelector('[name=frete]').value);
+        const el=$('#purchaseTotalPreview'); if(el) el.innerHTML='Total calculado: <b>'+money(round2(q*u+fr))+'</b>';
+      },
+      async submitPurchase(e){ e.preventDefault(); await saveAndRefresh('salvarCompra',formObj(e.target),'Compra registrada.'); },
+
+      openApprove(email){
+        if(!state.isAdmin) return toast('Apenas administradores.','error');
+        const u=(state.data.usuarios||[]).find(x=>x.email.toLowerCase()===String(email).toLowerCase());
+        if(!u) return toast('Usuário não encontrado.','error');
+        openModal('Aprovar cadastro',approveForm(u));
+      },
+      async submitApprove(e){ e.preventDefault(); await runUserAction('aprovarUsuario',formObj(e.target),'Cadastro aprovado.'); },
+      async rejectUser(email){
+        if(!state.isAdmin) return;
+        const u=(state.data.usuarios||[]).find(x=>x.email.toLowerCase()===String(email).toLowerCase());
+        if(!u) return;
+        if(!confirm('Recusar o cadastro de '+(u.nome||u.email)+'?')) return;
+        await runUserAction('recusarUsuario',{email:email},'Cadastro recusado.');
+      },
+      openRole(email){
+        if(!state.isAdmin) return toast('Apenas administradores.','error');
+        const u=(state.data.usuarios||[]).find(x=>x.email.toLowerCase()===String(email).toLowerCase());
+        if(!u) return toast('Usuário não encontrado.','error');
+        openModal('Alterar permissão',roleForm(u));
+      },
+      async submitRole(e){ e.preventDefault(); await runUserAction('alterarPerfilUsuario',formObj(e.target),'Permissão atualizada.'); },
+      openPassword(email){
+        if(!state.isAdmin) return toast('Apenas administradores.','error');
+        const u=(state.data.usuarios||[]).find(x=>x.email.toLowerCase()===String(email).toLowerCase());
+        if(!u) return toast('Usuário não encontrado.','error');
+        openModal('Redefinir senha',passwordForm(u));
+      },
+      async submitPassword(e){ e.preventDefault(); await runUserAction('redefinirSenhaUsuario',formObj(e.target),'Senha redefinida.'); },
+      openMyPassword(){
+        if(!state.user) return;
+        openModal('Alterar minha senha',myPasswordForm());
+      },
+      async submitMyPassword(e){
+        e.preventDefault();
+        setBusy(true);
+        try{
+          const r=await api('alterarMinhaSenha',formObj(e.target));
+          if(!r || !r.ok) throw new Error((r&&r.error)||'Não foi possível alterar a senha.');
+          if(r.token) setSessionToken(r.token);
+          closeModal();
+          toast('Senha alterada.','success');
+        }catch(err){ toast(err.message||String(err),'error'); }
+        finally{ setBusy(false); }
+      },
+      async toggleBlock(email){
+        if(!state.isAdmin) return;
+        const u=(state.data.usuarios||[]).find(x=>x.email.toLowerCase()===String(email).toLowerCase());
+        if(!u) return;
+        const ativar=u.status!=='ATIVO';
+        if(!confirm((ativar?'Reativar':'Bloquear')+' o usuário '+(u.nome||u.email)+'?')) return;
+        await runUserAction('bloquearUsuario',{email:email,status:ativar?'ATIVO':'BLOQUEADO'},ativar?'Usuário reativado.':'Usuário bloqueado.');
+      },
+      async deleteUser(email){
+        if(!state.isAdmin) return;
+        const u=(state.data.usuarios||[]).find(x=>x.email.toLowerCase()===String(email).toLowerCase());
+        if(!u) return;
+        if(!confirm('Excluir definitivamente o usuário '+(u.nome||u.email)+'?')) return;
+        await runUserAction('excluirUsuario',{email:email},'Usuário excluído.');
+      },
+      openUser(email){
+        if(!state.isAdmin) return toast('Apenas administradores.','error');
+        const u=email?byId(state.data.usuarios,email):null;
+        openModal(email?'Editar usuário':'Novo usuário',userForm(u));
+      },
+      async submitUser(e){ e.preventDefault(); await saveAndRefresh('salvarUsuario',formObj(e.target),'Usuário salvo.'); },
+      editConfig(key){
+        if(!state.isAdmin) return;
+        const c=(state.data.configuracoes||[]).find(x=>x.chave===key);
+        openModal('Editar parâmetro',configForm(c));
+      },
+      async submitConfig(e){ e.preventDefault(); await saveAndRefresh('salvarConfiguracao',formObj(e.target),'Parâmetro salvo.'); },
+      async selfTest(){
+        if(!state.isAdmin) return toast('Apenas administradores.','error');
+        setBusy(true);
+        try{
+          const r=await api('selfTest');
+          const items=(r.checks||[]).map(c=>'<div style="display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed #e5edf3"><span style="font-size:16px">'+(c.ok?'✅':'❌')+'</span><div><b>'+esc(c.name)+'</b><div class="small">'+esc(c.detail||'')+'</div></div></div>').join('');
+          openModal('Autoteste do sistema','<p class="note">O autoteste usa uma planilha temporária e não altera a base real.</p><div style="margin-top:10px">'+items+'</div><p class="muted" style="margin-top:12px">'+esc(r.message||'')+'</p>',true);
+          toast(r.message||'Autoteste concluído.',r.ok?'success':'error');
+        }catch(e){
+          toast(e.message,'error');
+          openModal('Falha no autoteste','<div class="note" style="border-color:#f0c9c4;background:#fff7f6;color:#7d322a">O autoteste foi interrompido. A planilha real não foi alterada; a planilha temporária é descartada pelo servidor.</div><pre style="white-space:pre-wrap;font-size:11px;margin-top:12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px">'+esc(e.stack||e.message||String(e))+'</pre>');
+        }
+        finally{ setBusy(false); }
+      },
+      async backup(){
+        if(!state.isAdmin) return;
+        setBusy(true);
+        try{ const r=await api('criarBackup'); if(!r.ok) throw new Error(r.error||'Falha'); openModal('Backup criado','<p>Backup criado com sucesso.</p><p><a class="btn primary" target="_blank" href="'+escAttr(r.url)+'">Abrir backup</a></p>'); toast('Backup criado.','success'); }
+        catch(e){ toast(e.message,'error'); } finally{ setBusy(false); }
+      },
+
+      async loadReport(){
+        if(state.reportLoading) return;
+        state.reportLoading=true; state.reportError=''; render();
+        try{ const r=await api('getRelatorios',state.reportFilters); if(!r.ok) throw new Error(r.error||'Falha'); state.report=r; }
+        catch(e){ state.reportError=e.message||String(e); toast(e.message,'error'); }
+        finally{ state.reportLoading=false; render(); }
+      },
+      exportReport(){
+        const f=state.reportFilters;
+        const prods=state.data.produtos||[], forns=state.data.fornecedores||[];
+        const pm={};prods.forEach(p=>pm[p.id]=p); const fm={};forns.forEach(x=>fm[x.id]=x);
+        const inRange=d=>{ const x=String(d||'').slice(0,10); if(f.inicio&&x<f.inicio)return false; if(f.fim&&x>f.fim)return false; return true; };
+        const rows=(state.data.cotacoes||[]).filter(q=>inRange(q.data)&&(!f.fornecedorId||q.fornecedorId===f.fornecedorId)&&(!f.categoria||(pm[q.produtoId]&&pm[q.produtoId].categoria===f.categoria))).map(q=>[q.id,q.data,pm[q.produtoId]?pm[q.produtoId].nome:q.produtoId,fm[q.fornecedorId]?fm[q.fornecedorId].nome:q.fornecedorId,q.quantidade,q.precoUnitario,q.desconto,q.frete,q.precoTotal,q.status]);
+        downloadCSV('relatorio-cotacoes.csv',[['ID','Data','Produto','Fornecedor','Quantidade','Preço unitário','Desconto %','Frete','Total','Status']].concat(rows));
+      },
+      exportFornecedores(){
+        const rows=(state.data.fornecedores||[]).map(x=>[x.id,x.nome,x.categoria,x.contato,x.telefone,x.email,x.status]);
+        downloadCSV('fornecedores.csv',[['ID','Fornecedor','Categoria','Contato','Telefone','E-mail','Status']].concat(rows));
+      },
+      exportProdutos(){
+        const rows=(state.data.produtos||[]).map(x=>[x.id,x.nome,x.categoria,x.unidade,x.status]);
+        downloadCSV('produtos.csv',[['ID','Produto','Categoria','Unidade','Status']].concat(rows));
+      },
+      exportCotacoes(){
+        const prods=state.data.produtos||[], forns=state.data.fornecedores||[]; const pm={};prods.forEach(p=>pm[p.id]=p.nome); const fm={};forns.forEach(x=>fm[x.id]=x.nome);
+        const rows=(state.data.cotacoes||[]).map(q=>[q.id,q.data,pm[q.produtoId]||q.produtoId,fm[q.fornecedorId]||q.fornecedorId,q.quantidade,q.precoUnitario,q.desconto,q.frete,q.precoTotal,q.status]);
+        downloadCSV('cotacoes.csv',[['ID','Data','Produto','Fornecedor','Quantidade','Preço unitário','Desconto %','Frete','Total','Status']].concat(rows));
+      },
+      exportPrecos(){
+        const prods=state.data.produtos||[], forns=state.data.fornecedores||[]; const pm={};prods.forEach(p=>pm[p.id]=p.nome); const fm={};forns.forEach(x=>fm[x.id]=x.nome);
+        const rows=(state.data.historicoPrecos||[]).map(x=>[x.dataHora,pm[x.produtoId]||x.produtoId,fm[x.fornecedorId]||x.fornecedorId,x.precoAnterior,x.precoNovo,x.responsavel,x.motivo]);
+        downloadCSV('historico-precos.csv',[['Data/Hora','Produto','Fornecedor','Anterior','Novo','Responsável','Motivo']].concat(rows));
+      },
+      exportCompras(){
+        const prods=state.data.produtos||[], forns=state.data.fornecedores||[]; const pm={};prods.forEach(p=>pm[p.id]=p.nome); const fm={};forns.forEach(x=>fm[x.id]=x.nome);
+        const rows=(state.data.compras||[]).map(x=>[x.id,x.data,fm[x.fornecedorId]||x.fornecedorId,pm[x.produtoId]||x.produtoId,x.quantidade,x.precoUnitario,x.precoTotal,x.situacao]);
+        downloadCSV('compras.csv',[['ID','Data','Fornecedor','Produto','Quantidade','Preço unitário','Total','Situação']].concat(rows));
+      },
+      viewEvent(id){
+        const e=byId(state.data.historicoAcoes,id); if(!e) return;
+        const pretty=v=>{ try{ return JSON.stringify(JSON.parse(v||'{}'),null,2); }catch(err){ return v||''; } };
+        openModal('Evento '+e.id,'<div class="grid two"><div class="panel"><h3>Antes</h3><pre style="white-space:pre-wrap;font-size:10px;max-height:300px;overflow:auto">'+esc(pretty(e.antes))+'</pre></div><div class="panel"><h3>Depois</h3><pre style="white-space:pre-wrap;font-size:10px;max-height:300px;overflow:auto">'+esc(pretty(e.depois))+'</pre></div></div><p class="muted">'+esc(e.usuario)+' · '+esc(dateTimeBR(e.dataHora))+' · '+esc(e.acao)+' · '+esc(e.tabela)+' · '+esc(e.registroId)+'</p>',true);
+      }
+    };
+
+    function active_(v){ return !/^(inativo|inativa|nao|não|false|0)$/i.test(norm(v)); }
+    function downloadCSV(filename,rows){
+      const csv=rows.map(r=>r.map(v=>'"'+String(v===null||v===undefined?'':v).replace(/"/g,'""')+'"').join(';')).join('\r\n');
+      const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+      const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },300);
+    }
+
+    window.app=app;
+    document.addEventListener('DOMContentLoaded',boot);
+  })();
+  </script>
+</body>
+</html>

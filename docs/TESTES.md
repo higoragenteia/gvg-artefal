@@ -31,7 +31,8 @@ Ambiente: navegador Chromium 156, conta administradora existente, base nova `GVG
 | Estado vazio antes do primeiro pedido | OK — KPIs zerados e cartão “A base ainda não tem pedidos” |
 | Abrir Pedidos pelo menu | OK — iframe carregado na área principal, menu mantido no desktop |
 | Controle de Gastos | OK — app oficial integrado em iframe, login próprio, dashboard e permissão de administrador |
-| Fornecedores / Frotas | OK — selo “Em breve” e tela de integração futura |
+| Fornecedores | OK — app oficial integrado em iframe, login próprio, dashboard e permissão de administrador |
+| Frotas | OK — selo “Em breve” e tela de integração futura |
 | Voltar à visão geral | OK |
 
 ## Login e permissões
@@ -87,9 +88,25 @@ Itens: 1 Pacote de Parafuso 4,2x16 (100 un.) + 1 Caixa de Silicone neutro (24 un
 | Saída do painel | OK — sessão do Gastos encerrada e tela de login restaurada |
 | Limpeza | OK — usuários, sessões e despesas de teste removidos; somente a cópia organizada permanece |
 
+## Integração do Controle de Fornecedores (08/11/2026)
+
+| Teste | Resultado |
+|---|---|
+| Cópia da planilha oficial | OK — 9 abas preservadas; original com `modifiedTime` inalterado |
+| Código oficial integrado | OK — `Code` e `Index` preservados no projeto do painel, isolados em namespace próprio |
+| Login do painel como Admin | OK — menu Fornecedores ativo e iframe carregado |
+| Login do app de Fornecedores | OK — dashboard com 20 fornecedores, 8 produtos e 8 cotações |
+| Navegação | OK — Fornecedores, Produtos, Cotações, Compras e Gestão de Usuários |
+| Cadastro de fornecedor | OK — fornecedor de teste gravado na base e removido na limpeza |
+| Operador | OK — menu de Fornecedores oculto e cartão bloqueado com aviso |
+| Pedidos após a integração | OK — catálogo com 297 produtos |
+| Gastos após a integração | OK — dashboard e login continuam funcionando |
+| Saída do painel | OK — sessão de Fornecedores encerrada e tela de login restaurada |
+| Limpeza | OK — usuários, sessões, fornecedor e históricos de teste removidos |
+
 ## Pendências
 
-- Integrar Fornecedores e Frotas. O Controle de Gastos já está integrado.
+- Integrar Frotas. Controle de Gastos e Fornecedores já estão integrados.
 - Criar fluxo de anexos por pedido em etapa futura (o app original não possui).
 - Trocar o WhatsApp fictício antes de produção.
 

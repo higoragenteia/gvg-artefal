@@ -8,7 +8,7 @@ const GVG_PERFIL_FOLDER_ID = '1r899FRbDxLA23BmItwSiKlEDy7TEbB2d';
 const GVG_ANEXOS_FOLDER_ID = '1FH8SACEEUe-mffzT4PigUt-m_hp0xnD1';
 // Resumos somente leitura dos aplicativos existentes (uma informação por app).
 const GVG_GASTOS_ID = '1lTz62h76XlmKnKJdSWTRW20s1sROe-0s6jgeTJTPs5Y';
-const GVG_FORNECEDORES_ID = '1kd09waaWiPNR0_BRp5VFNJeeF-zuareTfW94K8vPnes';
+const GVG_FORNECEDORES_ID = '1f0jl1mN5O0z_Dgy77_FotdYpHP0bEoUF4wEb65cXllk';
 const GVG_FROTAS_ID = '1ck1lDtk_W9vjyQEnhV2Ze5secbayGLFfZi4Z0NuX-GY';
 // Reutiliza referências somente nesta execução; não guarda dados nem permissões entre acessos.
 var GVG_PLANILHA_EXECUCAO_,GVG_GESTAO_EXECUCAO_=false;
@@ -22,6 +22,7 @@ function doGet(e){
   const modulo=String(e&&e.parameter&&e.parameter.modulo||'').toLowerCase();
   if(modulo==='pedidos')return doGetPedidos_();
   if(modulo==='gastos')return doGetGastos_();
+  if(modulo==='fornecedores')return doGetFornecedores_(e);
   return doGetPainel_(e);
 }
 function doGetGastos_(){
@@ -29,6 +30,15 @@ function doGetGastos_(){
     .setTitle('GVG & ARTEFAL | Controle de Gastos')
     .addMetaTag('viewport','width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover')
     .setFaviconUrl('https://higoragenteia.github.io/gvg-gastos/icons/apple-touch-icon-gastos-v3.png')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+function doGetFornecedores_(e){
+  const modelo = HtmlService.createTemplateFromFile('FornecedoresIndex');
+  modelo.initialView = String(e&&e.parameter&&e.parameter.view||'');
+  return modelo.evaluate()
+    .setTitle('GVG & ARTEFAL | Controle de Fornecedores')
+    .addMetaTag('viewport','width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover')
+    .setFaviconUrl('https://higoragenteia.github.io/gvg-fornecedores/icons/apple-touch-icon-v3.png')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 function doGetPedidos_(){
@@ -45,6 +55,7 @@ function doGetPainel_(e){
   const url=ScriptApp.getService().getUrl();
   modelo.pedidosUrl=url+(url.indexOf('?')>=0?'&':'?')+'modulo=pedidos';
   modelo.gastosUrl=url+(url.indexOf('?')>=0?'&':'?')+'modulo=gastos';
+  modelo.fornecedoresUrl=url+(url.indexOf('?')>=0?'&':'?')+'modulo=fornecedores';
   return modelo.evaluate()
     .setTitle('GVG&ARTEFAL')
     .addMetaTag('viewport','width=device-width, initial-scale=1, viewport-fit=cover')
