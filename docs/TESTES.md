@@ -32,7 +32,7 @@ Ambiente: navegador Chromium 156, conta administradora existente, base nova `GVG
 | Abrir Pedidos pelo menu | OK — iframe carregado na área principal, menu mantido no desktop |
 | Controle de Gastos | OK — app oficial integrado em iframe, login próprio, dashboard e permissão de administrador |
 | Fornecedores | OK — app oficial integrado em iframe, login próprio, dashboard e permissão de administrador |
-| Controle de Máquinas | OK — título “MÁQUINAS” no menu, item “Em breve” visível apenas para Admin |
+| Controle de Máquinas | OK — app oficial integrado em iframe, login próprio, dashboard e permissão de administrador |
 | Frotas | OK — selo “Em breve” e tela de integração futura |
 | Voltar à visão geral | OK |
 
@@ -105,9 +105,24 @@ Itens: 1 Pacote de Parafuso 4,2x16 (100 un.) + 1 Caixa de Silicone neutro (24 un
 | Saída do painel | OK — sessão de Fornecedores encerrada e tela de login restaurada |
 | Limpeza | OK — usuários, sessões, fornecedor e históricos de teste removidos |
 
+## Integração do Controle de Máquinas (08/11/2026)
+
+| Teste | Resultado |
+|---|---|
+| Cópia da planilha oficial | OK — 22 abas preservadas; original com `modifiedTime` inalterado |
+| Backend oficial integrado | OK — 7 arquivos preservados e isolados em namespace próprio; API em `?modulo=maquinas-api` |
+| Frontend oficial integrado | OK — HTML, CSS e JS oficiais servidos pelo painel; service worker desativado dentro do iframe |
+| Admin do usuário | OK — `higorjose.gvgesquadrias@gmail.com` configurado como ADMINISTRADOR na cópia de teste |
+| Login do painel como Admin | OK — menu Máquinas ativo e iframe carregado |
+| Login do app de Máquinas | OK — dashboard com 50 equipamentos e 27 disponíveis |
+| Resumo no painel | OK — card mostra 27 equipamentos disponíveis |
+| Operador | OK — menu de Máquinas oculto e cartão bloqueado com aviso |
+| Saída do painel | OK — sessão de Máquinas encerrada e token local removido |
+| Limpeza | OK — usuários, sessões e auditorias de teste removidos |
+
 ## Pendências
 
-- Integrar Controle de Máquinas e Frotas. Controle de Gastos e Fornecedores já estão integrados.
+- Integrar Frotas. Controle de Gastos, Fornecedores e Controle de Máquinas já estão integrados.
 - Criar fluxo de anexos por pedido em etapa futura (o app original não possui).
 - Trocar o WhatsApp fictício antes de produção.
 

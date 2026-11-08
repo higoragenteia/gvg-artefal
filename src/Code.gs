@@ -9,6 +9,7 @@ const GVG_ANEXOS_FOLDER_ID = '1FH8SACEEUe-mffzT4PigUt-m_hp0xnD1';
 // Resumos somente leitura dos aplicativos existentes (uma informação por app).
 const GVG_GASTOS_ID = '1lTz62h76XlmKnKJdSWTRW20s1sROe-0s6jgeTJTPs5Y';
 const GVG_FORNECEDORES_ID = '1f0jl1mN5O0z_Dgy77_FotdYpHP0bEoUF4wEb65cXllk';
+const GVG_MAQUINAS_ID = '1AnTsJ4KfZIvigbEnbO9gtu23J0Q1JWzevzCyaqN1jWI';
 const GVG_FROTAS_ID = '1ck1lDtk_W9vjyQEnhV2Ze5secbayGLFfZi4Z0NuX-GY';
 // Reutiliza referências somente nesta execução; não guarda dados nem permissões entre acessos.
 var GVG_PLANILHA_EXECUCAO_,GVG_GESTAO_EXECUCAO_=false;
@@ -23,7 +24,21 @@ function doGet(e){
   if(modulo==='pedidos')return doGetPedidos_();
   if(modulo==='gastos')return doGetGastos_();
   if(modulo==='fornecedores')return doGetFornecedores_(e);
+  if(modulo==='maquinas')return doGetMaquinas_();
+  if(modulo==='maquinas-api')return maquinasApiGet_(e);
   return doGetPainel_(e);
+}
+function doPost(e){
+  const modulo=String(e&&e.parameter&&e.parameter.modulo||'').toLowerCase();
+  if(modulo==='maquinas-api')return maquinasApiPost_(e);
+  return ContentService.createTextOutput(JSON.stringify({ok:false,error:{code:'ROTA_INVALIDA',message:'Rota não encontrada.'}})).setMimeType(ContentService.MimeType.JSON);
+}
+function doGetMaquinas_(){
+  return HtmlService.createHtmlOutputFromFile('MaquinasIndex')
+    .setTitle('GVG & ARTEFAL | Controle de Máquinas')
+    .addMetaTag('viewport','width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover')
+    .setFaviconUrl('https://higoragenteia.github.io/gvg-maquinas-ferramentas/icons/icone-180.png')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 function doGetGastos_(){
   return HtmlService.createHtmlOutputFromFile('GastosIndex')
@@ -56,6 +71,8 @@ function doGetPainel_(e){
   modelo.pedidosUrl=url+(url.indexOf('?')>=0?'&':'?')+'modulo=pedidos';
   modelo.gastosUrl=url+(url.indexOf('?')>=0?'&':'?')+'modulo=gastos';
   modelo.fornecedoresUrl=url+(url.indexOf('?')>=0?'&':'?')+'modulo=fornecedores';
+  modelo.maquinasUrl=url+(url.indexOf('?')>=0?'&':'?')+'modulo=maquinas';
+  modelo.maquinasApiUrl=url+(url.indexOf('?')>=0?'&':'?')+'modulo=maquinas-api';
   return modelo.evaluate()
     .setTitle('GVG&ARTEFAL')
     .addMetaTag('viewport','width=device-width, initial-scale=1, viewport-fit=cover')
@@ -176,7 +193,7 @@ function registrarSolicitacao(d){
  const lock=LockService.getScriptLock();lock.waitLock(20000);try{
   const ss=abasGestao_(),sh=ss.getSheetByName('PRODUTOS');const vals=sh.getDataRange().getValues();const mapa=new Map(vals.slice(1).filter(r=>r[0]&&String(r[6]).toUpperCase()==='SIM').map(r=>[String(r[0]),r]));
   let linhas=[];for(const x of d.itens){const r=mapa.get(String(x.id));if(!r)throw new Error('Produto indisponível ou retirado: '+x.id+'. Atualize o catálogo.');const q=Number(x.quantidade);if(!Number.isInteger(q)||q<1||q>10000)throw new Error('Quantidade inválida.');const u=['Unidade','Caixa','Pacote','Litro','Quilo'].includes(x.unidade)?x.unidade:'Unidade';const f=fatorEmbalagemGVG_(r);if(['Caixa','Pacote'].includes(u)&&f<=1)throw new Error('Embalagem indisponível para '+r[1]);if(u==='Pacote'&&String(r[2]||'').trim().toLowerCase()!=='parafusos')throw new Error('Pacote indisponível para '+r[1]);const base=String(r[3]||'').toLowerCase();if(u==='Litro'&&!(/litro/.test(base)||/litro/.test(String(r[1]))))throw new Error('Litro indisponível para '+r[1]);if(u==='Quilo'&&!(/quilo/.test(base)||/estopa/.test(String(r[1]))))throw new Error('Quilo indisponível para '+r[1]);linhas.push([String(x.id),String(r[1]),q,u,q*(['Caixa','Pacote'].includes(u)?f:1)])}
-  const pedido='PED-'+Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'yyyyMMdd')+'-'+Utilities.getUuid().slice(0,6).toUpperCase();const agora=new Date();const p=ss.getSheetByName('PEDIDOS');p.appendRow([pedido,agora,textoSeguro_(d.nome,120),textoSeguro_(d.obra,120),textoSeguro_(d.observacao,500),String(d.canal||'WhatsApp'),'REGISTRADO — ENVIO NÃO VERIFICADO']);const itens=ss.getSheetByName('ITENS_PEDIDO');itens.getRange(itens.getLastRow()+1,1,linhas.length,6).setValues(linhas.map(x=>[pedido,...x]));gvguVincularPedido_(ss,pedido,d.usuarioId);try{CacheService.getScriptCache().remove('gvg_painel_v3_'+auth.id);}catch(e){}return {pedido};
+  const pedido='PED-'+Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'yyyyMMdd')+'-'+Utilities.getUuid().slice(0,6).toUpperCase();const agora=new Date();const p=ss.getSheetByName('PEDIDOS');p.appendRow([pedido,agora,textoSeguro_(d.nome,120),textoSeguro_(d.obra,120),textoSeguro_(d.observacao,500),String(d.canal||'WhatsApp'),'REGISTRADO — ENVIO NÃO VERIFICADO']);const itens=ss.getSheetByName('ITENS_PEDIDO');itens.getRange(itens.getLastRow()+1,1,linhas.length,6).setValues(linhas.map(x=>[pedido,...x]));gvguVincularPedido_(ss,pedido,d.usuarioId);try{CacheService.getScriptCache().remove('gvg_painel_v4_'+auth.id);}catch(e){}return {pedido};
  }finally{lock.releaseLock()}
 }
 function relatorioAdmin(pin){admin_(pin);const ss=abasGestao_();const p=ss.getSheetByName('PEDIDOS').getDataRange().getValues().slice(1),i=ss.getSheetByName('ITENS_PEDIDO').getDataRange().getValues().slice(1);const pedidos=p.map(r=>({id:String(r[0]),data:r[1] instanceof Date?r[1].toISOString():String(r[1]),solicitante:String(r[2]),obra:String(r[3]),canal:String(r[5]),situacao:String(r[6]),dataEntrega:r[7] instanceof Date?r[7].toISOString():''}));const itens=i.map(r=>({id:String(r[0]),codigo:String(r[1]),nome:String(r[2]),qtd:Number(r[3])||0,unidade:String(r[4]),equiv:Number(r[5])||0,entregue:r[6]===''?null:Number(r[6])||0,entregueEquiv:r[7]===''?0:Number(r[7])||0,nota:String(r[8]||'')}));return {pedidos,itens};}
@@ -548,32 +565,53 @@ function painelResumoFrotas_(){
   }
   return {valor:total,label:'veículos na frota',detalhe:'Veículos cadastrados',recente:recente};
 }
+function painelResumoMaquinas_(){
+  const ss=SpreadsheetApp.openById(GVG_MAQUINAS_ID);
+  const sh=ss.getSheetByName('EQUIPAMENTOS');
+  if(!sh)throw new Error('Aba EQUIPAMENTOS não encontrada em Máquinas.');
+  const v=sh.getDataRange().getValues();
+  const headers=(v[0]||[]).map(x=>String(x).trim());
+  const si=headers.indexOf('STATUS'), qi=headers.indexOf('QUANTIDADE_DISPONIVEL'), ci=headers.indexOf('CODIGO'), di=headers.indexOf('DESCRICAO'), ui=headers.indexOf('ATUALIZADO_EM');
+  let disponiveis=0,ativos=0,recente=null,recenteMs=0;
+  for(let i=1;i<v.length;i++){
+    const r=v[i];if(!r[ci]&&!r[di])continue;
+    const status=String(si>=0?r[si]:'').trim().toUpperCase();
+    if(status==='INATIVO')continue;
+    ativos++;
+    disponiveis+=painelNumero_(qi>=0?r[qi]:0);
+    const ms=ui>=0&&r[ui] instanceof Date?r[ui].getTime():0;
+    if(!recente||ms>=recenteMs){recenteMs=ms;recente={titulo:String(ci>=0?r[ci]||'Equipamento':'Equipamento'),detalhe:String(di>=0?r[di]||'':'') ,data:ui>=0?painelData_(r[ui]):''};}
+  }
+  return {valor:disponiveis,label:'equipamentos disponíveis',detalhe:ativos+' cadastros ativos',recente:recente};
+}
 function painelResumosExternos_(){
   const cache=CacheService.getScriptCache();
-  const key='gvg_painel_resumos_v1';
+  const key='gvg_painel_resumos_v2';
   const cached=cache.get(key);
   if(cached){
-    try{const parsed=JSON.parse(cached);if(parsed&&parsed.gastos&&parsed.fornecedores&&parsed.frotas)return parsed;}catch(e){}
+    try{const parsed=JSON.parse(cached);if(parsed&&parsed.gastos&&parsed.fornecedores&&parsed.maquinas&&parsed.frotas)return parsed;}catch(e){}
   }
   let gastos={valor:'—',label:'gastos no mês',detalhe:'Indisponível',recente:null};
   let fornecedores={valor:'—',label:'fornecedores ativos',detalhe:'Indisponível',recente:null};
+  let maquinas={valor:'—',label:'equipamentos disponíveis',detalhe:'Indisponível',recente:null};
   let frotas={valor:'—',label:'veículos na frota',detalhe:'Indisponível',recente:null};
   try{gastos=painelResumoGastos_()}catch(e){}
   try{fornecedores=painelResumoFornecedores_()}catch(e){}
+  try{maquinas=painelResumoMaquinas_()}catch(e){}
   try{frotas=painelResumoFrotas_()}catch(e){}
-  const out={gastos:gastos,fornecedores:fornecedores,frotas:frotas};
+  const out={gastos:gastos,fornecedores:fornecedores,maquinas:maquinas,frotas:frotas};
   try{cache.put(key,JSON.stringify(out),900);}catch(e){}
   return out;
 }
 function aquecerResumos(){
   const r=painelResumosExternos_();
-  return {gastos:r.gastos.valor,fornecedores:r.fornecedores.valor,frotas:r.frotas.valor};
+  return {gastos:r.gastos.valor,fornecedores:r.fornecedores.valor,maquinas:r.maquinas.valor,frotas:r.frotas.valor};
 }
 function getPainelInicial(sessao){
   let usuario;
   try{usuario=gvguVerificarSessao_(sessao);}catch(e){return {ok:false,error:String(e&&e.message||e)};}
   const cache=CacheService.getScriptCache();
-  const cacheKey='gvg_painel_v3_'+usuario.id;
+  const cacheKey='gvg_painel_v4_'+usuario.id;
   const cached=cache.get(cacheKey);
   if(cached){
     try{
@@ -596,11 +634,11 @@ function getPainelInicial(sessao){
       if(!latest||ms>=latestMs){latestMs=ms;latest={id:String(r[0]),status:status,data:painelData_(r[1])};}
     });
     let externos=null;
-    try{const ext=cache.get('gvg_painel_resumos_v1');if(ext)externos=JSON.parse(ext);}catch(e){}
-    if(!externos||!externos.gastos)externos={gastos:{valor:'—',label:'gastos no mês',detalhe:'Carregando…',recente:null},fornecedores:{valor:'—',label:'fornecedores ativos',detalhe:'Carregando…',recente:null},frotas:{valor:'—',label:'veículos na frota',detalhe:'Carregando…',recente:null}};
-    const gastos=externos.gastos,fornecedores=externos.fornecedores,frotas=externos.frotas;
+    try{const ext=cache.get('gvg_painel_resumos_v2');if(ext)externos=JSON.parse(ext);}catch(e){}
+    if(!externos||!externos.gastos||!externos.maquinas)externos={gastos:{valor:'—',label:'gastos no mês',detalhe:'Carregando…',recente:null},fornecedores:{valor:'—',label:'fornecedores ativos',detalhe:'Carregando…',recente:null},maquinas:{valor:'—',label:'equipamentos disponíveis',detalhe:'Carregando…',recente:null},frotas:{valor:'—',label:'veículos na frota',detalhe:'Carregando…',recente:null}};
+    const gastos=externos.gastos,fornecedores=externos.fornecedores,maquinas=externos.maquinas,frotas=externos.frotas;
     const pedidosResumo={valor:pedidos.length,label:pedidos.length===1?'pedido registrado':'pedidos registrados',detalhe:abertos===1?'1 em andamento':abertos+' em andamento',recente:latest?{titulo:latest.id,detalhe:latest.status,data:latest.data}:null};
-    const apps={pedidos:pedidosResumo,gastos:gastos,fornecedores:fornecedores,frotas:frotas};
+    const apps={pedidos:pedidosResumo,gastos:gastos,fornecedores:fornecedores,maquinas:maquinas,frotas:frotas};
     const atividades=[
       {app:'Pedidos',tone:'gold',titulo:pedidosResumo.recente?pedidosResumo.recente.titulo:'Sem pedidos recentes',detalhe:pedidosResumo.recente?pedidosResumo.recente.detalhe:'',data:pedidosResumo.recente?pedidosResumo.recente.data:''},
       {app:'Controle de Gastos',tone:'green',titulo:gastos.recente?gastos.recente.titulo:'Sem gastos recentes',detalhe:gastos.recente?gastos.recente.detalhe:'',data:gastos.recente?gastos.recente.data:''},
@@ -618,7 +656,7 @@ function getPainelExternos(sessao){
   try{gvguVerificarSessao_(sessao);}catch(e){return {ok:false,error:String(e&&e.message||e)};}
   try{
     const r=painelResumosExternos_();
-    return {ok:true,apps:{gastos:r.gastos,fornecedores:r.fornecedores,frotas:r.frotas}};
+    return {ok:true,apps:{gastos:r.gastos,fornecedores:r.fornecedores,maquinas:r.maquinas,frotas:r.frotas}};
   }catch(e){return {ok:false,error:'Não foi possível carregar os resumos: '+String(e&&e.message||e)};}
 }
 

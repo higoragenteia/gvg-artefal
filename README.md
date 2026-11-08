@@ -77,7 +77,7 @@ O Apps Script é **vinculado à planilha de teste original** e abre a planilha a
 - **Pedidos** — aplicativo original preservado: catálogo, carrinho, obras, solicitação, histórico do usuário, Gestão, disponibilidade de produtos, relatório, conferência de entrega e foto de produto.
 - **Controle de Gastos** — app oficial integrado ao painel, com dashboard financeiro, despesas, orçamento, saldo, cadastros e usuários; usa a cópia de teste da planilha de Gastos e fica disponível somente para administradores.
 - **Fornecedores** — app oficial integrado ao painel, com fornecedores, produtos/serviços, cotações, comparação de preços, compras, relatórios, usuários e configurações; usa a cópia de teste da planilha de Fornecedores e fica disponível somente para administradores.
-- **Controle de Máquinas** — item de menu criado, sinalizado como **Em breve** e visível apenas para administradores; aguarda o projeto Apps Script para integração.
+- **Controle de Máquinas** — app oficial integrado ao painel, com equipamentos, colaboradores, categorias, movimentações, manutenções, usuários e auditoria; usa a cópia de teste da planilha de Máquinas, login próprio e fica disponível somente para administradores.
 - **Frotas** — sinalizado como **Em breve**; abre uma tela de integração futura, sem alterar Pedidos, Gastos, Fornecedores e Máquinas.
 
 ## Abas da planilha ativa (cópia oficial)
@@ -110,7 +110,7 @@ O painel e o módulo Pedidos usam a mesma implantação; atualizações de códi
 
 ## Pendências desta etapa
 
-1. Integrar **Controle de Máquinas** e **Frotas** (itens já reservados no menu). **Controle de Gastos** e **Fornecedores** já estão integrados.
+1. Integrar **Frotas** (item já reservado no menu). **Controle de Gastos**, **Fornecedores** e **Controle de Máquinas** já estão integrados.
 2. O aplicativo de Pedidos original não possui fluxo de anexos por pedido. Foram mantidos apenas os fluxos existentes (foto de produto e conferência de entrega). A pasta `03 - Anexos de Pedidos` está preparada para uma etapa futura.
 3. Substituir o número fictício de WhatsApp em `CONFIG!B2` antes de uso em produção.
 4. O pedido fictício de teste pode ser mantido para demonstração ou removido pela Gestão/planilha após a validação.

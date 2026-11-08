@@ -762,7 +762,7 @@
       <button type="button" class="gvgp-nav-item" data-view="maquinas" data-admin-only="1">
         <span class="gvgp-nav-icon"><svg class="gvgp-nav-3d" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="maqNavGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff4c8"/><stop offset=".35" stop-color="#f1d27c"/><stop offset=".72" stop-color="#c99a2e"/><stop offset="1" stop-color="#7a5a18"/></linearGradient><linearGradient id="maqNavSide" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8f6a1d"/><stop offset="1" stop-color="#4b3610"/></linearGradient></defs><g stroke="none"><g fill="url(#maqNavSide)" transform="translate(.5 1)"><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(45 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(90 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(135 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(180 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(225 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(270 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(315 16 16)"/><circle cx="16" cy="16" r="12"/></g><g fill="url(#maqNavGold)" stroke="#6b4d15" stroke-width=".55"><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(45 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(90 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(135 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(180 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(225 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(270 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(315 16 16)"/><circle cx="16" cy="16" r="12"/></g><circle cx="16" cy="16" r="5.6" fill="#2b2415" stroke="#f1d27c" stroke-width=".9"/><circle cx="16" cy="16" r="2.8" fill="#3b321d"/></g></svg></span>
         Controle de Máquinas
-        <span class="gvgp-pill gvgp-pill-soon">Em breve</span>
+        <span class="gvgp-pill">Ativo</span>
       </button>
       <div class="gvgp-nav-topic" data-topic="frotas">VEÍCULOS</div>
       <button type="button" class="gvgp-nav-item" data-view="frotas">
@@ -877,7 +877,7 @@
               <button type="button" class="gvgp-module-card" data-module="maquinas" style="--accent:#d97706">
                 <span class="gvgp-module-icon"><img class="gvgp-app-icon is-photo" alt="" loading="lazy" decoding="async" src="https://higoragenteia.github.io/gvg-artefal/assets/icone-maquinas-layout8.webp"></span>
                 <div class="gvgp-module-copy"><h3>Controle de Máquinas</h3><p>Máquinas e equipamentos.</p></div>
-                <div class="gvgp-module-metric"><strong id="gvgpAppMaquinas">—</strong><span id="gvgpAppMaquinasLabel">em breve</span></div>
+                <div class="gvgp-module-metric"><strong id="gvgpAppMaquinas">—</strong><span id="gvgpAppMaquinasLabel">equipamentos disponíveis</span></div>
                 <span class="gvgp-module-arrow" aria-hidden="true">→</span>
               </button>
               <button type="button" class="gvgp-module-card" data-module="frotas" style="--accent:#4f7fb5">
@@ -929,7 +929,7 @@
               <button type="button" class="gvgp-dark-card" data-module="maquinas" style="--accent:#f0a24a">
                 <span class="gvgp-dark-icon"><img class="gvgp-app-icon is-photo-dark" alt="" loading="lazy" decoding="async" src="https://higoragenteia.github.io/gvg-artefal/assets/icone-maquinas-layout8.webp"></span>
                 <h3>Controle de Máquinas</h3><p>Máquinas e equipamentos.</p>
-                <div class="gvgp-dark-metric"><strong id="gvgpDarkMaquinas">—</strong><span id="gvgpDarkMaquinasLabel">em breve</span></div>
+                <div class="gvgp-dark-metric"><strong id="gvgpDarkMaquinas">—</strong><span id="gvgpDarkMaquinasLabel">equipamentos disponíveis</span></div>
                 <span class="gvgp-module-arrow" aria-hidden="true">→</span>
               </button>
               <button type="button" class="gvgp-dark-card" data-module="frotas" style="--accent:#6fb4ef">
@@ -990,14 +990,27 @@
         </div>
       </section>
 
+      <section id="gvgpViewMaquinas" class="gvgp-view gvgp-hidden">
+        <div class="gvgp-frame-head gvgp-frame-head-actions">
+          <button type="button" class="gvgp-btn gvgp-btn-ghost" style="color:#0b4a5a;border-color:#c9dce2;background:#fff" data-go="overview">← Voltar à visão geral</button>
+        </div>
+        <div class="gvgp-frame-wrap">
+          <div id="gvgpMaquinasLoading" class="gvgp-frame-loading">
+            <span class="gvgp-frame-spinner" aria-hidden="true"></span>
+            <strong>Carregando Controle de Máquinas…</strong>
+            <span>Conectando ao backend da base de máquinas</span>
+          </div>
+          <iframe id="gvgpMaquinasFrame" class="gvgp-frame" title="Módulo Controle de Máquinas" src="about:blank" loading="eager"></iframe>
+        </div>
+      </section>
+
       <section id="gvgpViewFuture" class="gvgp-view gvgp-hidden">
         <div class="gvgp-future-card">
           <div class="gvgp-future-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/><path d="m5.6 5.6 2.1 2.1"/><path d="m16.3 16.3 2.1 2.1"/><path d="m18.4 5.6-2.1 2.1"/><path d="m7.7 16.3-2.1 2.1"/><circle cx="12" cy="12" r="3"/></svg></div>
           <span class="gvgp-eyebrow" style="color:#8a5d0b;background:#fdf6df;border-color:#ead08a">Integração futura</span>
-          <h2 id="gvgpFutureTitle">Controle de Máquinas</h2>
-          <p>Os módulos Controle de Máquinas e Frotas ainda não fazem parte desta etapa do painel GVG&amp;ARTEFAL. A estrutura lateral já está preparada para receber a integração sem alterar Pedidos, Gastos e Fornecedores.</p>
+          <h2 id="gvgpFutureTitle">Frotas</h2>
+          <p>O módulo Frotas ainda não faz parte desta etapa do painel GVG&amp;ARTEFAL. A estrutura lateral já está preparada para receber a integração sem alterar Pedidos, Gastos, Fornecedores e Máquinas.</p>
           <div class="gvgp-future-list">
-            <div class="gvgp-future-item"><strong>Controle de Máquinas</strong><span>Máquinas, equipamentos, manutenções e responsáveis.</span></div>
             <div class="gvgp-future-item"><strong>Frotas</strong><span>Veículos, documentos e manutenções.</span></div>
           </div>
           <button type="button" class="gvgp-btn gvgp-btn-gold" data-go="overview">Voltar à visão geral</button>
@@ -1072,12 +1085,13 @@
 const PEDIDOS_URL = <?!= JSON.stringify(pedidosUrl) ?>;
 const GASTOS_URL = <?!= JSON.stringify(gastosUrl) ?>;
 const FORNECEDORES_URL = <?!= JSON.stringify(fornecedoresUrl) ?>;
+const MAQUINAS_URL = <?!= JSON.stringify(maquinasUrl) ?>;
+const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
-  const state = { token:'', adminToken:'', user:null, data:null, view:'overview', frameLoaded:false, gastosFrameLoaded:false, fornecedoresFrameLoaded:false, layout:1, rotation:true, rotationTimer:null, countdown:30 };
+  const state = { token:'', adminToken:'', user:null, data:null, view:'overview', frameLoaded:false, gastosFrameLoaded:false, fornecedoresFrameLoaded:false, maquinasFrameLoaded:false, layout:1, rotation:true, rotationTimer:null, countdown:30 };
   const FUTURE = {
-    maquinas:{title:'Controle de Máquinas', subtitle:'Integração futura'},
     frotas:{title:'Frotas', subtitle:'Integração futura'}
   };
   const safe = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1121,10 +1135,12 @@ const FORNECEDORES_URL = <?!= JSON.stringify(fornecedoresUrl) ?>;
     setMetric('gvgpAppPedidos','gvgpAppPedidosLabel',a.pedidos,false);
     setMetric('gvgpAppGastos','gvgpAppGastosLabel',a.gastos,true);
     setMetric('gvgpAppFornecedores','gvgpAppFornecedoresLabel',a.fornecedores,false);
+    setMetric('gvgpAppMaquinas','gvgpAppMaquinasLabel',a.maquinas,false);
     setMetric('gvgpAppFrotas','gvgpAppFrotasLabel',a.frotas,false);
     setMetric('gvgpDarkPedidos','gvgpDarkPedidosLabel',a.pedidos,false);
     setMetric('gvgpDarkGastos','gvgpDarkGastosLabel',a.gastos,true);
     setMetric('gvgpDarkFornecedores','gvgpDarkFornecedoresLabel',a.fornecedores,false);
+    setMetric('gvgpDarkMaquinas','gvgpDarkMaquinasLabel',a.maquinas,false);
     setMetric('gvgpDarkFrotas','gvgpDarkFrotasLabel',a.frotas,false);
     const cupdated=d&&d.atualizadoEm?'Atualizado em '+d.atualizadoEm:'Atualizado agora';
     const cu=$('gvgpCleanUpdated');if(cu)cu.textContent=cupdated;
@@ -1161,7 +1177,7 @@ const FORNECEDORES_URL = <?!= JSON.stringify(fornecedoresUrl) ?>;
   }
   function emptyDashboard(){
     const e={valor:'—',label:''};
-    renderApps({apps:{pedidos:e,gastos:e,fornecedores:e,frotas:e},atualizadoEm:''});
+    renderApps({apps:{pedidos:e,gastos:e,fornecedores:e,maquinas:e,frotas:e},atualizadoEm:''});
     const cu=$('gvgpCleanUpdated');if(cu)cu.textContent='Entre no painel para atualizar';
     const du=$('gvgpDarkUpdated');if(du)du.textContent='—';
     const box=$('gvgpActivityList');if(box)box.innerHTML='<p class="gvgp-tv-empty">Entre no painel para ver as atividades.</p>';
@@ -1219,9 +1235,10 @@ const FORNECEDORES_URL = <?!= JSON.stringify(fornecedoresUrl) ?>;
   }
   function closePending(){$('gvgpPendingModal').classList.add('gvgp-hidden');}
   function renderLoggedOut(){
-    state.token=''; state.adminToken=''; state.user=null; state.data=null; state.gastosFrameLoaded=false; state.fornecedoresFrameLoaded=false;
+    state.token=''; state.adminToken=''; state.user=null; state.data=null; state.gastosFrameLoaded=false; state.fornecedoresFrameLoaded=false; state.maquinasFrameLoaded=false;
     const gastosFrame=$('gvgpGastosFrame'); if(gastosFrame)gastosFrame.src='about:blank';
     const fornecedoresFrame=$('gvgpFornecedoresFrame'); if(fornecedoresFrame)fornecedoresFrame.src='about:blank';
+    const maquinasFrame=$('gvgpMaquinasFrame'); if(maquinasFrame)maquinasFrame.src='about:blank';
     $('gvgpApp').classList.add('gvgp-locked');
     cadastroLoaded=false;cadastroUsers=[];closePending();
     stopRotation();
@@ -1366,7 +1383,9 @@ const FORNECEDORES_URL = <?!= JSON.stringify(fornecedoresUrl) ?>;
         if(gastosToken){try{run('logoutUsuario',{token:gastosToken})}catch(e){}}
         const fornecedoresToken=store.get('gvgSessionToken');
         if(fornecedoresToken){try{run('fornecedoresApiCall','logoutUsuario',[],fornecedoresToken)}catch(e){}}
-        store.remove('gvgUsrToken'); store.remove('gvgAdminToken'); store.remove('gvgGastosToken'); store.remove('gvgSessionToken');
+        const maquinasToken=store.get('gvgMaqTokenV1');
+        revogarSessaoMaquinas_(maquinasToken);
+        store.remove('gvgUsrToken'); store.remove('gvgAdminToken'); store.remove('gvgGastosToken'); store.remove('gvgSessionToken'); store.remove('gvgMaqTokenV1');
         renderLoggedOut();
         if(wasLogged){const msg=$('gvgpLoginMsg');if(msg){msg.textContent='Sessão expirada ou acesso revogado. Entre novamente.';msg.style.color='#b42318';}}
         return;
@@ -1387,6 +1406,10 @@ const FORNECEDORES_URL = <?!= JSON.stringify(fornecedoresUrl) ?>;
       if(state.fornecedoresFrameLoaded){
         const f=$('gvgpFornecedoresFrame');
         if(f){showFornecedoresLoading();try{f.contentWindow.location.reload()}catch(e){f.src=FORNECEDORES_URL;}setTimeout(hideFornecedoresLoading,18000);}
+      }
+      if(state.maquinasFrameLoaded){
+        const m=$('gvgpMaquinasFrame');
+        if(m){showMaquinasLoading();try{m.contentWindow.location.reload()}catch(e){m.src=MAQUINAS_URL;}setTimeout(hideMaquinasLoading,18000);}
       }
     }).catch(err=>{
       console.warn(err);
@@ -1415,27 +1438,36 @@ const FORNECEDORES_URL = <?!= JSON.stringify(fornecedoresUrl) ?>;
       if(state.frameLoaded){ const f=$('gvgpPedidosFrame'); if(f) f.src=PEDIDOS_URL; }
       if(state.gastosFrameLoaded){ const g=$('gvgpGastosFrame'); if(g) g.src=GASTOS_URL; }
       if(state.fornecedoresFrameLoaded){ const f=$('gvgpFornecedoresFrame'); if(f) f.src=FORNECEDORES_URL; }
+      if(state.maquinasFrameLoaded){ const m=$('gvgpMaquinasFrame'); if(m) m.src=MAQUINAS_URL; }
       toast('Bem-vindo(a), '+d.nome+'!');
     }).catch(err=>{
       msg.style.color='#b42318'; msg.textContent=String(err&&err.message||err).replace(/^Error:\s*/,'');
     }).finally(()=>{btn.disabled=false;btn.textContent='Entrar no painel';});
   }
+  function revogarSessaoMaquinas_(token){
+    if(!token)return;
+    try{
+      fetch(MAQUINAS_API_URL,{method:'POST',mode:'cors',credentials:'omit',cache:'no-store',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'logout',token:String(token),requestId:'logout-'+Date.now(),payload:{}})}).catch(()=>{});
+    }catch(e){}
+  }
   function logout(){
-    const token=state.token||store.get('gvgUsrToken'), admin=state.adminToken||store.get('gvgAdminToken'), gastosToken=store.get('gvgGastosToken'), fornecedoresToken=store.get('gvgSessionToken');
+    const token=state.token||store.get('gvgUsrToken'), admin=state.adminToken||store.get('gvgAdminToken'), gastosToken=store.get('gvgGastosToken'), fornecedoresToken=store.get('gvgSessionToken'), maquinasToken=store.get('gvgMaqTokenV1');
     // Encerra as sessões dos módulos em segundo plano para não atrasar a saída do painel.
     if(gastosToken){try{run('logoutUsuario',{token:gastosToken}).catch(()=>{})}catch(e){}}
     if(fornecedoresToken){try{run('fornecedoresApiCall','logoutUsuario',[],fornecedoresToken).catch(()=>{})}catch(e){}}
-    store.remove('gvgGastosToken'); store.remove('gvgSessionToken');
+    revogarSessaoMaquinas_(maquinasToken);
+    store.remove('gvgGastosToken'); store.remove('gvgSessionToken'); store.remove('gvgMaqTokenV1');
     Promise.allSettled([
       token?run('sairFuncionario',token):Promise.resolve(),
       admin&&admin!==token?run('sairAdminGVG',admin):Promise.resolve()
     ]).finally(()=>{
       store.remove('gvgUsrToken'); store.remove('gvgAdminToken');
-      state.token=''; state.adminToken=''; state.frameLoaded=false; state.gastosFrameLoaded=false; state.fornecedoresFrameLoaded=false;
+      state.token=''; state.adminToken=''; state.frameLoaded=false; state.gastosFrameLoaded=false; state.fornecedoresFrameLoaded=false; state.maquinasFrameLoaded=false;
       renderLoggedOut();
       const f=$('gvgpPedidosFrame'); if(f) f.src='about:blank';
       const g=$('gvgpGastosFrame'); if(g) g.src='about:blank';
       const h=$('gvgpFornecedoresFrame'); if(h) h.src='about:blank';
+      const m=$('gvgpMaquinasFrame'); if(m) m.src='about:blank';
       toast('Sessão encerrada neste aparelho.');
     });
   }
@@ -1466,6 +1498,7 @@ const FORNECEDORES_URL = <?!= JSON.stringify(fornecedoresUrl) ?>;
     $('gvgpViewPedidos').classList.toggle('gvgp-hidden',view!=='pedidos');
     $('gvgpViewGastos').classList.toggle('gvgp-hidden',view!=='gastos');
     $('gvgpViewFornecedores').classList.toggle('gvgp-hidden',view!=='fornecedores');
+    $('gvgpViewMaquinas').classList.toggle('gvgp-hidden',view!=='maquinas');
     $('gvgpViewFuture').classList.toggle('gvgp-hidden',!future);
     if(view==='overview'){
       $('gvgpPageTitle').textContent='Visão geral';
@@ -1485,6 +1518,10 @@ const FORNECEDORES_URL = <?!= JSON.stringify(fornecedoresUrl) ?>;
       $('gvgpPageTitle').textContent='Fornecedores';
       $('gvgpPageSubtitle').textContent='Fornecedores, produtos, cotações e compras';
       loadFornecedoresFrame();
+    } else if(view==='maquinas'){
+      $('gvgpPageTitle').textContent='Controle de Máquinas';
+      $('gvgpPageSubtitle').textContent='Máquinas, equipamentos, entregas e manutenções';
+      loadMaquinasFrame();
     } else if(future){
       $('gvgpPageTitle').textContent=future.title;
       $('gvgpPageSubtitle').textContent=future.subtitle;
@@ -1542,6 +1579,23 @@ const FORNECEDORES_URL = <?!= JSON.stringify(fornecedoresUrl) ?>;
       state.fornecedoresFrameLoaded=true;
       clearTimeout(loadFornecedoresFrame._fallback);
       loadFornecedoresFrame._fallback=setTimeout(hideFornecedoresLoading,18000);
+    }
+  }
+  function showMaquinasLoading(){
+    const l=$('gvgpMaquinasLoading');if(l)l.classList.remove('gvgp-hidden');
+  }
+  function hideMaquinasLoading(){
+    const l=$('gvgpMaquinasLoading');if(l)l.classList.add('gvgp-hidden');
+  }
+  function loadMaquinasFrame(){
+    const f=$('gvgpMaquinasFrame');
+    if(!f)return;
+    if(!state.maquinasFrameLoaded||f.src==='about:blank'||!f.getAttribute('src')){
+      showMaquinasLoading();
+      f.src=MAQUINAS_URL;
+      state.maquinasFrameLoaded=true;
+      clearTimeout(loadMaquinasFrame._fallback);
+      loadMaquinasFrame._fallback=setTimeout(hideMaquinasLoading,18000);
     }
   }
   function refresh(){
@@ -1700,10 +1754,12 @@ const FORNECEDORES_URL = <?!= JSON.stringify(fornecedoresUrl) ?>;
   if(gastosFrame)gastosFrame.addEventListener('load',()=>{hideGastosLoading();clearTimeout(loadGastosFrame._fallback);});
   const fornecedoresFrame=$('gvgpFornecedoresFrame');
   if(fornecedoresFrame)fornecedoresFrame.addEventListener('load',()=>{hideFornecedoresLoading();clearTimeout(loadFornecedoresFrame._fallback);});
+  const maquinasFrame=$('gvgpMaquinasFrame');
+  if(maquinasFrame)maquinasFrame.addEventListener('load',()=>{hideMaquinasLoading();clearTimeout(loadMaquinasFrame._fallback);});
   window.addEventListener('storage',e=>{
     if(e.key==='gvgUsrToken'){
       if(e.newValue){state.user=null;loadDashboard(e.newValue);}
-      else{store.remove('gvgGastosToken');store.remove('gvgSessionToken');renderLoggedOut();const f=$('gvgpPedidosFrame');if(f)f.src='about:blank';const g=$('gvgpGastosFrame');if(g)g.src='about:blank';const h=$('gvgpFornecedoresFrame');if(h)h.src='about:blank';state.frameLoaded=false;state.gastosFrameLoaded=false;state.fornecedoresFrameLoaded=false;}
+      else{store.remove('gvgGastosToken');store.remove('gvgSessionToken');store.remove('gvgMaqTokenV1');renderLoggedOut();const f=$('gvgpPedidosFrame');if(f)f.src='about:blank';const g=$('gvgpGastosFrame');if(g)g.src='about:blank';const h=$('gvgpFornecedoresFrame');if(h)h.src='about:blank';const m=$('gvgpMaquinasFrame');if(m)m.src='about:blank';state.frameLoaded=false;state.gastosFrameLoaded=false;state.fornecedoresFrameLoaded=false;state.maquinasFrameLoaded=false;}
     }
   });
   window.addEventListener('resize',()=>{if(window.innerWidth>980)setSidebar(false)});
