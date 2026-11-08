@@ -710,6 +710,7 @@ body.gvg-access-locked{overflow:hidden}
   document.body.classList.toggle('gvg-no-admin',!(adminAccess||(is&&adminPerm)));
   sessionBar.style.display=authorized||pending?'flex':'none';$('gvgSessionLabel').textContent=adminAccess?(is?'Conectado: '+account.nome+' · Administrador':'Almoxarifado · conectado'):is?'Conectado: '+account.nome:pending?'Recuperando acesso salvo':'';$('tabAdmin').style.display=adminAccess?'':'none';
   $('gvgOrdersBadge').style.display=adminAccess?'inline-block':'none';
+  const demo=$('gvgDemoClear'); if(demo)demo.style.display=(is&&account&&account.superadmin)?'inline-flex':'none';
   $('gvgSessionConnection').textContent=sessionPending?'Conexão temporariamente indisponível. Sua sessão foi mantida.':'';
   employeeHistory.style.display=is?'block':'none';$('gvgEmployeeName').textContent=is?'Pedidos de '+account.nome:'';
   if(!is){historyRequest++;$('gvgMyOrdersContent').innerHTML='';$('gvgMyOrdersContent').style.display='none';$('gvgMyOrders').textContent='Meu histórico de pedidos ▾';$('gvgMyOrders').setAttribute('aria-expanded','false');historyRefresh.style.display='none';historyRefresh.disabled=false;}
@@ -822,11 +823,28 @@ body.gvg-access-locked{overflow:hidden}
  };
 
  // Admin: reload only dashboard data, leaving catalogue and unsaved edits intact.
- const tools=document.createElement('div');tools.className='gvg-addon';tools.innerHTML=`<div class="gvg-addon-row"><strong>Gestão · ferramentas</strong><button type="button" id="gvgRefresh" style="flex:0 0 auto">↻ Atualizar pedidos</button></div><p id="gvgRefreshMsg" class="gvg-addon-message"></p><p class="gvg-addon-message">O painel e o histórico de pedidos são atualizados automaticamente a cada 2 minutos. Uma conferência de entrega aberta não é fechada pela atualização automática.</p><div id="gvgUserAdminTools"><h3>Gerenciar usuários</h3><div class="gvg-addon-row"><label for="gvgUserFilter">Exibir cadastros<select id="gvgUserFilter" style="display:block;width:100%;margin-top:6px;padding:10px;border-radius:9px;background:#21242a;color:#fff;border:1px solid #785c20"><option value="TODOS" selected>Todos os cadastros</option><option value="PENDENTE">Pendentes de aprovação</option><option value="ATIVO">Aprovados / ativos</option><option value="BLOQUEADO">Bloqueados</option></select></label><button type="button" id="gvgLoadUsers">Atualizar usuários</button><button type="button" id="gvgToggleUsers" aria-expanded="true" aria-controls="gvgUsers">Ocultar lista</button></div><p class="gvg-addon-message">Escolha o perfil antes de aprovar. Todos os cadastros ficam visíveis abaixo; excluir remove o cadastro da planilha e preserva o histórico de pedidos.</p><p id="gvgUsersMessage" class="gvg-addon-message" role="status" aria-live="polite"></p><div id="gvgUsers" aria-live="polite"></div></div>`;
+ const tools=document.createElement('div');tools.className='gvg-addon';tools.innerHTML=`<div class="gvg-addon-row"><strong>Gestão · ferramentas</strong><div style="margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button type="button" id="gvgRefresh" style="flex:0 0 auto">↻ Atualizar pedidos</button><button type="button" id="gvgDemoClear" title="Limpar histórico de pedidos para demonstração" aria-label="Limpar histórico de pedidos para demonstração" style="flex:0 0 auto;display:none;border:1px solid #7a3a3a;background:#2a1717;color:#ffb4a8;border-radius:9px;padding:9px 10px;font-size:10px;font-weight:800;cursor:pointer">🧹 Limpar histórico</button></div></div><p id="gvgRefreshMsg" class="gvg-addon-message"></p><p class="gvg-addon-message">O painel e o histórico de pedidos são atualizados automaticamente a cada 2 minutos. Uma conferência de entrega aberta não é fechada pela atualização automática.</p><div id="gvgUserAdminTools"><h3>Gerenciar usuários</h3><div class="gvg-addon-row"><label for="gvgUserFilter">Exibir cadastros<select id="gvgUserFilter" style="display:block;width:100%;margin-top:6px;padding:10px;border-radius:9px;background:#21242a;color:#fff;border:1px solid #785c20"><option value="TODOS" selected>Todos os cadastros</option><option value="PENDENTE">Pendentes de aprovação</option><option value="ATIVO">Aprovados / ativos</option><option value="BLOQUEADO">Bloqueados</option></select></label><button type="button" id="gvgLoadUsers">Atualizar usuários</button><button type="button" id="gvgToggleUsers" aria-expanded="true" aria-controls="gvgUsers">Ocultar lista</button></div><p class="gvg-addon-message">Escolha o perfil antes de aprovar. Todos os cadastros ficam visíveis abaixo; excluir remove o cadastro da planilha e preserva o histórico de pedidos.</p><p id="gvgUsersMessage" class="gvg-addon-message" role="status" aria-live="polite"></p><div id="gvgUsers" aria-live="polite"></div></div>`;
  adminPanel.insertBefore(tools,adminPanel.firstChild);
  // Exibir gestão de usuários automaticamente após login administrativo.
  const originalAdminLoad=window.adminLoad;window.adminLoad=async function(...args){const value=await originalAdminLoad(...args);const tools=$('gvgUserAdminTools');if(tools)tools.style.display='none';return value};
  $('gvgRefresh').onclick=async()=>{try{if(!$('separation').classList.contains('hidden')){if(!confirm('Existe uma conferência aberta. Atualizar os pedidos e fechar essa conferência sem salvar?'))return;$('separation').classList.add('hidden')}const v=await gsCall('relatorioAdmin',$('adminPin').value);reportData=v;renderReport();$('gvgRefreshMsg').textContent='Pedidos atualizados às '+new Date().toLocaleTimeString('pt-BR')}catch(e){$('gvgRefreshMsg').textContent=e.message}};
+
+ $('gvgDemoClear').onclick=async()=>{
+  if(!account||!account.superadmin){notify('Somente o Superadministrador pode limpar o histórico de pedidos.');return;}
+  if(!confirm('⚠️ LIMPAR HISTÓRICO DE PEDIDOS\n\nIsso apaga TODOS os pedidos, itens, vínculos, ranking e auditorias de entrega. Produtos, obras, usuários e configurações serão mantidos.\n\nConfirmar limpeza para demonstração?'))return;
+  const btn=$('gvgDemoClear');btn.disabled=true;const old=btn.textContent;btn.textContent='Limpando...';
+  $('gvgRefreshMsg').textContent='Limpando histórico de pedidos...';
+  try{
+   const r=await originalCall('limparPedidosDemo',adminToken,'LIMPAR');
+   seenOrders=new Set();unreadOrders=0;store.remove('gvgAdminSeen');
+   $('gvgOrderCount').textContent='0 pedidos aguardando conferência.';
+   $('gvgOrdersBadge').textContent='🔔 Pedidos: 0';
+   $('gvgOrderAlert').textContent='Histórico de pedidos limpo.';
+   $('gvgRefreshMsg').textContent='Histórico limpo: '+(r.pedidos||0)+' pedidos, '+(r.itens||0)+' itens, '+(r.vinculos||0)+' vínculos e '+(r.auditoria||0)+' auditorias.';
+   await adminLoad();
+  }catch(e){$('gvgRefreshMsg').textContent=e.message||String(e);}
+  finally{btn.disabled=false;btn.textContent=old;}
+ };
  // Atualização automática do painel de Gestão a cada 2 minutos (120 segundos).
  let adminAutoTimer=null,adminAutoFlight=false;
  function stopAdminAutoRefresh(){if(adminAutoTimer){clearInterval(adminAutoTimer);adminAutoTimer=null;}adminAutoFlight=false;}

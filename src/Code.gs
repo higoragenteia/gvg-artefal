@@ -201,6 +201,36 @@ function registrarSolicitacao(d){
  }finally{lock.releaseLock()}
 }
 function relatorioAdmin(pin){admin_(pin);const ss=abasGestao_();const p=ss.getSheetByName('PEDIDOS').getDataRange().getValues().slice(1),i=ss.getSheetByName('ITENS_PEDIDO').getDataRange().getValues().slice(1);const pedidos=p.map(r=>({id:String(r[0]),data:r[1] instanceof Date?r[1].toISOString():String(r[1]),solicitante:String(r[2]),obra:String(r[3]),canal:String(r[5]),situacao:String(r[6]),dataEntrega:r[7] instanceof Date?r[7].toISOString():''}));const itens=i.map(r=>({id:String(r[0]),codigo:String(r[1]),nome:String(r[2]),qtd:Number(r[3])||0,unidade:String(r[4]),equiv:Number(r[5])||0,entregue:r[6]===''?null:Number(r[6])||0,entregueEquiv:r[7]===''?0:Number(r[7])||0,nota:String(r[8]||'')}));return {pedidos,itens};}
+// Limpeza exclusiva para demonstração: apaga pedidos, itens, vínculos e auditorias de entrega.
+// Mantém produtos, obras, usuários, configurações e demais históricos intactos.
+function limparPedidosDemo(credencial,confirmacao){
+ const ator=superadmin_(credencial);
+ if(String(confirmacao||'').trim().toUpperCase()!=='LIMPAR')throw new Error('Confirmação inválida. Digite LIMPAR.');
+ const lock=LockService.getScriptLock();lock.waitLock(30000);
+ try{
+  const ss=abasGestao_();const res={pedidos:0,itens:0,vinculos:0,auditoria:0};
+  ['PEDIDOS','ITENS_PEDIDO','PEDIDOS_USUARIOS'].forEach(function(name){
+   const sh=ss.getSheetByName(name);if(!sh)return;
+   const n=Math.max(0,sh.getLastRow()-1);if(n){sh.deleteRows(2,n);}
+   if(name==='PEDIDOS')res.pedidos=n;else if(name==='ITENS_PEDIDO')res.itens=n;else res.vinculos=n;
+  });
+  const aud=ss.getSheetByName('AUDITORIA');
+  if(aud&&aud.getLastRow()>1){
+   const vals=aud.getRange(2,1,aud.getLastRow()-1,Math.max(5,aud.getLastColumn())).getValues();
+   const rows=[];
+   vals.forEach(function(r,i){
+    const acao=String(r[1]||'').trim().toUpperCase(),codigo=String(r[2]||'').trim().toUpperCase(),detalhe=String(r[4]||'');
+    if(acao==='ENTREGA'||codigo.indexOf('PED-')===0||detalhe.indexOf('PED-')>=0)rows.push(i+2);
+   });
+   for(let i=rows.length-1;i>=0;i--)aud.deleteRow(rows[i]);
+   res.auditoria=rows.length;
+  }
+  try{const cache=CacheService.getScriptCache();cache.remove('gvg_painel_pedidos_v1');cache.remove('gvg_painel_v4_'+ator.id);}catch(e){}
+  gvguAuditar_('LIMPAR_PEDIDOS_DEMO',ator.id,JSON.stringify(res));
+  SpreadsheetApp.flush();
+  return {ok:true,pedidos:res.pedidos,itens:res.itens,vinculos:res.vinculos,auditoria:res.auditoria};
+ }finally{lock.releaseLock()}
+}
 // Grava quantidade REAL ENTREGUE por item. Não altera quantidade solicitada.
 function confirmarEntrega(pin,id,linhas){
  admin_(pin);

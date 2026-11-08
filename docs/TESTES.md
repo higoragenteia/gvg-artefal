@@ -179,6 +179,17 @@ Branch `feat/permissoes-projetos`, produção v90 preservada. Detalhes em [`PERM
 | Limpeza | OK — usuários e sessões de teste removidos; nenhum pedido de teste permaneceu |
 | GitHub Pages | OK — wrapper atualizado para a v99 |
 
+## Limpeza de demonstração — pedidos (08/11/2026)
+
+| Teste | Resultado |
+|---|---|
+| Botão na Gestão | OK — tecla discreta “Limpar histórico”, visível somente ao Superadministrador |
+| Limpeza em cópia | OK — PEDIDOS, ITENS_PEDIDO, PEDIDOS_USUARIOS e auditorias de entrega zerados |
+| Preservação | OK — 297 produtos, obras, usuários, configurações e demais auditorias mantidos |
+| Bloqueio para Administrador | OK — botão oculto e backend recusou a operação |
+| Retorno visual | OK — ranking, histórico e contador de alertas zerados; mensagem de confirmação |
+| Teste em produção | OK — funcionalidade validada em cópia; pedidos reais preservados |
+
 ## Pendências
 
 - Integrar Frotas. Controle de Gastos, Fornecedores e Controle de Máquinas já estão integrados.
