@@ -2,8 +2,8 @@
 
 Branch de trabalho: `perf/otimizacao-mobile`  
 Ponto de restauração: tag `pre-perf-20261108`  
-Produção: **v83, inalterada**  
-Status: **não publicado** — aguardando aprovação.
+Produção: **v90, publicada em 08/11/2026**  
+Status: **publicado** — branch integrada à `main`; ponto de restauração preservado.
 
 ## 1. Arquitetura encontrada
 
@@ -178,29 +178,28 @@ Após abrir os quatro módulos e forçar GC:
 
 ## 7. Reversão
 
-Produção permanece na v83. Para descartar todo o trabalho:
+A produção está na v90. Para voltar à v83:
 
-```bash
-git switch main
-git reset --hard pre-perf-20261108
-```
+1. Reapontar a implantação oficial do Apps Script para a versão 83.
+2. Reverter no Git o commit de publicação e enviar a `main`.
+3. Aguardar o GitHub Pages atualizar.
+
+O ponto de restauração local é a tag `pre-perf-20261108` (main anterior, v83). Ela não foi apagada.
 
 Reversões pontuais:
 
 - Catálogo antigo: `PROGRESSIVE_CATALOG=false` em `src/index.html`.
 - Iframes sempre carregados: remover a chamada `limitLoadedModules(view)` em `src/Painel.html`.
-- Service worker antigo: restaurar `docs/sw.js` da `main`.
-- Caches do backend: restaurar `src/Code.gs` da `main`.
+- Service worker antigo: restaurar `docs/sw.js` da versão anterior.
+- Caches do backend: restaurar `src/Code.gs` da versão anterior.
 
-## 8. Publicação (não executada)
+## 8. Publicação realizada
 
-A produção só deve ser alterada após aprovação:
+Em 08/11/2026:
 
-1. Revisar o diff da branch `perf/otimizacao-mobile`.
-2. Atualizar `deploy.json` e `docs/index.html` para a próxima versão.
-3. Atualizar a versão do cache em `docs/sw.js` se o shell mudar.
-4. Executar o deploy do Apps Script.
-5. Enviar a branch para a `main` e validar o GitHub Pages.
-6. Testar novamente o link oficial e o PWA instalado.
-
-Nada disso foi feito. As implantações de teste foram removidas e o HEAD do Apps Script foi restaurado para o conteúdo da v83; o código otimizado permanece somente na branch local `perf/otimizacao-mobile`.
+1. Os novos assets foram enviados ao GitHub Pages.
+2. O Apps Script foi publicado na implantação oficial.
+3. A branch `perf/otimizacao-mobile` foi integrada à `main`.
+4. A versão 89 foi substituída pela v90 após corrigir o botão Sair no fluxo de atualização de sessão.
+5. Os testes de fumaça em produção passaram: login, dashboard, catálogo progressivo, módulos, Gestão com 120 s, service worker e logout.
+6. As implantações temporárias de teste foram removidas.

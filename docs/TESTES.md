@@ -144,6 +144,10 @@ Branch `perf/otimizacao-mobile`, produção v83 preservada. Detalhes e mediçõe
 | Gestão do Pedidos | OK — atualização automática de 120 s, formulário e conferência preservados |
 | Produção | OK — v83 inalterada; implantações de teste removidas; HEAD restaurado |
 | Limpeza | OK — usuários, sessões e pedidos de teste removidos; planilhas sem registros de teste |
+| Publicação v90 | OK — assets no GitHub Pages, Apps Script v90 e branch integrada à `main` |
+| Fumaça em produção | OK — login, dashboard, catálogo com 36 itens iniciais, Gestão 120 s, Gastos, Fornecedores, Máquinas, service worker e logout |
+| Botão Sair após sessão | OK — corrigido; permanece disponível após evento de sessão e troca de módulos |
+| Limpeza pós-publicação | OK — usuário e sessões de teste removidos; implantações temporárias excluídas |
 
 ## Pendências
 
