@@ -567,6 +567,9 @@
       MEMORY_TOKEN = token ? String(token) : '';
       try{ if(token) localStorage.setItem(TOKEN_KEY,String(token)); else localStorage.removeItem(TOKEN_KEY); }catch(e){}
     }
+    function getPanelToken(){
+      try{ return localStorage.getItem('gvgUsrToken')||''; }catch(e){ return ''; }
+    }
     function api(fn){
       const args = Array.prototype.slice.call(arguments,1);
       return new Promise((resolve,reject) => {
@@ -577,7 +580,7 @@
         const runner = google.script.run
           .withSuccessHandler(resolve)
           .withFailureHandler(err => reject(new Error(err && err.message ? err.message : String(err))));
-        runner.fornecedoresApiCall(fn, args, getSessionToken());
+        runner.fornecedoresApiCall(fn, args, getSessionToken(), getPanelToken());
       });
     }
 
@@ -661,7 +664,12 @@
         setInterval(()=>{ if(!document.hidden) refreshSilent(); },60000);
       }catch(e){
         state.loading=false;
-        state.error=e.message||String(e);
+        const msg=e.message||String(e);
+        if(/GVG_SEM_ACESSO_PROJETO|ACESSE_PELO_PAINEL/.test(msg)){
+          state.auth={state:'login'};state.painelRequired=true;state.data=null;state.user=null;
+          render();return;
+        }
+        state.error=msg;
         render();
       }
     }
@@ -673,6 +681,7 @@
         if(res && res.authRequired){
           setSessionToken('');
           state.auth=res.auth || {state:'login'};
+          state.painelRequired=!!res.painelRequired;
           state.authForm='login';
           state.data=null; state.user=null; state.dashboard=null; state.meta=null;
           state.canEdit=false; state.isAdmin=false; state.error='';
@@ -743,6 +752,10 @@
     }
 
     function renderAuth(){
+      if(state.painelRequired){
+        $('#content').innerHTML='<div class="auth-wrap"><div class="auth-card"><div class="auth-logo">GVG<span>&amp;</span>ARTEFAL</div><div class="auth-sub">APP DE FORNECEDORES</div><h2>Acesso pelo Painel</h2><p class="auth-desc">O acesso direto ao módulo Fornecedores está desativado. Entre no Painel GVG&ARTEFAL e abra o módulo pelo menu.</p><p class="auth-note">Se você já está no painel, confirme com o Superadministrador se o seu perfil tem permissão para este projeto.</p><button class="auth-btn" type="button" onclick="location.reload()">Tentar novamente</button></div></div>';
+        return;
+      }
       let body='';
       if(state.authForm==='register'){
         body='<h2>Criar cadastro</h2><p class="auth-desc">Seu cadastro será enviado para aprovação da gestão.</p>'+

@@ -50,7 +50,8 @@ const HEADERS = {
   CONFIG: ['CHAVE','VALOR','ATUALIZADO_EM']
 };
 
-const PERFIL = { ADMIN: 'ADMINISTRADOR', COLAB: 'COLABORADOR' };
+const PERFIL = { ADMIN: 'ADMINISTRADOR', COLAB: 'COLABORADOR', VISUAL: 'VISUAL' };
+let ACTIVE_PANEL_TOKEN_ = '';
 const STATUS_EQ = { DISPONIVEL: 'DISPONIVEL', ENTREGUE: 'ENTREGUE', PARCIAL: 'PARCIAL', MANUTENCAO: 'MANUTENCAO', INATIVO: 'INATIVO' };
 const STATUS_LOAN = { ABERTO: 'ABERTO', ENCERRADO: 'ENCERRADO', TRANSFERIDO: 'TRANSFERIDO' };
 const STATUS_MAN = { ABERTA: 'ABERTA', EM_ANDAMENTO: 'EM_ANDAMENTO', CONCLUIDA: 'CONCLUIDA', CANCELADA: 'CANCELADA' };
@@ -466,7 +467,9 @@ function usuarioPublico(u) {
     atualizadoEm: u.ATUALIZADO_EM,
     ultimoAcesso: u.ULTIMO_ACESSO,
     observacoes: u.OBSERVACOES || '',
-    podeAdministrar: String(u.PERFIL) === PERFIL.ADMIN && String(u.STATUS) === 'ATIVO'
+    podeAdministrar: String(u.PERFIL) === PERFIL.ADMIN && String(u.STATUS) === 'ATIVO',
+    painelNivel: u.painelNivel || '',
+    somenteLeitura: u.painelNivel === 'VISUAL'
   };
 }
 
@@ -489,6 +492,23 @@ function criarSessao(usuario, userAgent, requestId) {
 }
 
 function validarSessao(token) {
+  if (ACTIVE_PANEL_TOKEN_) {
+    let a;
+    try { a = gvguAcessoPainel_(ACTIVE_PANEL_TOKEN_, 'maquinas'); }
+    catch (e) { fail('SEM_PERMISSAO', String(e && e.message || e).replace(/^GVG_SEM_ACESSO_PROJETO:\s*/, '') || 'Seu perfil não tem acesso a este projeto.'); }
+    return {
+      id: 'PAINEL:' + (a.usuario.id || a.usuario.email),
+      nome: a.usuario.nome,
+      email: a.usuario.email || a.usuario.login,
+      perfil: a.nivel === 'GERENCIAR' ? PERFIL.ADMIN : PERFIL.COLAB,
+      status: 'ATIVO',
+      tokenHash: '',
+      sessaoRow: null,
+      painelNivel: a.nivel,
+      painel: true
+    };
+  }
+  if (gvguModuloSsoObrigatorio_()) fail('ACESSE_PELO_PAINEL', 'Acesse o Controle de Máquinas pelo Painel GVG&ARTEFAL.');
   const t = String(token || '').trim();
   if (!t) fail('NAO_AUTENTICADO', 'Entre no aplicativo para continuar.');
   const hash = sha256Hex(t);
@@ -562,6 +582,7 @@ function setupStatus() {
 }
 
 function login(payload, requestId) {
+  if (gvguModuloSsoObrigatorio_()) fail('ACESSE_PELO_PAINEL', 'Acesse o Controle de Máquinas pelo Painel GVG&ARTEFAL.');
   payload = payload || {};
   const email = normalizarEmail(payload.email);
   const senha = String(payload.senha || '');
@@ -597,6 +618,19 @@ function login(payload, requestId) {
 
 function logout(session, requestId) {
   revogarSessao(session, requestId);
+  return { ok: true };
+}
+
+function logoutToken(payload) {
+  const token = String((payload && payload.token) || '').trim();
+  if (!token) return { ok: true };
+  const hash = sha256Hex(token);
+  const sessoes = readObjects(SHEET.SESSOES);
+  const s = sessoes.filter(function (x) { return iguaisSeguro(String(x.TOKEN_HASH || ''), hash); })[0];
+  if (s && !String(s.REVOGADO_EM || '').trim()) {
+    s.REVOGADO_EM = nowStamp();
+    updateObject(SHEET.SESSOES, s._row, s);
+  }
   return { ok: true };
 }
 
@@ -1344,7 +1378,7 @@ function dashboardData(session) {
     return { id: c.id, nome: c.nome, total: c.quantidadeTotal, disponivel: c.quantidadeDisponivel, entregue: c.quantidadeEntregue, manutencao: c.quantidadeManutencao, revisar: ctx.eqs.filter(function (e) { return String(e.CATEGORIA_ID) === String(c.id) && String(e.REVISAR) === 'SIM' && String(e.STATUS) !== STATUS_EQ.INATIVO; }).length };
   });
   const data = {
-    usuario: { id: session.id, nome: session.nome, email: session.email, perfil: session.perfil },
+    usuario: { id: session.id, nome: session.nome, email: session.email, perfil: session.perfil, painelNivel: session.painelNivel || '', somenteLeitura: session.painelNivel === 'VISUAL' },
     config: { appNome: APP_NOME, versao: API_VERSAO },
     stats: {
       totalEquipamentos: ativos.length,
@@ -3118,6 +3152,9 @@ const PUBLIC_ACTIONS = {
   login: function (payload, requestId) {
     return login(payload, requestId);
   },
+  logoutToken: function (payload) {
+    return logoutToken(payload);
+  },
   autoCadastro: function (payload, requestId) {
     return autoCadastro(payload, requestId);
   },
@@ -3200,6 +3237,7 @@ function doPost(e) {
     const action = String((body && body.action) || '').trim();
     const payload = (body && body.payload && typeof body.payload === 'object') ? body.payload : {};
     const requestId = String((body && body.requestId) || '');
+    ACTIVE_PANEL_TOKEN_ = String((body && body.painelToken) || '');
     if (!action) return jsonOut(respostaErro('ACAO_OBRIGATORIA', 'Informe a ação.'));
 
     if (PUBLIC_ACTIONS[action]) {
@@ -3216,6 +3254,7 @@ function doPost(e) {
       return jsonOut({ ok: true, data: ADMIN_READ[action](payload, session) });
     }
     if (AUTH_WRITE[action]) {
+      if (action !== 'logout' && session.painelNivel === 'VISUAL') fail('SOMENTE_LEITURA', 'Seu acesso a este projeto é somente leitura.');
       return jsonOut({ ok: true, data: AUTH_WRITE[action](payload, session, requestId) });
     }
     if (ADMIN_WRITE[action]) {

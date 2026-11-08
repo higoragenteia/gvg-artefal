@@ -254,6 +254,7 @@ function verifyPassword_(senha, salt, hash) {
 
 /* Sessões próprias do app: token aleatório, hash no servidor e validade de 7 dias. */
 var ACTIVE_TOKEN_ = '';
+var ACTIVE_PANEL_TOKEN_ = '';
 
 function hashToken_(token) {
   return hexBytes_(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, String(token)));
@@ -302,6 +303,11 @@ function revokeSessionsForEmail_(email) {
 }
 
 function currentUser_() {
+  if (ACTIVE_PANEL_TOKEN_) {
+    const a = gvguAcessoPainel_(ACTIVE_PANEL_TOKEN_, 'fornecedores');
+    return { email: a.usuario.email || a.usuario.login, nome: a.usuario.nome, perfil: a.nivel === 'GERENCIAR' ? 'ADMIN' : 'CONSULTA', status: 'ATIVO', painelNivel: a.nivel, painel: true };
+  }
+  if (gvguModuloSsoObrigatorio_()) throw new Error('AUTH_REQUIRED_PAINEL');
   const token = String(ACTIVE_TOKEN_ || '');
   if (token.length < 32) throw new Error('AUTH_REQUIRED');
 
@@ -342,8 +348,9 @@ function requireRole_(roles) {
 }
 
 /* Ponto único de entrada do frontend. O token é validado em currentUser_(). */
-function apiCall(fn, args, token) {
+function apiCall(fn, args, token, painelToken) {
   ACTIVE_TOKEN_ = token == null ? '' : String(token);
+  ACTIVE_PANEL_TOKEN_ = painelToken == null ? '' : String(painelToken);
   const allowed = {
     getBootstrap: getBootstrap,
     registrarUsuario: registrarUsuario,
@@ -425,6 +432,7 @@ function registrarUsuario(payload) {
 
 function loginUsuario(payload) {
   ensureSetup_();
+  if (gvguModuloSsoObrigatorio_()) throw new Error('ACESSE_PELO_PAINEL: acesse o módulo Fornecedores pelo Painel GVG&ARTEFAL.');
   const p = payload || {};
   const email = str_(p.email).toLowerCase();
   const senha = String(p.senha == null ? '' : p.senha);
@@ -736,15 +744,16 @@ function ensureSetup_() {
 
 function getBootstrap() {
   ensureSetup_();
-  if (!ACTIVE_TOKEN_) {
-    return { ok: false, authRequired: true, auth: { state: 'login' } };
+  if (!ACTIVE_TOKEN_ && !ACTIVE_PANEL_TOKEN_) {
+    return { ok: false, authRequired: true, painelRequired: gvguModuloSsoObrigatorio_(), auth: { state: 'login' } };
   }
   let user;
   try {
     user = currentUser_();
   } catch (e) {
-    if (String(e && e.message) === 'AUTH_REQUIRED') {
-      return { ok: false, authRequired: true, auth: { state: 'login' } };
+    const msg=String(e && e.message);
+    if (msg === 'AUTH_REQUIRED' || msg === 'AUTH_REQUIRED_PAINEL') {
+      return { ok: false, authRequired: true, painelRequired: msg === 'AUTH_REQUIRED_PAINEL' || gvguModuloSsoObrigatorio_(), auth: { state: 'login' } };
     }
     throw e;
   }
@@ -1632,4 +1641,4 @@ function setup() {
 
 return { apiCall: apiCall };
 })();
-function fornecedoresApiCall(fn,args,token){return GVG_FORNECEDORES_APP_.apiCall(fn,args,token);}
+function fornecedoresApiCall(fn,args,token,painelToken){return GVG_FORNECEDORES_APP_.apiCall(fn,args,token,painelToken);}

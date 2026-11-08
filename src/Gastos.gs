@@ -46,6 +46,7 @@ function getAuditoria(){requireAdmin_();const sh=sh_(CFG.audit),v=sh.getDataRang
 
 /* ================= AUTENTICAÇÃO PRÓPRIA — CONTROLE DE GASTOS ================= */
 var ACTIVE_TOKEN_ = '';
+var ACTIVE_PANEL_TOKEN_ = '';
 
 function hexBytes_(bytes) {
   return bytes.map(function(b) {
@@ -136,6 +137,11 @@ function revokeSessionsForEmail_(email) {
   }
 }
 function currentUser_() {
+  if (ACTIVE_PANEL_TOKEN_) {
+    const a = gvguAcessoPainel_(ACTIVE_PANEL_TOKEN_, 'gastos');
+    return { email: a.usuario.email || a.usuario.login, nome: a.usuario.nome, perfil: a.nivel === 'GERENCIAR' ? 'ADMIN' : 'CONSULTA', status: 'ATIVO', painelNivel: a.nivel, painel: true };
+  }
+  if (gvguModuloSsoObrigatorio_()) throw Error('AUTH_REQUIRED_PAINEL');
   const token = String(ACTIVE_TOKEN_ || '');
   if (token.length < 32) throw Error('AUTH_REQUIRED');
   const sh = sessoesSheet_();
@@ -172,17 +178,19 @@ function assertNotLastAdmin_(target, action) {
 }
 
 function getBootstrap() {
-  if (!ACTIVE_TOKEN_) return { ok: false, authRequired: true };
+  if (!ACTIVE_TOKEN_ && !ACTIVE_PANEL_TOKEN_) return { ok: false, authRequired: true, painelRequired: gvguModuloSsoObrigatorio_() };
   try {
     return { ok: true, user: currentUser_() };
   } catch (e) {
-    if (String(e && e.message) === 'AUTH_REQUIRED') return { ok: false, authRequired: true };
+    const msg=String(e && e.message);
+    if (msg === 'AUTH_REQUIRED' || msg === 'AUTH_REQUIRED_PAINEL') return { ok: false, authRequired: true, painelRequired: msg === 'AUTH_REQUIRED_PAINEL' || gvguModuloSsoObrigatorio_() };
     throw e;
   }
 }
 
-function apiCall(fn, args, token) {
+function apiCall(fn, args, token, painelToken) {
   ACTIVE_TOKEN_ = token == null ? '' : String(token);
+  ACTIVE_PANEL_TOKEN_ = painelToken == null ? '' : String(painelToken);
   const allowed = {
     getBootstrap: getBootstrap,
     getDadosDashboard: getDadosDashboard,
@@ -232,6 +240,7 @@ function registrarUsuario(payload) {
 }
 
 function loginUsuario(payload) {
+  if (gvguModuloSsoObrigatorio_()) throw Error('ACESSE_PELO_PAINEL: acesse o Controle de Gastos pelo Painel GVG&ARTEFAL.');
   const p = payload || {};
   const email = s_(p.email).toLowerCase();
   const senha = String(p.senha == null ? '' : p.senha);

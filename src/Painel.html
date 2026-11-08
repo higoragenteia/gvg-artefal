@@ -176,6 +176,29 @@
   .gvgp-role-save:hover{background:#fff3d6}
   .gvgp-role-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
   .gvgp-cad-self{font-size:8px;color:#8b7d6a;font-weight:800;margin-left:4px}
+  .gvgp-cad-new{border:1px solid #b98520;background:linear-gradient(145deg,#f5df9c,#d5a63b);color:#2b2108;border-radius:9px;padding:7px 10px;font-size:9px;font-weight:950;cursor:pointer;white-space:nowrap}
+  .gvgp-cad-new:hover{filter:brightness(1.04)}
+  .gvgp-user-form{padding:10px 14px;border-bottom:1px solid #e7dfd3;background:#fffdf8}
+  .gvgp-user-form.gvgp-hidden{display:none}
+  .gvgp-user-card{display:grid;gap:9px;padding:11px;border:1px solid #e5ddd1;border-radius:13px;background:#fff}
+  .gvgp-new-user{border-color:#dfc98f;background:#fffcf3}
+  .gvgp-user-perms{display:grid;grid-template-columns:minmax(160px,220px) minmax(0,1fr);gap:9px;padding-top:8px;border-top:1px dashed #e7dfd3;align-items:end}
+  .gvgp-perm-grid{display:grid;grid-template-columns:repeat(5,minmax(105px,1fr));gap:6px}
+  .gvgp-perm-field{display:grid;gap:4px;min-width:0;font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.7px;color:#8b7d6a}
+  .gvgp-perm-field span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .gvgp-perm-field select,.gvgp-perm-field input{width:100%;min-width:0;border:1px solid #d9cfbf;border-radius:8px;padding:7px 8px;font-size:9.5px;background:#fff;color:#3c372e;outline:none}
+  .gvgp-perm-field select:focus,.gvgp-perm-field input:focus{border-color:#c9a35a;box-shadow:0 0 0 3px rgba(201,154,46,.12)}
+  .gvgp-perm-field select:disabled,.gvgp-perm-field input:disabled{background:#f4efe6;color:#8b7d6a;cursor:not-allowed}
+  .gvgp-user-data{padding-top:8px;border-top:1px dashed #e7dfd3}
+  .gvgp-user-data summary{cursor:pointer;font-size:8.5px;font-weight:950;color:#7a5a10;text-transform:uppercase;letter-spacing:.8px}
+  .gvgp-user-data[open] summary{margin-bottom:7px}
+  .gvgp-user-data .gvgp-new-grid{margin-bottom:0}
+  .gvgp-user-save{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .gvgp-user-save p{margin:0;font-size:8.5px;color:#8b7d6a;line-height:1.35;flex:1;min-width:160px}
+  .gvgp-user-save .gvgp-role-save{padding:7px 11px;font-size:9px}
+  .gvgp-new-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-bottom:8px}
+  .gvgp-new-grid .gvgp-perm-field{text-transform:none;letter-spacing:0;font-size:9px}
+  @media (max-width:700px){.gvgp-user-perms{grid-template-columns:1fr}.gvgp-perm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.gvgp-new-grid{grid-template-columns:1fr}.gvgp-cad-new{flex:1}}
   @media (max-width:700px){.gvgp-pending-label{display:none}.gvgp-pending-actions button{padding:7px 8px;font-size:8.5px}.gvgp-pending-top{flex-wrap:wrap}.gvgp-pending-actions{width:100%;margin-left:0;justify-content:flex-end}.gvgp-pending-toolbar{align-items:stretch}.gvgp-cad-search{flex-basis:100%}}
   .gvgp-content{padding:24px 28px 34px;flex:1}
   .gvgp-view{animation:gvgpIn .28s ease both}
@@ -814,8 +837,8 @@
         Fornecedores
         <span class="gvgp-pill">Ativo</span>
       </button>
-      <div class="gvgp-nav-topic" data-topic="maquinas" data-admin-only="1">MÁQUINAS</div>
-      <button type="button" class="gvgp-nav-item" data-view="maquinas" data-admin-only="1">
+      <div class="gvgp-nav-topic" data-topic="maquinas">MÁQUINAS</div>
+      <button type="button" class="gvgp-nav-item" data-view="maquinas">
         <span class="gvgp-nav-icon"><svg class="gvgp-nav-3d" viewBox="0 0 32 32" aria-hidden="true"><g stroke="none"><g fill="url(#gvgpNavSide)" transform="translate(.5 1)"><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(45 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(90 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(135 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(180 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(225 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(270 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(315 16 16)"/><circle cx="16" cy="16" r="12"/></g><g fill="url(#gvgpNavGold)" stroke="#6b4d15" stroke-width=".55"><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(45 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(90 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(135 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(180 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(225 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(270 16 16)"/><rect x="14.2" y=".2" width="3.6" height="6" rx="1.2" transform="rotate(315 16 16)"/><circle cx="16" cy="16" r="12"/></g><circle cx="16" cy="16" r="5.6" fill="#2b2415" stroke="#f1d27c" stroke-width=".9"/><circle cx="16" cy="16" r="2.8" fill="#3b321d"/></g></svg></span>
         Controle de Máquinas
         <span class="gvgp-pill">Ativo</span>
@@ -1122,7 +1145,7 @@
 <div id="gvgpToast" class="gvgp-toast" role="status" aria-live="polite"></div>
 <div id="gvgpPendingModal" class="gvgp-pending-modal gvgp-hidden" role="dialog" aria-modal="true" aria-labelledby="gvgpPendingTitle">
   <div class="gvgp-pending-card">
-    <div class="gvgp-pending-head"><div><h3 id="gvgpPendingTitle">Cadastros</h3><p id="gvgpPendingSub">Todos os cadastros do sistema</p></div><button type="button" class="gvgp-pending-close" id="gvgpPendingClose" aria-label="Fechar">×</button></div>
+    <div class="gvgp-pending-head"><div><h3 id="gvgpPendingTitle">Usuários e permissões</h3><p id="gvgpPendingSub">Todos os cadastros do sistema</p></div><button type="button" class="gvgp-pending-close" id="gvgpPendingClose" aria-label="Fechar">×</button></div>
     <div class="gvgp-pending-toolbar">
       <div class="gvgp-pending-filters" role="group" aria-label="Filtrar cadastros">
         <button type="button" class="is-active" data-cad-filter="TODOS">Todos <b data-cad-count="TODOS">0</b></button>
@@ -1132,9 +1155,11 @@
       </div>
       <input id="gvgpCadSearch" class="gvgp-cad-search" type="search" placeholder="Buscar nome, login ou e-mail" autocomplete="off">
       <button type="button" class="gvgp-cad-refresh" id="gvgpCadRefresh" title="Atualizar cadastros" aria-label="Atualizar cadastros">↻</button>
+      <button type="button" class="gvgp-cad-new" id="gvgpNewUser">+ Novo usuário</button>
     </div>
+    <div id="gvgpUserForm" class="gvgp-user-form gvgp-hidden"></div>
     <div id="gvgpPendingList" class="gvgp-pending-list"><p class="gvgp-pending-empty">Carregando…</p></div>
-    <p class="gvgp-pending-note">Aprovação, categoria, bloqueio e exclusão ficam registrados. <b>Admin</b> controla todos os módulos; <b>Operador</b> fica somente no Pedidos.</p>
+    <p class="gvgp-pending-note">Somente o <b>Superadministrador</b> gerencia usuários e permissões. <b>Administrador</b> tem poder completo apenas nos projetos com nível <b>Gerenciar</b>; <b>Operador</b> usa as funções operacionais permitidas.</p>
   </div>
 </div>
 <script>
@@ -1276,11 +1301,87 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
     const du=$('gvgpDarkUpdated');if(du)du.textContent='—';
     const box=$('gvgpActivityList');if(box)box.innerHTML='<p class="gvgp-tv-empty">Entre no painel para ver as atividades.</p>';
   }
-  let cadastroUsers=[],cadastroLoaded=false,cadastroFilter='TODOS',cadastroSearch='';
+  let cadastroUsers=[],cadastroLoaded=false,cadastroFilter='TODOS',cadastroSearch='',cadastroNew=false;
   const cadStatusLabel={PENDENTE:'Pendente',ATIVO:'Ativo',BLOQUEADO:'Bloqueado'};
-  function isAdminUser(user){return String(user&&user.perfil||'').toUpperCase()==='ADMIN'||String(user&&user.permissoes&&user.permissoes.pedidos||'').toUpperCase()==='ADMIN';}
+  const GVG_PROJECTS=[
+    {key:'pedidos',label:'Pedidos'},
+    {key:'gastos',label:'Controle de Gastos'},
+    {key:'fornecedores',label:'Fornecedores'},
+    {key:'maquinas',label:'Controle de Máquinas'},
+    {key:'frotas',label:'Controle de Frotas'}
+  ];
+  const GVG_LEVEL_LABEL={'':'Sem acesso',VISUAL:'Visualizar',OPERAR:'Operar',GERENCIAR:'Gerenciar'};
+  const GVG_ROLE_LABEL={OPERADOR:'Operador',ADMIN:'Administrador',SUPERADMIN:'Superadministrador'};
+  function isSuperadmin(user){return String(user&&user.perfil||'').toUpperCase()==='SUPERADMIN';}
+  function projectLevel(user,key){
+    if(isSuperadmin(user))return 'GERENCIAR';
+    const v=String(user&&user.permissoes&&user.permissoes[key]||'').toUpperCase();
+    if(v==='ADMIN')return 'GERENCIAR';
+    if(v==='OPERADOR')return 'OPERAR';
+    const nivel=['VISUAL','OPERAR','GERENCIAR'].indexOf(v)>=0?v:'';
+    if(String(user&&user.perfil||'').toUpperCase()==='OPERADOR'&&nivel==='GERENCIAR')return 'OPERAR';
+    return nivel;
+  }
+  function canViewProject(user,key){return !!projectLevel(user,key);}
   function cadNorm(v){return String(v||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim();}
-  function cadPermsForRole(role){return role==='ADMIN'?{pedidos:'ADMIN',gastos:'ADMIN',fornecedores:'ADMIN',frotas:'ADMIN'}:{pedidos:role};}
+  function levelOptions(role,selected){
+    const vals=role==='SUPERADMIN'?['GERENCIAR']:role==='ADMIN'?['','VISUAL','OPERAR','GERENCIAR']:['','VISUAL','OPERAR'];
+    return vals.map(v=>'<option value="'+v+'" '+(String(v)===String(selected===undefined?'':selected)?'selected':'')+'>'+GVG_LEVEL_LABEL[v]+'</option>').join('');
+  }
+  function permGrid(user,role,disabled,isNew){
+    return GVG_PROJECTS.map(p=>{
+      let val=isSuperadmin(user)?'GERENCIAR':String(user&&user.permissoes&&user.permissoes[p.key]||'').toUpperCase();
+      if(val==='ADMIN')val='GERENCIAR';if(val==='OPERADOR')val='OPERAR';
+      if(role==='SUPERADMIN')val='GERENCIAR';else if(role==='OPERADOR'&&val==='GERENCIAR')val='OPERAR';
+      if(['','VISUAL','OPERAR','GERENCIAR'].indexOf(val)<0)val='';
+      const attrs=isNew?'data-new-perm="'+p.key+'"':('data-user-perm="'+p.key+'"');
+      return '<label class="gvgp-perm-field"><span>'+safe(p.label)+'</span><select '+attrs+' '+(disabled||role==='SUPERADMIN'?'disabled':'')+'>'+levelOptions(role,val)+'</select></label>';
+    }).join('');
+  }
+  function syncPermSelects(scope,role,isNew){
+    scope.querySelectorAll(isNew?'[data-new-perm]':'[data-user-perm]').forEach(sel=>{
+      const old=sel.value;sel.innerHTML=levelOptions(role);sel.disabled=role==='SUPERADMIN';
+      let val=role==='SUPERADMIN'?'GERENCIAR':old;if(role==='OPERADOR'&&val==='GERENCIAR')val='OPERAR';
+      sel.value=[...sel.options].some(o=>o.value===val)?val:'';
+    });
+  }
+  function readPerms(scope,isNew){
+    const out={};scope.querySelectorAll(isNew?'[data-new-perm]':'[data-user-perm]').forEach(s=>{out[s.getAttribute(isNew?'data-new-perm':'data-user-perm')]=s.value;});
+    GVG_PROJECTS.forEach(p=>{if(!out[p.key])out[p.key]='';});return out;
+  }
+  function renderNewUserForm(){
+    const box=$('gvgpUserForm');if(!box)return;
+    if(!cadastroNew){box.classList.add('gvgp-hidden');box.innerHTML='';return;}
+    box.classList.remove('gvgp-hidden');
+    box.innerHTML='<div class="gvgp-user-card gvgp-new-user"><div class="gvgp-pending-top"><div class="gvgp-pending-info"><strong>Novo usuário</strong><span>Cadastro direto pelo Superadministrador</span></div><div class="gvgp-pending-actions"><button type="button" class="gvgp-cad-refresh" data-new-cancel="1">Cancelar</button></div></div>'+
+      '<div class="gvgp-new-grid"><label class="gvgp-perm-field"><span>Nome</span><input id="gvgpNewName" autocomplete="name" placeholder="Nome do usuário"></label>'+
+      '<label class="gvgp-perm-field"><span>Login</span><input id="gvgpNewLogin" autocomplete="username" placeholder="Login ou e-mail"></label>'+
+      '<label class="gvgp-perm-field"><span>E-mail</span><input id="gvgpNewEmail" type="email" autocomplete="email" placeholder="email@empresa.com"></label>'+
+      '<label class="gvgp-perm-field"><span>Senha</span><input id="gvgpNewPass" type="password" autocomplete="new-password" placeholder="Senha inicial"></label>'+
+      '<label class="gvgp-perm-field"><span>Classificação</span><select id="gvgpNewRole" data-new-role="1"><option value="OPERADOR">Operador</option><option value="ADMIN">Administrador</option><option value="SUPERADMIN">Superadministrador</option></select></label></div>'+
+      '<div class="gvgp-perm-grid" id="gvgpNewPerms">'+permGrid({},'OPERADOR',false,true)+'</div>'+
+      '<div class="gvgp-user-save"><p>O usuário será criado ativo. Para Operador, Gerenciar é limitado a Operar.</p><button type="button" class="gvgp-role-save" data-new-save="1">Criar usuário</button></div></div>';
+  }
+  function userCard(u){
+    const status=String(u.status||'').toUpperCase(),stLabel=cadStatusLabel[status]||status;
+    const id=safe(u.id),nome=safe(u.nome||u.login||'Cadastro');
+    const self=!!(state.user&&String(state.user.id)===String(u.id));
+    const protectedUser=String(u.email||'').toLowerCase()==='higorjose.gvgesquadrias@gmail.com';
+    const role=String(u.perfil||'OPERADOR').toUpperCase();
+    const disabled=self||protectedUser;
+    let actions='';
+    if(protectedUser)actions=self?'<button type="button" class="secondary" data-cad-action="password" data-cad-id="'+id+'">Senha</button>':'<span class="gvgp-cad-self">Conta protegida</span>';
+    else if(status==='PENDENTE')actions='<button type="button" class="is-approve" data-cad-action="approve" data-cad-id="'+id+'">Aprovar</button><button type="button" class="is-reject" data-cad-action="reject" data-cad-id="'+id+'">Recusar</button><button type="button" class="is-delete" data-cad-action="delete" data-cad-id="'+id+'">Excluir</button>';
+    else if(status==='ATIVO')actions=self?'<span class="gvgp-cad-self">Sua conta</span>':'<button type="button" class="secondary" data-cad-action="password" data-cad-id="'+id+'">Senha</button><button type="button" class="is-block" data-cad-action="block" data-cad-id="'+id+'">Bloquear</button><button type="button" class="is-delete" data-cad-action="delete" data-cad-id="'+id+'">Excluir</button>';
+    else if(status==='BLOQUEADO')actions='<button type="button" class="is-reactivate" data-cad-action="reactivate" data-cad-id="'+id+'">Reativar</button><button type="button" class="secondary" data-cad-action="password" data-cad-id="'+id+'">Senha</button><button type="button" class="is-delete" data-cad-action="delete" data-cad-id="'+id+'">Excluir</button>';
+    const roleSel='<select data-user-role="'+id+'" '+(disabled?'disabled':'')+'>'+Object.entries(GVG_ROLE_LABEL).map(([k,l])=>'<option value="'+k+'" '+(role===k?'selected':'')+'>'+l+'</option>').join('')+'</select>';
+    const note=protectedUser?'Conta principal protegida contra rebaixamento ou bloqueio.':self?'Você não pode alterar a própria classificação ou permissões.':'';
+    const dataLocked=protectedUser;
+    const dataFields='<details class="gvgp-user-data"><summary>Dados do cadastro</summary><div class="gvgp-new-grid"><label class="gvgp-perm-field"><span>Nome</span><input data-user-name value="'+safe(u.nome||'')+'" '+(dataLocked?'disabled':'')+'></label><label class="gvgp-perm-field"><span>Login</span><input data-user-login value="'+safe(u.login||'')+'" '+(dataLocked?'disabled':'')+'></label><label class="gvgp-perm-field"><span>E-mail</span><input data-user-email type="email" value="'+safe(u.email||'')+'" '+(dataLocked?'disabled':'')+'></label></div></details>';
+    return '<div class="gvgp-user-card" data-user-id="'+id+'"><div class="gvgp-pending-top"><div class="gvgp-pending-info"><strong>'+nome+(self?' <span class="gvgp-cad-self">Você</span>':'')+'</strong><span>'+safe(u.login||'')+(u.email?' · '+safe(u.email):'')+'</span><span class="gvgp-cad-status is-'+status.toLowerCase()+'">'+stLabel+'</span></div><div class="gvgp-pending-actions">'+actions+'</div></div>'+dataFields+
+      '<div class="gvgp-user-perms"><label class="gvgp-perm-field gvgp-user-role"><span>Classificação</span>'+roleSel+'</label><div class="gvgp-perm-grid">'+permGrid(u,role,disabled,false)+'</div></div>'+
+      '<div class="gvgp-user-save"><p>'+safe(note)+'</p><button type="button" class="gvgp-role-save" data-cad-action="save" data-cad-id="'+id+'" '+(disabled?'disabled':'')+'>Salvar permissões</button></div></div>';
+  }
   function renderCadastros(){
     const list=$('gvgpPendingList');if(!list)return;
     const all=cadastroUsers.filter(u=>['PENDENTE','ATIVO','BLOQUEADO'].indexOf(String(u.status||'').toUpperCase())>=0);
@@ -1293,24 +1394,11 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
     const query=cadNorm(cadastroSearch);
     const order={PENDENTE:0,ATIVO:1,BLOQUEADO:2};
     const visible=all.filter(u=>cadastroFilter==='TODOS'||String(u.status||'').toUpperCase()===cadastroFilter).filter(u=>!query||cadNorm([u.nome,u.login,u.email].join(' ')).indexOf(query)>=0).sort((a,b)=>{const sa=String(a.status||'').toUpperCase(),sb=String(b.status||'').toUpperCase();return (order[sa]-order[sb])||String(a.nome||'').localeCompare(String(b.nome||''),'pt-BR');});
-    if(!visible.length){list.innerHTML='<p class="gvgp-pending-empty">'+(query?'Nenhum cadastro encontrado para esta busca.':'Nenhum cadastro neste filtro.')+'</p>';return;}
-    list.innerHTML=visible.map(u=>{
-      const status=String(u.status||'').toUpperCase(),stLabel=cadStatusLabel[status]||status;
-      const id=safe(u.id),nome=safe(u.nome||u.login||'Cadastro');
-      const meta=safe(u.login||'')+(u.email?' · '+safe(u.email):'');
-      const atual=String(u.permissoes&&u.permissoes.pedidos||'').toUpperCase();
-      const sel=atual==='ADMIN'?'ADMIN':'OPERADOR';
-      const self=!!(state.user&&String(state.user.id)===String(u.id));
-      const role=(key,label)=>'<button type="button" class="gvgp-role-btn'+(sel===key?' is-selected':'')+'" data-pending-role="'+key+'" aria-pressed="'+(sel===key?'true':'false')+'"'+(self?' disabled title="Sua própria categoria não pode ser alterada aqui."':'')+'>'+label+'</button>';
-      let actions='';
-      if(status==='PENDENTE')actions='<button type="button" class="is-approve" data-cad-action="approve" data-cad-id="'+id+'">Aprovar</button><button type="button" class="is-reject" data-cad-action="reject" data-cad-id="'+id+'">Recusar</button><button type="button" class="is-delete" data-cad-action="delete" data-cad-id="'+id+'">Excluir</button>';
-      else if(status==='ATIVO')actions=self?'<span class="gvgp-cad-self">Sua conta</span>':'<button type="button" class="is-block" data-cad-action="block" data-cad-id="'+id+'">Bloquear</button><button type="button" class="is-delete" data-cad-action="delete" data-cad-id="'+id+'">Excluir</button>';
-      else if(status==='BLOQUEADO')actions=self?'<span class="gvgp-cad-self">Sua conta</span>':'<button type="button" class="is-reactivate" data-cad-action="reactivate" data-cad-id="'+id+'">Reativar</button><button type="button" class="is-delete" data-cad-action="delete" data-cad-id="'+id+'">Excluir</button>';
-      const save=(status!=='PENDENTE'&&!self)?'<button type="button" class="gvgp-role-save" data-cad-action="save" data-cad-id="'+id+'">Salvar</button>':'';
-      return '<div class="gvgp-pending-row"><div class="gvgp-pending-top"><div class="gvgp-pending-info"><strong>'+nome+(self?' <span class="gvgp-cad-self">Você</span>':'')+'</strong><span>'+meta+'</span><span class="gvgp-cad-status is-'+status.toLowerCase()+'">'+stLabel+'</span></div><div class="gvgp-pending-actions">'+actions+'</div></div><div class="gvgp-pending-roles" role="group" aria-label="Categoria de acesso de '+nome+'"><span class="gvgp-pending-roles-label">Categoria</span>'+role('OPERADOR','Operador')+role('ADMIN','Admin')+save+'</div></div>';
-    }).join('');
+    list.innerHTML=visible.length?visible.map(userCard).join(''):'<p class="gvgp-pending-empty">'+(query?'Nenhum cadastro encontrado para esta busca.':'Nenhum cadastro neste filtro.')+'</p>';
+    renderNewUserForm();
   }
   async function loadCadastros(showList){
+    if(!isSuperadmin(state.user))return;
     const list=$('gvgpPendingList');
     if(showList&&list)list.innerHTML='<p class="gvgp-pending-empty">Carregando cadastros…</p>';
     const cred=state.adminToken||state.token;if(!cred)return;
@@ -1322,7 +1410,8 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
     }catch(err){if(showList&&list)list.innerHTML='<p class="gvgp-pending-empty">Não foi possível carregar: '+safe(err.message||String(err))+'</p>';}
   }
   function openPending(){
-    cadastroFilter='TODOS';cadastroSearch='';
+    if(!isSuperadmin(state.user)){toast('Somente o Superadministrador gerencia usuários e permissões.');return;}
+    cadastroFilter='TODOS';cadastroSearch='';cadastroNew=false;
     const search=$('gvgpCadSearch');if(search)search.value='';
     $('gvgpPendingModal').classList.remove('gvgp-hidden');
     loadCadastros(true);
@@ -1352,41 +1441,41 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
   const HIGOR_AVATAR='https://higoragenteia.github.io/gvg-artefal/assets/avatar-higor.webp';
   function userChip(user){
     const initial=String(user&&user.nome||'?').trim().charAt(0).toUpperCase()||'?';
-    const role=String(user&&user.perfil||'CONSULTA').toUpperCase()==='ADMIN'?'Administrador':'Usuário';
+    const roleKey=String(user&&user.perfil||'OPERADOR').toUpperCase();
+    const role=GVG_ROLE_LABEL[roleKey]||'Operador';
     const who=((user&&(user.email||'')+' '+(user.login||'')+' '+(user.nome||''))||'').toLowerCase();
     const foto=user&&user.foto?String(user.foto):'';
     const avatar=foto?'<img src="'+safe(foto)+'" alt="">':(who.includes('higor')?'<img src="'+HIGOR_AVATAR+'" alt="">':safe(initial));
-    const admin=String(user&&user.perfil||'').toUpperCase()==='ADMIN'||String(user&&user.permissoes&&user.permissoes.pedidos||'').toUpperCase()==='ADMIN';
-    const pending=admin?'<button type="button" class="gvgp-logout gvgp-pending-btn" id="gvgpPendingBtn" title="Ver cadastros pendentes"><span class="gvgp-pending-label">Cadastros</span> <span class="gvgp-pending-count" id="gvgpPendingCount">0</span></button>':'';
+    const pending=isSuperadmin(user)?'<button type="button" class="gvgp-logout gvgp-pending-btn" id="gvgpPendingBtn" title="Gerenciar usuários e permissões"><span class="gvgp-pending-label">Usuários</span> <span class="gvgp-pending-count" id="gvgpPendingCount">0</span></button>':'';
     return '<span class="gvgp-user-chip"><span class="gvgp-user-avatar" role="button" tabindex="0" title="Alterar foto de perfil">'+avatar+'</span><span class="gvgp-user-meta"><strong>'+safe(user?user.nome:'')+'</strong><span>'+safe(role)+(user&&user.email?' · '+safe(user.email):'')+'</span></span></span>'+
       pending+'<button type="button" class="gvgp-logout" id="gvgpLogoutBtn">Sair</button>';
   }
   function applyMenuPermissions(){
-    const p=(state.user&&state.user.permissoes)||{};
-    ['pedidos','gastos','fornecedores','frotas'].forEach(k=>{
-      const allowed=String(p[k]||'').toUpperCase();
-      const btn=document.querySelector('.gvgp-nav-item[data-view="'+k+'"]');
-      const topic=document.querySelector('.gvgp-nav-topic[data-topic="'+k+'"]');
-      if(btn)btn.style.display=allowed?'':'none';
-      if(topic)topic.style.display=allowed?'':'none';
+    GVG_PROJECTS.forEach(p=>{
+      const visible=canViewProject(state.user,p.key);
+      document.querySelectorAll('.gvgp-nav-item[data-view="'+p.key+'"]').forEach(el=>{el.style.display=visible?'':'none';});
+      document.querySelectorAll('.gvgp-nav-topic[data-topic="'+p.key+'"]').forEach(el=>{el.style.display=visible?'':'none';});
+      document.querySelectorAll('[data-module="'+p.key+'"]').forEach(el=>{el.style.display=visible?'':'none';});
+      if(!visible&&MODULE_META[p.key]&&state[MODULE_META[p.key].flag])unloadModule(p.key);
     });
-    document.querySelectorAll('[data-admin-only]').forEach(el=>{el.style.display=isAdminUser(state.user)?'':'none';});
-    if(state.view!=='overview'){
-      const current=document.querySelector('.gvgp-nav-item[data-view="'+state.view+'"]');
-      if(current&&current.style.display==='none')setView('overview');
-    }
+    document.querySelectorAll('.gvgp-nav-topic').forEach(topic=>{
+      let next=topic.nextElementSibling,any=false;
+      while(next&&!next.classList.contains('gvgp-nav-topic')){if(next.classList.contains('gvgp-nav-item')&&next.style.display!=='none')any=true;next=next.nextElementSibling;}
+      topic.style.display=any?'':'none';
+    });
+    if(state.view!=='overview'&&!canViewProject(state.user,state.view))setView('overview');
   }
   let lastUserSignature='';
   function renderUser(){
     if(!state.user){ $('gvgpTopUser').innerHTML='<span class="gvgp-user-chip"><span class="gvgp-user-avatar">?</span><span class="gvgp-user-meta"><strong>Não autenticado</strong><span>Entre para acessar</span></span></span>'; lastUserSignature=''; return; }
     const u=state.user;
-    const sig=[u.id,u.nome,u.login,u.email,u.perfil,u.foto,JSON.stringify(u.permissoes||{})].join('|');
+    const sig=[u.id,u.nome,u.login,u.email,u.perfil,u.foto,!!u.superadmin,JSON.stringify(u.permissoes||{})].join('|');
     if(sig===lastUserSignature&&$('gvgpTopUser').querySelector('#gvgpLogoutBtn')){applyMenuPermissions();return;}
     lastUserSignature=sig;
     $('gvgpTopUser').innerHTML=userChip(u);
     const b=$('gvgpLogoutBtn'); if(b)b.onclick=logout;
     applyMenuPermissions();
-    if(isAdminUser(u)&&!cadastroLoaded){cadastroLoaded=true;loadCadastros(false);}
+    if(isSuperadmin(u)&&!cadastroLoaded){cadastroLoaded=true;loadCadastros(false);}
   }
   function renderDashboard(d){
     state.data=d; state.user=d.usuario||null; $('gvgpApp').classList.remove('gvgp-locked'); applyMenuPermissions();
@@ -1493,7 +1582,7 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
         if(wasLogged){const msg=$('gvgpLoginMsg');if(msg){msg.textContent='Sessão expirada ou acesso revogado. Entre novamente.';msg.style.color='#b42318';}}
         return;
       }
-      if(String(d.usuario.perfil||'').toUpperCase()==='ADMIN'){state.adminToken=token;}
+      if(['ADMIN','SUPERADMIN'].indexOf(String(d.usuario.perfil||'').toUpperCase())>=0){state.adminToken=token;}
       else {state.adminToken='';}
       store.remove('gvgAdminToken');
       renderDashboard(d);
@@ -1531,7 +1620,7 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
     run('entrarFuncionario',user,pass).then(d=>{
       if(!d||!d.token) throw new Error('O servidor não confirmou a sessão.');
       store.set('gvgUsrToken',d.token);
-      if(String(d.perfil||'').toUpperCase()==='ADMIN'){state.adminToken=d.token;}
+      if(['ADMIN','SUPERADMIN'].indexOf(String(d.perfil||'').toUpperCase())>=0){state.adminToken=d.token;}
       else {state.adminToken='';}
       store.remove('gvgAdminToken');
       state.token=d.token; state.user={id:d.id||'',nome:d.nome,login:d.login,email:d.email,perfil:d.perfil,permissoes:d.permissoes||{}};
@@ -1550,7 +1639,7 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
   function revogarSessaoMaquinas_(token){
     if(!token)return;
     try{
-      fetch(MAQUINAS_API_URL,{method:'POST',mode:'cors',credentials:'omit',cache:'no-store',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'logout',token:String(token),requestId:'logout-'+Date.now(),payload:{}})}).catch(()=>{});
+      fetch(MAQUINAS_API_URL,{method:'POST',mode:'cors',credentials:'omit',cache:'no-store',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'logoutToken',token:String(token),requestId:'logout-'+Date.now(),payload:{token:String(token)}})}).catch(()=>{});
     }catch(e){}
   }
   function logout(){
@@ -1575,15 +1664,10 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
     });
   }
   function canAccessView(view){
-    if(view==='maquinas'){
-      if(isAdminUser(state.user))return true;
-      toast('Seu perfil não tem acesso ao Controle de Máquinas.');
-      return false;
-    }
-    if(view!=='gastos'&&view!=='fornecedores')return true;
-    const p=(state.user&&state.user.permissoes)||{};
-    if(String(p[view]||'').toUpperCase())return true;
-    toast('Seu perfil não tem acesso a '+(view==='gastos'?'Controle de Gastos':'Fornecedores')+'.');
+    if(view==='overview')return true;
+    const label=(GVG_PROJECTS.find(p=>p.key===view)||{}).label||'este projeto';
+    if(canViewProject(state.user,view))return true;
+    toast('Seu perfil não tem acesso a '+label+'.');
     return false;
   }
   function setView(view){
@@ -1802,32 +1886,46 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
   document.querySelectorAll('[data-cad-filter]').forEach(b=>b.addEventListener('click',()=>{cadastroFilter=b.getAttribute('data-cad-filter')||'TODOS';renderCadastros();}));
   $('gvgpCadSearch').addEventListener('input',e=>{cadastroSearch=e.target.value;renderCadastros();});
   $('gvgpCadRefresh').addEventListener('click',()=>loadCadastros(true));
+  $('gvgpNewUser').addEventListener('click',()=>{cadastroNew=true;renderNewUserForm();});
+  $('gvgpPendingList').addEventListener('change',e=>{
+    const sel=e.target.closest('[data-user-role]');if(!sel)return;
+    const card=sel.closest('.gvgp-user-card');if(card)syncPermSelects(card,sel.value,false);
+  });
+  $('gvgpUserForm').addEventListener('change',e=>{
+    const sel=e.target.closest('[data-new-role]');if(!sel)return;
+    syncPermSelects($('gvgpUserForm'),sel.value,true);
+  });
+  $('gvgpUserForm').addEventListener('click',async e=>{
+    if(e.target.closest('[data-new-cancel]')){cadastroNew=false;renderNewUserForm();return;}
+    const save=e.target.closest('[data-new-save]');if(!save)return;
+    const nome=($('gvgpNewName').value||'').trim(),login=($('gvgpNewLogin').value||'').trim(),email=($('gvgpNewEmail').value||'').trim(),senha=$('gvgpNewPass').value,perfil=$('gvgpNewRole').value;
+    if(!nome||!login||!senha){alert('Informe nome, login e senha.');return;}
+    const perms=readPerms($('gvgpUserForm'),true);
+    save.disabled=true;
+    try{
+      await run('adminSalvarUsuario',state.adminToken||state.token,{nome:nome,login:login,email:email,senha:senha,perfil:perfil,status:'ATIVO',permissoes:perms});
+      cadastroNew=false;await loadCadastros(true);toast('Usuário criado.');
+    }catch(err){alert(err.message||String(err));}
+    finally{save.disabled=false;}
+  });
   $('gvgpPendingList').addEventListener('click',async e=>{
-    const roleBtn=e.target.closest('[data-pending-role]');
-    if(roleBtn){
-      if(roleBtn.disabled)return;
-      const row=roleBtn.closest('.gvgp-pending-row');if(!row)return;
-      row.querySelectorAll('[data-pending-role]').forEach(b=>{const on=b===roleBtn;b.classList.toggle('is-selected',on);b.setAttribute('aria-pressed',String(on));});
-      return;
-    }
     const b=e.target.closest('[data-cad-action]');if(!b)return;
     const action=b.getAttribute('data-cad-action'),id=b.getAttribute('data-cad-id');
-    const row=b.closest('.gvgp-pending-row');
-    const nome=row?row.querySelector('.gvgp-pending-info strong')?.textContent.replace(/\s*Você\s*$/,'').trim():'este cadastro';
-    const roleEl=row?row.querySelector('[data-pending-role].is-selected'):null;
-    const role=roleEl?roleEl.getAttribute('data-pending-role'):'';
-    const roleLabel={OPERADOR:'Operador',ADMIN:'Admin'}[role]||role;
-    const perms=cadPermsForRole(role);
-    const detail=role==='ADMIN'?'\n\nAdmin concede acesso a todos os módulos.':role==='OPERADOR'?'\n\nOperador pode registrar pedidos no catálogo.':'';
+    const card=b.closest('.gvgp-user-card');const user=cadastroUsers.find(u=>String(u.id)===String(id));
+    if(!card||!user)return;
+    const nome=String(user.nome||user.login||'este usuário');
+    const role=(card.querySelector('[data-user-role]')||{}).value||'OPERADOR';
+    const perms=readPerms(card,false);
+    const nomeEdit=(card.querySelector('[data-user-name]')||{}).value||user.nome;
+    const loginEdit=(card.querySelector('[data-user-login]')||{}).value||user.login;
+    const emailEdit=(card.querySelector('[data-user-email]')||{}).value||user.email;
     let message='',call=null;
-    if(action==='approve'){
-      if(!roleEl){alert('Escolha a categoria antes de aprovar.');return;}
-      message='Aprovar '+nome+' como '+roleLabel+'?'+detail;
-      call=()=>run('adminSituacaoUsuario',state.adminToken||state.token,id,'ATIVO','',perms);
-    }else if(action==='save'){
-      if(!roleEl){alert('Escolha uma categoria antes de salvar.');return;}
-      message='Salvar a categoria de '+nome+' como '+roleLabel+'?'+detail+'\n\nA categoria atual será substituída.';
-      call=()=>run('adminDefinirPermissoes',state.adminToken||state.token,id,perms);
+    if(action==='save'){
+      message='Salvar os dados, a classificação e as permissões de '+nome+'?';
+      call=()=>run('adminSalvarUsuario',state.adminToken||state.token,{id:id,nome:nomeEdit,login:loginEdit,email:emailEdit,perfil:role,status:user.status,permissoes:perms});
+    }else if(action==='approve'){
+      message='Aprovar '+nome+' com a classificação e permissões selecionadas?';
+      call=()=>run('adminSalvarUsuario',state.adminToken||state.token,{id:id,nome:nomeEdit,login:loginEdit,email:emailEdit,perfil:role,status:'ATIVO',permissoes:perms});
     }else if(action==='reject'){
       message='Recusar o cadastro de '+nome+'? O acesso será bloqueado.';
       call=()=>run('adminSituacaoUsuario',state.adminToken||state.token,id,'BLOQUEADO');
@@ -1840,10 +1938,14 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
     }else if(action==='delete'){
       message='Excluir permanentemente '+nome+' e suas sessões? O histórico de pedidos será preservado.';
       call=()=>run('adminSituacaoUsuario',state.adminToken||state.token,id,'EXCLUIDO');
+    }else if(action==='password'){
+      const nova=prompt('Nova senha para '+nome+':');if(!nova)return;
+      message='Redefinir a senha de '+nome+'?';
+      call=()=>run('adminRedefinirSenha',state.adminToken||state.token,id,nova);
     }
     if(!call||!confirm(message))return;
     b.disabled=true;
-    try{await call();await loadCadastros(true);}
+    try{await call();await loadCadastros(true);toast('Permissões atualizadas.');}
     catch(err){alert(err.message||String(err));}
     finally{b.disabled=false;}
   });

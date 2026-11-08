@@ -1035,6 +1035,18 @@ body.sidebar-open .toast-root { display: none; }
           </div>
         </div>
 
+        <div id="panelBox" class="hidden">
+          <div class="auth-card-head">
+            <div class="auth-kicker">Acesso centralizado</div>
+            <h2>Acesse pelo Painel</h2>
+            <p>O acesso direto ao Controle de Máquinas está desativado. Entre no Painel GVG&ARTEFAL e abra o módulo pelo menu.</p>
+          </div>
+          <p class="auth-note">Se você já está no painel, confirme com o Superadministrador se o seu perfil tem permissão para este projeto.</p>
+          <button class="btn btn-primary btn-lg btn-block" type="button" id="panelRetryBtn">Tentar novamente</button>
+          <div class="auth-divider"><span>ou</span></div>
+          <button class="btn btn-secondary btn-block" type="button" id="panelOpenBtn">Abrir o Painel GVG&ARTEFAL</button>
+        </div>
+
         <div id="setupBox" class="hidden">
           <div class="auth-card-head">
             <div class="auth-kicker">Primeira configuração</div>
@@ -1203,7 +1215,7 @@ body.sidebar-open .toast-root { display: none; }
   </div>
   <div id="offlineBanner" class="offline-banner hidden" role="status">Sem conexão com a internet. Os dados serão atualizados quando a conexão voltar.</div>
 
-  <script>window.GVG_CONFIG = {apiUrl: 'https://script.google.com/macros/s/AKfycby35-KiTddoqhEuo9zalGkVC2Wfspw5lG7i9Vt-_qJXZBa_wqeyiV51_42xh4ITtHhL/exec?modulo=maquinas-api', appName: 'GVG & ARTEFAL — Controle de Máquinas e Ferramentas', version: '1.0.0'};</script>
+  <script>window.GVG_CONFIG = {apiUrl: <?!= JSON.stringify(maquinasApiUrl) ?>, appName: 'GVG & ARTEFAL — Controle de Máquinas e Ferramentas', version: '1.0.0'};</script>
   <script>
 /* =========================================================
    GVG & ARTEFAL — Controle de Máquinas e Ferramentas
@@ -1447,6 +1459,10 @@ class ApiClientError extends Error {
   }
 }
 
+function getPanelToken() {
+  try { return localStorage.getItem('gvgUsrToken') || ''; } catch (e) { return ''; }
+}
+
 async function api(action, payload, opts) {
   opts = opts || {};
   if (!API_URL) throw new ApiClientError('CONFIG_AUSENTE', 'O endereço da API não está configurado.');
@@ -1454,6 +1470,7 @@ async function api(action, payload, opts) {
   const body = {
     action,
     token: opts.token !== undefined ? opts.token : state.token,
+    painelToken: getPanelToken(),
     requestId,
     payload: payload || {},
   };
@@ -1493,7 +1510,7 @@ async function api(action, payload, opts) {
 }
 
 function isAuthError(err) {
-  return !!err && ['NAO_AUTENTICADO', 'SESSAO_EXPIRADA', 'CONTA_BLOQUEADA'].indexOf(err.code) >= 0;
+  return !!err && ['NAO_AUTENTICADO', 'SESSAO_EXPIRADA', 'CONTA_BLOQUEADA', 'SEM_PERMISSAO', 'ACESSE_PELO_PAINEL'].indexOf(err.code) >= 0;
 }
 
 function handleAuthLost(message) {
@@ -1562,10 +1579,10 @@ function showAuth(mode, message, type) {
   hideApp();
   const auth = $('authView');
   if (auth) auth.classList.remove('hidden');
-  ['loginBox', 'setupBox', 'recoveryBox', 'setupPendingBox', 'connectionBox'].forEach((id) => {
+  ['loginBox', 'panelBox', 'setupBox', 'recoveryBox', 'setupPendingBox', 'connectionBox'].forEach((id) => {
     const el = $(id); if (el) el.classList.add('hidden');
   });
-  const map = { login: 'loginBox', setup: 'setupBox', recovery: 'recoveryBox', pending: 'setupPendingBox', connection: 'connectionBox' };
+  const map = { login: 'loginBox', panel: 'panelBox', setup: 'setupBox', recovery: 'recoveryBox', pending: 'setupPendingBox', connection: 'connectionBox' };
   const box = $(map[mode] || 'loginBox');
   if (box) box.classList.remove('hidden');
   if (mode === 'login') {
@@ -1594,7 +1611,7 @@ async function checkInitial() {
   }
   // Com sessão salva, tenta abrir direto. Assim o F5 faz uma única chamada
   // em vez de setupStatus + bootstrap em sequência.
-  if (state.token) {
+  if (state.token || getPanelToken()) {
     try {
       const data = await api('bootstrap', {});
       enterApp(data);
@@ -1606,6 +1623,10 @@ async function checkInitial() {
       }
       saveToken('');
       resetListCaches();
+      if (e.code === 'SEM_PERMISSAO' || e.code === 'ACESSE_PELO_PAINEL' || getPanelToken()) {
+        showAuth('panel');
+        return;
+      }
       showAuth('login', e.message, 'error');
       return;
     }
@@ -1625,6 +1646,7 @@ function enterApp(data) {
   state.data = data;
   state.user = data.usuario;
   state.token = localStorage.getItem(TOKEN_KEY) || state.token;
+  if (!state.token && getPanelToken()) state.token = 'GVG_PAINEL_SSO';
   document.body.classList.remove('sidebar-open');
   $('boot').classList.add('hidden');
   $('authView').classList.add('hidden');
@@ -1771,6 +1793,17 @@ async function doRecovery(e) {
 function updateChrome() {
   if (!state.user || !state.data) return;
   const admin = isAdmin();
+  let roBanner = document.getElementById('gvgReadOnlyBanner');
+  if (state.user.somenteLeitura) {
+    if (!roBanner) {
+      roBanner = document.createElement('div');
+      roBanner.id = 'gvgReadOnlyBanner';
+      roBanner.className = 'alert alert-warn';
+      roBanner.style.margin = '0 0 12px';
+      roBanner.innerHTML = '<div><strong>Somente leitura.</strong> Você pode consultar equipamentos, movimentações e manutenções, mas não pode alterar registros.</div>';
+      const main = $('main'); if (main && main.parentNode) main.parentNode.insertBefore(roBanner, main);
+    }
+  } else if (roBanner) { roBanner.remove(); }
   document.querySelectorAll('.admin-only').forEach((el) => el.classList.toggle('hidden', !admin));
   $('userName').textContent = state.user.nome || '—';
   $('userRole').textContent = roleLabel(state.user.perfil);
@@ -3780,6 +3813,11 @@ function bindStaticEvents() {
 
 /* ---------- PWA ---------- */
 function initPWA() {
+  const panelRetry = document.getElementById('panelRetryBtn');
+  if (panelRetry) panelRetry.addEventListener('click', () => { saveToken(''); location.reload(); });
+  const panelOpen = document.getElementById('panelOpenBtn');
+  if (panelOpen) panelOpen.addEventListener('click', () => { location.href = 'https://higoragenteia.github.io/gvg-artefal/'; });
+
   /* Service worker desativado no painel: o app roda dentro do iframe do GVG&ARTEFAL. */
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();

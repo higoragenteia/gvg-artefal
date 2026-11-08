@@ -34,7 +34,10 @@ function doPost(e){
   return ContentService.createTextOutput(JSON.stringify({ok:false,error:{code:'ROTA_INVALIDA',message:'Rota não encontrada.'}})).setMimeType(ContentService.MimeType.JSON);
 }
 function doGetMaquinas_(){
-  return HtmlService.createHtmlOutputFromFile('MaquinasIndex')
+  const modelo=HtmlService.createTemplateFromFile('MaquinasIndex');
+  const url=ScriptApp.getService().getUrl();
+  modelo.maquinasApiUrl=url+(url.indexOf('?')>=0?'&':'?')+'modulo=maquinas-api';
+  return modelo.evaluate()
     .setTitle('GVG & ARTEFAL | Controle de Máquinas')
     .addMetaTag('viewport','width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover')
     .setFaviconUrl('https://higoragenteia.github.io/gvg-maquinas-ferramentas/icons/icone-180.png')
@@ -94,11 +97,13 @@ function fatorEmbalagemGVG_(r){
 }
 
 function getCatalogo(sessao){
-  gvguVerificarSessao_(sessao);
+  const auth=gvguVerificarSessao_(sessao);
+  if(!gvguPodeVisualizar_(auth,'pedidos'))throw new Error('GVG_SEM_ACESSO_PROJETO: seu perfil não tem acesso ao Pedidos.');
+  const acesso={nivel:gvguNivelProjeto_(auth,'pedidos'),podeOperar:gvguPodeOperar_(auth,'pedidos'),podeGerenciar:gvguPodeGerenciar_(auth,'pedidos')};
   const cache=CacheService.getScriptCache();
   const cacheKey='gvg_catalogo_v2';
   const cached=cache.get(cacheKey);
-  if(cached){try{return JSON.parse(cached);}catch(e){}}
+  if(cached){try{const out=JSON.parse(cached);out.acesso=acesso;return out;}catch(e){}}
   const ss = gvgPlanilha_();
   const values = ss.getSheetByName('PRODUTOS').getDataRange().getDisplayValues();
   const produtos = values.slice(1).filter(r=>r[0]&&r[1]&&String(r[6]).toUpperCase()!=='NÃO'&&String(r[6]).toUpperCase()!=='NAO').map(r=>({id:r[0],nome:r[1],categoria:r[2],unidade:r[3],descricao:r[4],porCaixa:fatorEmbalagemGVG_(r),imagem:r[7]||'',ativo:String(r[6]||'SIM').toUpperCase()}));
@@ -107,7 +112,7 @@ function getCatalogo(sessao){
   const get=(key)=>{const row=configs.find(r=>r[0]===key);return row?row[1]:''};
   const out={produtos,obras,whatsapp:String(get('WHATSAPP_DESTINO')).replace(/\D/g,''),titulo:get('TITULO_APP')||'GVG • Catálogo de Materiais'};
   try{cache.put(cacheKey,JSON.stringify(out),300);}catch(e){}
-  return out;
+  out.acesso=acesso;return out;
 }
 
 function testarCatalogo(){ const c=getCatalogo(); Logger.log('Produtos: '+c.produtos.length+' | Obras: '+c.obras.length+' | WhatsApp configurado: '+Boolean(c.whatsapp)); return {produtos:c.produtos.length, obras:c.obras.length, whatsappConfigurado:Boolean(c.whatsapp)}; }
@@ -130,14 +135,13 @@ function hashPin_(pin){
 }
 function admin_(credential){
  const c=String(credential||'');
- if(/^GVGA-[a-f0-9-]{72}$/i.test(c)){if(!gvgaSessaoValida_(c))throw new Error('GVG_ADMIN_SESSAO_INVALIDA: entre novamente.');return;}
+ if(/^GVGA-[a-f0-9-]{72}$/i.test(c)){if(!gvgaSessaoValida_(c))throw new Error('GVG_ADMIN_SESSAO_INVALIDA: entre novamente.');return {perfil:'SUPERADMIN',permissoes:{pedidos:'GERENCIAR'},superadmin:true};}
  if(c.length>=20){
-  try{const u=gvguVerificarSessao_(c);if(String(u.perfil||'').toUpperCase()==='ADMIN')return;}catch(e){}
+  try{const u=gvguVerificarSessao_(c);if(gvguPodeGerenciar_(u,'pedidos'))return u;}catch(e){}
  }
- const h=PropertiesService.getScriptProperties().getProperty('GVG_ADMIN_HASH');if(!h||!c||hashPin_(c)!==String(h))throw new Error('Credencial de administrador inválida.');
+ const h=PropertiesService.getScriptProperties().getProperty('GVG_ADMIN_HASH');if(h&&c&&hashPin_(c)===String(h))return {perfil:'SUPERADMIN',permissoes:{pedidos:'GERENCIAR'},superadmin:true};
+ throw new Error('GVG_SEM_PERMISSAO_GERENCIAR: seu perfil não permite administrar o Pedidos.');
 }
-function adminSessionUser_(credential){try{return gvguVerificarSessao_(String(credential||''));}catch(e){return null;}}
-function activeAdminCount_(){return gvguUsuarios_().getDataRange().getValues().slice(1).filter(function(r){return String(r[6]||'').toUpperCase()==='ATIVO'&&String(r[10]||'').toUpperCase()==='ADMIN';}).length;}
 function revogarSessoesUsuario_(id,manterToken){const sh=gvguSessoes_(),v=sh.getDataRange().getValues(),keep=manterToken?gvguSHA_(String(manterToken)):'';for(let i=1;i<v.length;i++)if(String(v[i][1])===String(id)&&(!keep||String(v[i][0])!==keep))sh.getRange(i+1,4).setValue('SIM');}
 function abasGestao_(forcar){const ss=gvgPlanilha_();if(GVG_GESTAO_EXECUCAO_)return ss;const cache=CacheService.getScriptCache();if(!forcar){try{if(cache.get('gvg_estrutura_ok_v1')==='1'){GVG_GESTAO_EXECUCAO_=true;return ss;}}catch(e){}}const a=[['PEDIDOS',['Pedido_ID','Data','Solicitante','Obra','Observacoes','Canal','Situacao','Data_entrega']],['ITENS_PEDIDO',['Pedido_ID','Codigo','Produto','Quantidade','Unidade','Unidades_equivalentes','Quantidade_entregue','Unidades_entregues','Observacao_entrega']],['AUDITORIA',['Data','Acao','Codigo','Produto','Detalhes']]]; a.forEach(([name,header])=>{let sh=ss.getSheetByName(name);if(!sh)sh=ss.insertSheet(name);if(sh.getLastRow()===0)sh.appendRow(header);else if(name==='PEDIDOS' && sh.getLastColumn()<8){sh.getRange(1,8).setValue('Data_entrega');}else if(name==='ITENS_PEDIDO' && sh.getLastColumn()<9){sh.getRange(1,7,1,3).setValues([header.slice(6)]);}});try{cache.put('gvg_estrutura_ok_v1','1',300);}catch(e){}GVG_GESTAO_EXECUCAO_=true;return ss;}
 function instalarAbasGestao(){try{CacheService.getScriptCache().remove('gvg_estrutura_ok_v1');}catch(e){}abasGestao_(true);return 'Abas de gestão preparadas';}
@@ -187,7 +191,7 @@ function salvarFotoPerfil(sessao,foto){
 }
 // Registra SOLICITAÇÃO, não comprova envio no WhatsApp nem entrega de materiais.
 function registrarSolicitacao(d){
- const auth=gvguVerificarSessao_(d&&d.sessao); const perm=String(auth.permissoes&&auth.permissoes.pedidos||'').toUpperCase(); if(perm!=='OPERADOR'&&perm!=='ADMIN')throw new Error('Seu acesso ao Pedidos é somente leitura.'); d.nome=auth.nome; d.usuarioId=auth.id;
+ const auth=gvguVerificarSessao_(d&&d.sessao); if(!gvguPodeOperar_(auth,'pedidos'))throw new Error('Seu acesso ao Pedidos é somente leitura.'); d.nome=auth.nome; d.usuarioId=auth.id;
  if(!d||!String(d.nome||'').trim()||!String(d.obra||'').trim()||!Array.isArray(d.itens)||!d.itens.length)throw new Error('Pedido incompleto.');
  if(d.itens.length>100)throw new Error('Limite de itens do pedido excedido.');
  const lock=LockService.getScriptLock();lock.waitLock(20000);try{
@@ -297,38 +301,70 @@ function gvguFotoCol_(sh){
   if(col<0){sh.getRange(1,12).setValue('Foto (URL)');col=11;}
   return col+1;
 }
-const GVG_PERM_KEYS=['pedidos','gastos','fornecedores','frotas'];
-function gvguPermValor_(v){v=String(v||'').toUpperCase();return ['VISUAL','OPERADOR','ADMIN'].indexOf(v)>=0?v:'';}
-function gvguPermissoes_(r){return {pedidos:gvguPermValor_(r&&r[12]),gastos:gvguPermValor_(r&&r[13]),fornecedores:gvguPermValor_(r&&r[14]),frotas:gvguPermValor_(r&&r[15])};}
-function gvguPermObj_(p){const o={};GVG_PERM_KEYS.forEach(k=>o[k]=gvguPermValor_(p&&p[k]));return o;}
-function gvguPermHeaders_(sh){
-  const h=sh.getRange(1,13,1,4).getValues()[0];
-  if(String(h[0])!=='Perm_Pedidos'||String(h[1])!=='Perm_Gastos'||String(h[2])!=='Perm_Fornecedores'||String(h[3])!=='Perm_Frotas')sh.getRange(1,13,1,4).setValues([['Perm_Pedidos','Perm_Gastos','Perm_Fornecedores','Perm_Frotas']]);
+const GVG_PERM_KEYS=['pedidos','gastos','fornecedores','frotas','maquinas'];
+const GVG_PROJETOS=[
+ {key:'pedidos',label:'Pedidos'},
+ {key:'gastos',label:'Controle de Gastos'},
+ {key:'fornecedores',label:'Fornecedores'},
+ {key:'maquinas',label:'Controle de Máquinas'},
+ {key:'frotas',label:'Controle de Frotas'}
+];
+const GVG_SUPERADMIN_EMAIL='higorjose.gvgesquadrias@gmail.com';
+function gvguPerfilValor_(v){
+ v=String(v||'').toUpperCase();
+ if(v==='SUPERADMIN'||v==='SUPERADMINISTRADOR')return 'SUPERADMIN';
+ if(v==='ADMIN'||v==='ADMINISTRADOR')return 'ADMIN';
+ return 'OPERADOR';
 }
-function gvguUsuarios_(){const ss=gvgPlanilha_();const existing=ss.getSheetByName('USUARIOS_GVG')||ss.getSheetByName('GVG_USUARIOS');return existing||gvguSheet_('GVG_USUARIOS',['ID','Nome','Login','WhatsApp','Salt','Senha_hash','Status','Data_cadastro','Data_status','E-mail','Perfil'])}
-function gvguSessoes_(){return gvguSheet_('SESSOES_GVG',['Token_hash','Usuario_ID','Expira_em','Revogada'])}
-function gvguVinculos_(){return gvguSheet_('PEDIDOS_USUARIOS',['Pedido_ID','Usuario_ID'])}
-function gvguAuditar_(acao,id,det){abasGestao_().getSheetByName('AUDITORIA').appendRow([new Date(),acao,id,'USUARIOS_GVG',String(det||'').slice(0,200)])}
-function cadastrarFuncionario(d){
- const rawLogin=String(d&&(d.login||d.email)||'').trim().toLowerCase(),senha=String(d&&d.senha||''),nome=String(d&&d.nome||rawLogin).trim().slice(0,120),whats=String(d&&d.whatsapp||'').replace(/\D/g,''),email=String(d&&d.email||'').trim().toLowerCase();
- const isEmail=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawLogin);
- if(!rawLogin)throw new Error('Informe um usuário.');
- if(!isEmail&&!/^[a-z0-9._-]{2,40}$/.test(rawLogin))throw new Error('Usuário: use de 2 a 40 letras sem acentos, números, ponto, traço ou sublinhado, sem espaços.');
- if(senha.length<1||senha.length>128)throw new Error('Informe uma senha de 1 a 128 caracteres.');
- if(whats&&!(whats.length>=10&&whats.length<=13))throw new Error('WhatsApp inválido.');
- const lock=LockService.getScriptLock();lock.waitLock(20000);try{
- const sh=gvguUsuarios_(),v=sh.getDataRange().getValues();
- const iguais=v.map((r,i)=>({r,i})).filter(x=>x.i>0&&(String(x.r[9]||'').trim().toLowerCase()===rawLogin||String(x.r[2]||'').trim().toLowerCase()===rawLogin));
- if(iguais.some(x=>String(x.r[6]).trim().toUpperCase()!=='EXCLUIDO'))throw new Error('Este usuário já está cadastrado.');
- for(let n=iguais.length-1;n>=0;n--){const x=iguais[n];gvguExcluirCadastro_(sh,x.i+1,x.r[0]);}
- const id='USR-'+Utilities.getUuid(),salt=Utilities.getUuid();sh.appendRow([id,textoSeguro_(nome||rawLogin,120),rawLogin,whats,salt,gvguHashNovo_(senha,salt),'PENDENTE',new Date(),new Date(),email||(isEmail?rawLogin:''),'CONSULTA']);gvguAuditar_('CADASTRO_PENDENTE',id,rawLogin);return {status:'PENDENTE',mensagem:'Cadastro enviado para aprovação do administrador.'};
- }finally{lock.releaseLock()}
+function gvguPerfilEfetivo_(email,perfil){
+ const p=gvguPerfilValor_(perfil);
+ const e=String(email||'').trim().toLowerCase();
+ if(e===GVG_SUPERADMIN_EMAIL&&(p==='ADMIN'||p==='SUPERADMIN'))return 'SUPERADMIN';
+ return p;
+}
+function gvguPermValor_(v){
+ v=String(v||'').toUpperCase();
+ if(v==='VISUAL'||v==='VISUALIZAR')return 'VISUAL';
+ if(v==='OPERADOR'||v==='OPERAR')return 'OPERAR';
+ if(v==='ADMIN'||v==='GERENCIAR')return 'GERENCIAR';
+ return '';
+}
+function gvguPermissoes_(r){return {pedidos:gvguPermValor_(r&&r[12]),gastos:gvguPermValor_(r&&r[13]),fornecedores:gvguPermValor_(r&&r[14]),frotas:gvguPermValor_(r&&r[15]),maquinas:gvguPermValor_(r&&r[16])};}
+function gvguPermObj_(p){const o={};GVG_PERM_KEYS.forEach(k=>o[k]=gvguPermValor_(p&&p[k]));return o;}
+function gvguNivelProjeto_(u,projeto){
+ if(!u)return '';
+ const perfil=String(u.perfil||'').toUpperCase();
+ if(perfil==='SUPERADMIN')return 'GERENCIAR';
+ const nivel=gvguPermValor_((u.permissoes||{})[projeto]);
+ if(perfil==='OPERADOR'&&nivel==='GERENCIAR')return 'OPERAR';
+ return nivel;
+}
+function gvguPodeVisualizar_(u,projeto){return !!gvguNivelProjeto_(u,projeto);}
+function gvguPodeOperar_(u,projeto){const n=gvguNivelProjeto_(u,projeto);return n==='OPERAR'||n==='GERENCIAR';}
+function gvguPodeGerenciar_(u,projeto){return gvguNivelProjeto_(u,projeto)==='GERENCIAR';}
+function gvguProjetosVisiveis_(u){return GVG_PROJETOS.filter(p=>gvguPodeVisualizar_(u,p.key)).map(p=>p.key);}
+const GVG_MODULOS_SSO_OBRIGATORIO=true;
+function gvguModuloSsoObrigatorio_(){return GVG_MODULOS_SSO_OBRIGATORIO;}
+function gvguAcessoPainel_(token,projeto){
+ const u=gvguVerificarSessao_(token);const nivel=gvguNivelProjeto_(u,projeto);
+ if(!nivel)throw new Error('GVG_SEM_ACESSO_PROJETO: seu perfil não tem acesso a '+projeto+'.');
+ return {usuario:u,nivel:nivel};
+}
+function gvguSuperadmin_(u){return String(u&&u.perfil||'').toUpperCase()==='SUPERADMIN';}
+function gvguUsuarioPublico_(u){
+ const perfil=String(u.perfil||'OPERADOR').toUpperCase();
+ return {id:u.id||'',nome:u.nome||'',login:u.login||'',email:u.email||'',perfil:perfil,foto:u.foto||'',permissoes:gvguPermObj_(u.permissoes||{}),superadmin:perfil==='SUPERADMIN',projetos:gvguProjetosVisiveis_(u)};
 }
 function gvguVerificarSessao_(token){
  const hash=gvguSHA_(token||'');if(!token||String(token).length<20)throw new Error('Entre na sua conta para solicitar materiais.');
  const sh=gvguUsuarios_(),fotoCol=gvguFotoCol_(sh);
  const ss=gvguSessoes_().getDataRange().getValues();const r=ss.find((x,i)=>i>0&&x[0]===hash&&x[3]!=='SIM'&&Number(x[2])>Date.now());if(!r)throw new Error('Sessão expirada. Entre novamente.');
- const users=sh.getDataRange().getValues();const user=users.find((x,i)=>i>0&&x[0]===r[1]&&x[6]==='ATIVO');if(!user)throw new Error('Acesso não autorizado ou bloqueado.');return {id:user[0],nome:user[1],login:user[2],email:String(user[9]||'').toLowerCase(),perfil:String(user[10]||'CONSULTA').toUpperCase(),foto:String(user[fotoCol-1]||''),permissoes:gvguPermissoes_(user)};
+ const users=sh.getDataRange().getValues();const user=users.find((x,i)=>i>0&&x[0]===r[1]&&x[6]==='ATIVO');if(!user)throw new Error('Acesso não autorizado ou bloqueado.');
+ const email=String(user[9]||'').toLowerCase();const perfil=gvguPerfilEfetivo_(email,user[10]);const permissoes=gvguPermissoes_(user);
+ if(perfil==='ADMIN'&&!permissoes.maquinas)permissoes.maquinas='GERENCIAR';
+ if(perfil==='SUPERADMIN')GVG_PERM_KEYS.forEach(k=>permissoes[k]='GERENCIAR');
+ const out={id:user[0],nome:user[1],login:user[2],email:email,perfil:perfil,foto:String(user[fotoCol-1]||''),permissoes:permissoes};
+ out.superadmin=perfil==='SUPERADMIN';out.projetos=gvguProjetosVisiveis_(out);return out;
 }
 function entrarFuncionario(login,password){
  const l=String(login||'').trim().toLowerCase(),p=String(password||'');
@@ -337,86 +373,172 @@ function entrarFuncionario(login,password){
  if(r[6]!=='ATIVO')throw new Error(r[6]==='PENDENTE'?'Cadastro aguardando aprovação.':'Acesso bloqueado.');
  if(!/^F:\d+:/.test(String(r[5]))){try{sh.getRange(idx+1,6).setValue(gvguHashNovo_(p,r[4]));}catch(e){}}
  const token=Utilities.getUuid()+Utilities.getUuid(),exp=Date.now()+GVGU_SESS_MILLIS;
- gvguSessoes_().appendRow([gvguSHA_(token),r[0],exp,'NÃO']);return {token,id:r[0],nome:r[1],login:r[2],email:String(r[9]||'').trim().toLowerCase(),perfil:String(r[10]||'CONSULTA').toUpperCase(),foto:String(r[fotoCol-1]||''),permissoes:gvguPermissoes_(r),expira:exp};
+ gvguSessoes_().appendRow([gvguSHA_(token),r[0],exp,'NÃO']);
+ const email=String(r[9]||'').trim().toLowerCase();const perfil=gvguPerfilEfetivo_(email,r[10]);const permissoes=gvguPermissoes_(r);
+ if(perfil==='ADMIN'&&!permissoes.maquinas)permissoes.maquinas='GERENCIAR';
+ if(perfil==='SUPERADMIN')GVG_PERM_KEYS.forEach(k=>permissoes[k]='GERENCIAR');
+ const out={token,id:r[0],nome:r[1],login:r[2],email:email,perfil:perfil,foto:String(r[fotoCol-1]||''),permissoes:permissoes,expira:exp};
+ out.superadmin=perfil==='SUPERADMIN';out.projetos=gvguProjetosVisiveis_(out);return out;
 }
-function sessaoFuncionario(token){const u=gvguVerificarSessao_(token);return {nome:u.nome,login:u.login,email:u.email,perfil:u.perfil,foto:u.foto||'',permissoes:u.permissoes||{}}}
+function sessaoFuncionario(token){const u=gvguVerificarSessao_(token);return {nome:u.nome,login:u.login,email:u.email,perfil:u.perfil,foto:u.foto||'',permissoes:u.permissoes||{},superadmin:u.superadmin,projetos:u.projetos||[]}}
+function gvguPermHeaders_(sh){
+ const h=sh.getRange(1,13,1,5).getValues()[0];
+ if(String(h[0])!=='Perm_Pedidos'||String(h[1])!=='Perm_Gastos'||String(h[2])!=='Perm_Fornecedores'||String(h[3])!=='Perm_Frotas'||String(h[4])!=='Perm_Maquinas')sh.getRange(1,13,1,5).setValues([['Perm_Pedidos','Perm_Gastos','Perm_Fornecedores','Perm_Frotas','Perm_Maquinas']]);
+}
+function gvguUsuarios_(){const ss=gvgPlanilha_();const existing=ss.getSheetByName('USUARIOS_GVG')||ss.getSheetByName('GVG_USUARIOS');return existing||gvguSheet_('GVG_USUARIOS',['ID','Nome','Login','WhatsApp','Salt','Senha_hash','Status','Data_cadastro','Data_status','E-mail','Perfil'])}
+function gvguSessoes_(){return gvguSheet_('SESSOES_GVG',['Token_hash','Usuario_ID','Expira_em','Revogada'])}
+function gvguVinculos_(){return gvguSheet_('PEDIDOS_USUARIOS',['Pedido_ID','Usuario_ID'])}
+function cadastrarFuncionario(d){
+ const rawLogin=String(d&&(d.login||d.email)||'').trim().toLowerCase(),senha=String(d&&d.senha||''),nome=String(d&&d.nome||rawLogin).trim().slice(0,120),whats=String(d&&d.whatsapp||'').replace(/\D/g,''),email=String(d&&d.email||'').trim().toLowerCase();
+ const isEmail=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawLogin);
+ if(!rawLogin)throw new Error('Informe um usuário.');
+ if(!isEmail&&!/^[a-z0-9._-]{2,40}$/.test(rawLogin))throw new Error('Usuário: use de 2 a 40 letras sem acentos, números, ponto, traço ou sublinhado, sem espaços.');
+ if(senha.length<1||senha.length>128)throw new Error('Informe uma senha de 1 a 128 caracteres.');
+ if(whats&&!(whats.length>=10&&whats.length<=13))throw new Error('WhatsApp inválido.');
+ const lock=LockService.getScriptLock();lock.waitLock(20000);try{
+  const sh=gvguUsuarios_();gvguPermHeaders_(sh);const v=sh.getDataRange().getValues();
+  const iguais=v.map((r,i)=>({r,i})).filter(x=>x.i>0&&(String(x.r[9]||'').trim().toLowerCase()===rawLogin||String(x.r[2]||'').trim().toLowerCase()===rawLogin));
+  if(iguais.some(x=>String(x.r[6]).trim().toUpperCase()!=='EXCLUIDO'))throw new Error('Este usuário já está cadastrado.');
+  for(let n=iguais.length-1;n>=0;n--){const x=iguais[n];gvguExcluirCadastro_(sh,x.i+1,x.r[0]);}
+  const id='USR-'+Utilities.getUuid(),salt=Utilities.getUuid();
+  sh.appendRow([id,textoSeguro_(nome||rawLogin,120),rawLogin,whats,salt,gvguHashNovo_(senha,salt),'PENDENTE',new Date(),new Date(),email||(isEmail?rawLogin:''),'OPERADOR','','','','','','']);
+  gvguAuditar_('CADASTRO_PENDENTE',id,rawLogin);
+  return {status:'PENDENTE',mensagem:'Cadastro enviado para aprovação do administrador.'};
+ }finally{lock.releaseLock()}
+}
 function sairFuncionario(token){const h=gvguSHA_(token),sh=gvguSessoes_(),v=sh.getDataRange().getValues();for(let i=1;i<v.length;i++)if(v[i][0]===h)sh.getRange(i+1,4).setValue('SIM');return true}
 function gvguVincularPedido_(ss,pedido,id){gvguVinculos_().appendRow([pedido,id])}
-function meusPedidos(token){const u=gvguVerificarSessao_(token),ss=abasGestao_(),linked=gvguVinculos_().getDataRange().getValues();const ids=new Set(linked.slice(1).filter(r=>String(r[1])===u.id).map(r=>String(r[0])));
+function meusPedidos(token){
+ const u=gvguVerificarSessao_(token);
+ if(!gvguPodeVisualizar_(u,'pedidos'))throw new Error('GVG_SEM_ACESSO_PROJETO: seu perfil não tem acesso ao Pedidos.');
+ const ss=abasGestao_(),linked=gvguVinculos_().getDataRange().getValues();const ids=new Set(linked.slice(1).filter(r=>String(r[1])===u.id).map(r=>String(r[0])));
  const pedidos=ss.getSheetByName('PEDIDOS').getDataRange().getValues().slice(1).filter(r=>ids.has(String(r[0]))).map(r=>({id:String(r[0]),data:r[1] instanceof Date?r[1].toISOString():'',obra:r[3],status:r[6]}));
- const itens=ss.getSheetByName('ITENS_PEDIDO').getDataRange().getValues().slice(1).filter(r=>ids.has(String(r[0]))).map(r=>({id:String(r[0]),nome:r[2],solicitado:Number(r[3])||0,unidade:String(r[4]),entregue:r[6]===''?null:Number(r[6]),nota:String(r[8]||'')}));return {pedidos,itens};}
-function adminUsuarios(pin){admin_(pin);const sh=gvguUsuarios_();gvguPermHeaders_(sh);return sh.getDataRange().getValues().slice(1).map(r=>({id:r[0],nome:r[1],login:r[2],whatsapp:r[3],status:r[6],email:String(r[9]||''),perfil:String(r[10]||'CONSULTA').toUpperCase(),foto:String(r[11]||''),permissoes:gvguPermissoes_(r)}))}
-// Uso interno, sempre sob o bloqueio de escrita de cadastro/gestão.
+ const itens=ss.getSheetByName('ITENS_PEDIDO').getDataRange().getValues().slice(1).filter(r=>ids.has(String(r[0]))).map(r=>({id:String(r[0]),nome:r[2],solicitado:Number(r[3])||0,unidade:String(r[4]),entregue:r[6]===''?null:Number(r[6]),nota:String(r[8]||'')}));return {pedidos,itens};
+}
+function gvguAuditar_(acao,id,det){abasGestao_().getSheetByName('AUDITORIA').appendRow([new Date(),acao,id,'USUARIOS_GVG',String(det||'').slice(0,500)])}
+function gvguHistoricoPermissoes_(){return gvguSheet_('GVG_PERMISSOES',['Data','Responsavel','Usuario_ID','Login','Perfil','Status','Projetos','Detalhes'])}
+function gvguRegistrarHistorico_(ator,id,login,perfil,status,perms,detalhe){
+ try{gvguHistoricoPermissoes_().appendRow([new Date(),String(ator&&(ator.email||ator.login)||'sistema'),String(id||''),String(login||''),String(perfil||''),String(status||''),JSON.stringify(perms||{}),String(detalhe||'').slice(0,500)]);}catch(e){}
+}
+function superadmin_(credential){
+ const c=String(credential||'');
+ if(/^GVGA-[a-f0-9-]{72}$/i.test(c)){if(gvgaSessaoValida_(c))return {id:'',nome:'Superadministrador emergencial',login:'',email:'',perfil:'SUPERADMIN',foto:'',permissoes:gvguPermObj_({pedidos:'GERENCIAR',gastos:'GERENCIAR',fornecedores:'GERENCIAR',frotas:'GERENCIAR',maquinas:'GERENCIAR'}),superadmin:true,projetos:GVG_PERM_KEYS};}
+ const u=gvguVerificarSessao_(c);
+ if(gvguSuperadmin_(u))return u;
+ throw new Error('GVG_SUPERADMIN_NECESSARIO: somente o Superadministrador pode executar esta ação.');
+}
+function adminSessionUser_(credential){try{return gvguVerificarSessao_(String(credential||''));}catch(e){return null;}}
+function activeSuperadminCount_(){const v=gvguUsuarios_().getDataRange().getValues();let n=0;for(let i=1;i<v.length;i++){const perfil=gvguPerfilEfetivo_(v[i][9],v[i][10]);if(String(v[i][6]||'').toUpperCase()==='ATIVO'&&perfil==='SUPERADMIN')n++;}return n;}
 function gvguExcluirCadastro_(sh,row,id){
  const sessions=gvguSessoes_(),values=sessions.getDataRange().getValues();
  for(let j=values.length-1;j>0;j--)if(String(values[j][1])===String(id))sessions.deleteRow(j+1);
  sh.deleteRow(row);
- // Pedidos, itens e vínculos históricos mantêm seus IDs originais.
  gvguAuditar_('CADASTRO_EXCLUIDO',id,'Cadastro e sessões removidos; histórico de pedidos preservado.');
 }
-function adminSituacaoUsuario(pin,id,status,perfil,permissoes){
- admin_(pin);status=String(status||'').toUpperCase();if(['ATIVO','BLOQUEADO','EXCLUIDO'].indexOf(status)<0)throw new Error('Status inválido.');
- const lock=LockService.getScriptLock();lock.waitLock(20000);try{
- const sh=gvguUsuarios_(),v=sh.getDataRange().getValues(),i=v.findIndex((r,n)=>n>0&&String(r[0])===String(id));
- if(i<0)throw new Error('Usuário não encontrado. Atualize a lista.');
- const adminUser=adminSessionUser_(pin),currentStatus=String(v[i][6]||'').toUpperCase(),currentPerfil=String(v[i][10]||'CONSULTA').toUpperCase();
- if(adminUser&&String(v[i][0])===String(adminUser.id)&&status!=='ATIVO')throw new Error('Você não pode bloquear ou excluir seu próprio usuário.');
- if(status!=='ATIVO'&&currentPerfil==='ADMIN'&&currentStatus==='ATIVO'&&activeAdminCount_()<=1)throw new Error('Não é permitido bloquear ou excluir o último administrador ativo.');
- let perms=null;
- if(status==='ATIVO'&&currentStatus==='PENDENTE'){
-  perms=gvguPermObj_(permissoes||{pedidos:'OPERADOR'});
-  const role=perms.pedidos==='ADMIN'?'ADMIN':'CONSULTA';
-  sh.getRange(i+1,11).setValue(role);
-  sh.getRange(i+1,13,1,4).setValues([[perms.pedidos,perms.gastos,perms.fornecedores,perms.frotas]]);
- }else if(permissoes){
-  perms=gvguPermObj_(permissoes);
-  sh.getRange(i+1,13,1,4).setValues([[perms.pedidos,perms.gastos,perms.fornecedores,perms.frotas]]);
- }
- if(status==='EXCLUIDO'){
-  gvguExcluirCadastro_(sh,i+1,id);
-  SpreadsheetApp.flush();
-  return {status:'EXCLUIDO',excluido:true};
- }
- sh.getRange(i+1,7).setValue(status);sh.getRange(i+1,9).setValue(new Date());
- if(status==='BLOQUEADO')revogarSessoesUsuario_(id);
- gvguAuditar_('STATUS_USUARIO',id,status+(perms?' | '+JSON.stringify(perms):''));
- return {status,permissoes:perms};
+function adminUsuarios(pin){
+ superadmin_(pin);const sh=gvguUsuarios_();gvguPermHeaders_(sh);
+ return sh.getDataRange().getValues().slice(1).map(r=>{
+  const perfil=gvguPerfilEfetivo_(r[9],r[10]);
+  const permissoes=gvguPermissoes_(r);if(perfil==='ADMIN'&&!permissoes.maquinas)permissoes.maquinas='GERENCIAR';if(perfil==='SUPERADMIN')GVG_PERM_KEYS.forEach(k=>permissoes[k]='GERENCIAR');
+  return {id:r[0],nome:r[1],login:r[2],whatsapp:r[3],status:String(r[6]||'PENDENTE').toUpperCase(),email:String(r[9]||''),perfil:perfil,foto:String(r[11]||''),permissoes:permissoes,superadmin:perfil==='SUPERADMIN',projetos:GVG_PROJETOS.filter(p=>permissoes[p.key]).map(p=>p.key)};
+ });
+}
+function adminSalvarUsuario(pin,dados){
+ const ator=superadmin_(pin);const d=dados||{};
+ const lock=LockService.getScriptLock();lock.waitLock(20000);
+ try{
+  const sh=gvguUsuarios_();gvguPermHeaders_(sh);const v=sh.getDataRange().getValues();
+  const id=String(d.id||'').trim();const idx=id?v.findIndex((r,n)=>n>0&&String(r[0])===id):-1;
+  if(id&&idx<0)throw new Error('Usuário não encontrado. Atualize a lista.');
+  const novo=!id;
+  const nome=textoSeguro_(String(d.nome||'').trim(),120);
+  const login=String(d.login||'').trim();
+  const email=String(d.email||'').trim().toLowerCase();
+  const senha=String(d.senha||'');
+  const perfil=String(d.perfil||'OPERADOR').toUpperCase()==='SUPERADMIN'?'SUPERADMIN':String(d.perfil||'OPERADOR').toUpperCase()==='ADMIN'?'ADMIN':'OPERADOR';
+  const status=String(d.status||(novo?'ATIVO':(idx>=0?v[idx][6]:'ATIVO'))||'ATIVO').toUpperCase();
+  if(!nome)throw new Error('Informe o nome do usuário.');
+  if(!login)throw new Error('Informe o login.');
+  if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw new Error('E-mail inválido.');
+  if(novo&&!senha)throw new Error('Informe a senha do novo usuário.');
+  if(['ATIVO','BLOQUEADO','PENDENTE'].indexOf(status)<0)throw new Error('Status inválido.');
+  for(let n=1;n<v.length;n++){
+   if(n===idx)continue;
+   if(String(v[n][2]||'').trim().toLowerCase()===login.toLowerCase())throw new Error('Login já cadastrado.');
+   if(email&&String(v[n][9]||'').trim().toLowerCase()===email)throw new Error('E-mail já cadastrado.');
+  }
+  const permissoesEntrada=d.permissoes||{};
+  const perms=gvguPermObj_(permissoesEntrada);
+  if(perfil==='ADMIN'&&!Object.prototype.hasOwnProperty.call(permissoesEntrada,'maquinas'))perms.maquinas='GERENCIAR';
+  if(perfil==='SUPERADMIN')GVG_PERM_KEYS.forEach(k=>perms[k]='GERENCIAR');
+  if(perfil==='OPERADOR')GVG_PERM_KEYS.forEach(k=>{if(perms[k]==='GERENCIAR')perms[k]='OPERAR';});
+  const targetEmail=novo?email:String(idx>=0?(v[idx][9]||''):'').toLowerCase();
+  if(!novo&&targetEmail===GVG_SUPERADMIN_EMAIL&&email!==GVG_SUPERADMIN_EMAIL)throw new Error('O e-mail da conta principal do Superadministrador não pode ser alterado por outro usuário.');
+  const oldPerfil=novo?'':gvguPerfilEfetivo_(targetEmail,idx>=0?v[idx][10]:'');
+  const oldStatus=novo?'':String(idx>=0?(v[idx][6]||''):'').toUpperCase();
+  if(targetEmail===GVG_SUPERADMIN_EMAIL&&(perfil!=='SUPERADMIN'||status!=='ATIVO'))throw new Error('A conta principal do Superadministrador não pode ser bloqueada ou rebaixada.');
+  if(!novo&&oldPerfil==='SUPERADMIN'&&(perfil!=='SUPERADMIN'||status!=='ATIVO')){
+   if(activeSuperadminCount_()<=1)throw new Error('Não é permitido remover o último Superadministrador ativo.');
+  }
+  if(!novo&&String(ator.email||'').toLowerCase()===targetEmail&&(perfil!=='SUPERADMIN'||status!=='ATIVO'))throw new Error('Você não pode remover seu próprio acesso de Superadministrador.');
+  const now=new Date();
+  if(novo){
+   const newId='USR-'+Utilities.getUuid();const salt=Utilities.getUuid();
+   sh.appendRow([newId,nome,login,'',salt,gvguHashNovo_(senha,salt),status,now,now,email,perfil,'',perms.pedidos,perms.gastos,perms.fornecedores,perms.frotas,perms.maquinas]);
+   gvguRegistrarHistorico_(ator,newId,login,perfil,status,perms,'CRIAR');
+   gvguAuditar_('CRIAR_USUARIO',newId,JSON.stringify({login:login,perfil:perfil,status:status,permissoes:perms}));
+   return {ok:true,id:newId,perfil:perfil,status:status,permissoes:perms};
+  }
+  sh.getRange(idx+1,2).setValue(nome);sh.getRange(idx+1,3).setValue(login);sh.getRange(idx+1,10).setValue(email);sh.getRange(idx+1,11).setValue(perfil);sh.getRange(idx+1,7).setValue(status);sh.getRange(idx+1,9).setValue(now);
+  sh.getRange(idx+1,13,1,5).setValues([[perms.pedidos,perms.gastos,perms.fornecedores,perms.frotas,perms.maquinas]]);
+  if(senha){const salt=Utilities.getUuid();sh.getRange(idx+1,5,1,2).setValues([[salt,gvguHashNovo_(senha,salt)]]);}
+  if(status!=='ATIVO')revogarSessoesUsuario_(id);
+  try{CacheService.getScriptCache().remove('gvg_painel_v4_'+id);}catch(e){}
+  gvguRegistrarHistorico_(ator,id,login,perfil,status,perms,oldPerfil+'/'+oldStatus+' -> '+perfil+'/'+status);
+  gvguAuditar_('SALVAR_USUARIO',id,JSON.stringify({perfil:perfil,status:status,permissoes:perms}));
+  return {ok:true,id:id,perfil:perfil,status:status,permissoes:perms};
  }finally{lock.releaseLock()}
 }
+function adminCriarUsuario(pin,dados){return adminSalvarUsuario(pin,dados||{});}
+function adminSituacaoUsuario(pin,id,status,perfil,permissoes){
+ superadmin_(pin);status=String(status||'').toUpperCase();if(['ATIVO','BLOQUEADO','EXCLUIDO'].indexOf(status)<0)throw new Error('Status inválido.');
+ const sh=gvguUsuarios_();gvguPermHeaders_(sh);const v=sh.getDataRange().getValues();
+ const i=v.findIndex((r,n)=>n>0&&String(r[0])===String(id));if(i<0)throw new Error('Usuário não encontrado. Atualize a lista.');
+ const ator=superadmin_(pin);const alvoEmail=String(v[i][9]||'').toLowerCase();const alvoPerfil=gvguPerfilEfetivo_(alvoEmail,v[i][10]);const alvoStatus=String(v[i][6]||'').toUpperCase();
+ if(alvoEmail===GVG_SUPERADMIN_EMAIL&&status!=='ATIVO')throw new Error('A conta principal do Superadministrador não pode ser bloqueada ou excluída.');
+ if(String(ator.email||'').toLowerCase()===alvoEmail&&status!=='ATIVO')throw new Error('Você não pode bloquear ou excluir seu próprio usuário.');
+ if(status!=='ATIVO'&&alvoPerfil==='SUPERADMIN'&&alvoStatus==='ATIVO'&&activeSuperadminCount_()<=1)throw new Error('Não é permitido bloquear ou excluir o último Superadministrador ativo.');
+ if(status==='EXCLUIDO'){
+  const lock=LockService.getScriptLock();lock.waitLock(20000);
+  try{gvguExcluirCadastro_(sh,i+1,id);gvguRegistrarHistorico_(ator,id,v[i][2],alvoPerfil,'EXCLUIDO',gvguPermissoes_(v[i]),'EXCLUIR');SpreadsheetApp.flush();return {status:'EXCLUIDO',excluido:true};}finally{lock.releaseLock()}
+ }
+ if(status==='ATIVO'&&alvoStatus==='PENDENTE'){
+  const perfilFinal=String(perfil||'OPERADOR').toUpperCase()==='SUPERADMIN'?'SUPERADMIN':String(perfil||'OPERADOR').toUpperCase()==='ADMIN'?'ADMIN':'OPERADOR';
+  return adminSalvarUsuario(pin,{id:id,nome:v[i][1],login:v[i][2],email:v[i][9],perfil:perfilFinal,status:'ATIVO',permissoes:permissoes||{}});
+ }
+ return adminSalvarUsuario(pin,{id:id,nome:v[i][1],login:v[i][2],email:v[i][9],perfil:alvoPerfil,status:status,permissoes:permissoes||gvguPermissoes_(v[i])});
+}
+
 function adminDefinirPermissoes(pin,id,permissoes){
- admin_(pin);const perms=gvguPermObj_(permissoes||{});
- const lock=LockService.getScriptLock();lock.waitLock(20000);try{
-  const sh=gvguUsuarios_(),v=sh.getDataRange().getValues(),i=v.findIndex((r,n)=>n>0&&String(r[0])===String(id));
-  if(i<0)throw new Error('Usuário não encontrado. Atualize a lista.');
-  const adminUser=adminSessionUser_(pin),currentPerfil=String(v[i][10]||'CONSULTA').toUpperCase(),currentStatus=String(v[i][6]||'').toUpperCase();
-  if(adminUser&&String(v[i][0])===String(adminUser.id)&&perms.pedidos!=='ADMIN')throw new Error('Você não pode remover seu próprio acesso de administrador do Pedidos.');
-  if(currentPerfil==='ADMIN'&&perms.pedidos!=='ADMIN'&&currentStatus==='ATIVO'&&activeAdminCount_()<=1)throw new Error('Não é permitido rebaixar o último administrador ativo.');
-  sh.getRange(i+1,13,1,4).setValues([[perms.pedidos,perms.gastos,perms.fornecedores,perms.frotas]]);
-  const perfil=perms.pedidos==='ADMIN'?'ADMIN':'CONSULTA';
-  sh.getRange(i+1,11).setValue(perfil);sh.getRange(i+1,9).setValue(new Date());
-  gvguAuditar_('ALTERAR_PERMISSOES',id,JSON.stringify(perms));
-  return {ok:true,permissoes:perms,perfil};
- }finally{lock.releaseLock()}
+ const u=superadmin_(pin);const sh=gvguUsuarios_();gvguPermHeaders_(sh);const v=sh.getDataRange().getValues();const i=v.findIndex((r,n)=>n>0&&String(r[0])===String(id));
+ if(i<0)throw new Error('Usuário não encontrado.');const perfil=gvguPerfilEfetivo_(v[i][9],v[i][10]);
+ return adminSalvarUsuario(pin,{id:id,nome:v[i][1],login:v[i][2],email:v[i][9],perfil:perfil,status:v[i][6],permissoes:permissoes||{}});
 }
 function adminDefinirPerfil(pin,id,perfil){
- admin_(pin);perfil=String(perfil||'').toUpperCase();if(['ADMIN','CONSULTA'].indexOf(perfil)<0)throw new Error('Perfil inválido.');
- const lock=LockService.getScriptLock();lock.waitLock(20000);try{
- const sh=gvguUsuarios_(),v=sh.getDataRange().getValues(),i=v.findIndex((r,n)=>n>0&&String(r[0])===String(id));
- if(i<0)throw new Error('Usuário não encontrado. Atualize a lista.');
- const adminUser=adminSessionUser_(pin),currentPerfil=String(v[i][10]||'CONSULTA').toUpperCase();
- if(adminUser&&String(v[i][0])===String(adminUser.id)&&perfil!=='ADMIN')throw new Error('Você não pode remover seu próprio acesso administrativo.');
- if(currentPerfil==='ADMIN'&&perfil!=='ADMIN'&&String(v[i][6]||'').toUpperCase()==='ATIVO'&&activeAdminCount_()<=1)throw new Error('Não é permitido rebaixar o último administrador ativo.');
- sh.getRange(i+1,11).setValue(perfil);sh.getRange(i+1,9).setValue(new Date());
- gvguAuditar_('ALTERAR_PERFIL',id,perfil);return {ok:true,perfil:perfil};
- }finally{lock.releaseLock()}
+ perfil=String(perfil||'').toUpperCase();if(['SUPERADMIN','ADMIN','OPERADOR','CONSULTA'].indexOf(perfil)<0)throw new Error('Perfil inválido.');
+ const sh=gvguUsuarios_();gvguPermHeaders_(sh);const v=sh.getDataRange().getValues();const i=v.findIndex((r,n)=>n>0&&String(r[0])===String(id));
+ if(i<0)throw new Error('Usuário não encontrado.');const perms=gvguPermissoes_(v[i]);
+ return adminSalvarUsuario(pin,{id:id,nome:v[i][1],login:v[i][2],email:v[i][9],perfil:perfil,status:v[i][6],permissoes:perms});
 }
 function adminRedefinirSenha(pin,id,nova){
- admin_(pin);const senha=String(nova==null?'':nova);if(!senha||senha.length>128)throw new Error('Informe uma senha de 1 a 128 caracteres.');
+ const ator=superadmin_(pin);const senha=String(nova==null?'':nova);if(!senha||senha.length>128)throw new Error('Informe uma senha de 1 a 128 caracteres.');
  const lock=LockService.getScriptLock();lock.waitLock(20000);try{
  const sh=gvguUsuarios_(),v=sh.getDataRange().getValues(),i=v.findIndex((r,n)=>n>0&&String(r[0])===String(id));
  if(i<0)throw new Error('Usuário não encontrado. Atualize a lista.');
+ const targetEmail=String(v[i][9]||'').toLowerCase();
+ if(targetEmail===GVG_SUPERADMIN_EMAIL&&String(ator.email||'').toLowerCase()!==GVG_SUPERADMIN_EMAIL)throw new Error('A senha da conta principal do Superadministrador só pode ser alterada por ela mesma.');
  const salt=Utilities.getUuid();sh.getRange(i+1,5,1,2).setValues([[salt,gvguHashNovo_(senha,salt)]]);sh.getRange(i+1,9).setValue(new Date());
- const adminUser=adminSessionUser_(pin);revogarSessoesUsuario_(id,adminUser&&String(adminUser.id)===String(id)?pin:'');gvguAuditar_('REDEFINIR_SENHA',id,'Senha redefinida pelo administrador.');
+ revogarSessoesUsuario_(id,String(ator.id)===String(id)?pin:'');gvguAuditar_('REDEFINIR_SENHA',id,'Senha redefinida pelo administrador.');
  return {ok:true};
  }finally{lock.releaseLock()}
 }
@@ -439,8 +561,8 @@ function entrarAdminGVG(pin){
  return {token};
 }
 function validarSessaoAdminGVG(token){
- if(gvgaSessaoValida_(token))return {ok:true};
- try{const u=gvguVerificarSessao_(token);if(String(u.perfil||'').toUpperCase()==='ADMIN')return {ok:true,nome:u.nome,email:u.email};}catch(e){}
+ if(gvgaSessaoValida_(token))return {ok:true,perfil:'SUPERADMIN',superadmin:true,podeGerenciarPedidos:true};
+ try{const u=gvguVerificarSessao_(token);if(gvguPodeGerenciar_(u,'pedidos'))return {ok:true,nome:u.nome,email:u.email,perfil:u.perfil,superadmin:u.superadmin,podeGerenciarPedidos:true,permissoes:u.permissoes};}catch(e){}
  return {ok:false};
 }
 function sairAdminGVG(token){
@@ -448,7 +570,7 @@ function sairAdminGVG(token){
  return {ok:true};
 }
 function estadoSessaoFuncionarioGVG(token){
- try{const u=gvguVerificarSessao_(token);return {ok:true,id:u.id,nome:u.nome,login:u.login,email:u.email,perfil:u.perfil,foto:u.foto||'',permissoes:u.permissoes||{}};}
+ try{const u=gvguVerificarSessao_(token);return {ok:true,id:u.id,nome:u.nome,login:u.login,email:u.email,perfil:u.perfil,foto:u.foto||'',permissoes:u.permissoes||{},superadmin:u.superadmin,projetos:u.projetos||[],podeGerenciarPedidos:gvguPodeGerenciar_(u,'pedidos'),podeOperarPedidos:gvguPodeOperar_(u,'pedidos')};}
  catch(e){const message=String(e&&e.message||e);
   if(/^(Entre na sua conta para solicitar materiais\.|Sessão expirada\. Entre novamente\.|Acesso não autorizado ou bloqueado\.)$/.test(message))return {ok:false};
   throw e;
@@ -628,46 +750,65 @@ function painelResumoPedidos_(){
   try{cache.put(key,JSON.stringify(out),30);}catch(e){}
   return out;
 }
+function gvguFiltrarAppsPainel_(apps,usuario){
+ const out={};GVG_PROJETOS.forEach(p=>{if(apps&&apps[p.key]&&gvguPodeVisualizar_(usuario,p.key))out[p.key]=apps[p.key];});return out;
+}
+function gvguFiltrarAtividadesPainel_(atividades,usuario){
+ const map={'Pedidos':'pedidos','Controle de Gastos':'gastos','Fornecedores':'fornecedores','Frotas':'frotas','Controle de Máquinas':'maquinas'};
+ return (atividades||[]).filter(a=>{const k=map[a&&a.app];return !k||gvguPodeVisualizar_(usuario,k);});
+}
 function getPainelInicial(sessao){
-  let usuario;
-  try{usuario=gvguVerificarSessao_(sessao);}catch(e){return {ok:false,error:String(e&&e.message||e)};}
-  const cache=CacheService.getScriptCache();
-  const cacheKey='gvg_painel_v4_'+usuario.id;
-  const cached=cache.get(cacheKey);
-  if(cached){
-    try{
-      const out=JSON.parse(cached);
-      out.usuario={id:usuario.id,nome:usuario.nome,login:usuario.login,email:usuario.email,perfil:usuario.perfil,foto:usuario.foto||'',permissoes:usuario.permissoes||{}};
-      return out;
-    }catch(e){}
-  }
+ let usuario;
+ try{usuario=gvguVerificarSessao_(sessao);}catch(e){return {ok:false,error:String(e&&e.message||e)};}
+ const publico=gvguUsuarioPublico_(usuario);
+ const cache=CacheService.getScriptCache();
+ const cacheKey='gvg_painel_v4_'+usuario.id;
+ const cached=cache.get(cacheKey);
+ if(cached){
   try{
-    const resumo=painelResumoPedidos_();
-    let externos=null;
-    try{const ext=cache.get('gvg_painel_resumos_v2');if(ext)externos=JSON.parse(ext);}catch(e){}
-    if(!externos||!externos.gastos||!externos.maquinas)externos={gastos:{valor:'—',label:'gastos no mês',detalhe:'Carregando…',recente:null},fornecedores:{valor:'—',label:'fornecedores ativos',detalhe:'Carregando…',recente:null},maquinas:{valor:'—',label:'equipamentos disponíveis',detalhe:'Carregando…',recente:null},frotas:{valor:'—',label:'veículos na frota',detalhe:'Carregando…',recente:null}};
-    const gastos=externos.gastos,fornecedores=externos.fornecedores,maquinas=externos.maquinas,frotas=externos.frotas;
-    const latest=resumo.recente,abertos=resumo.abertos;
-    const pedidosResumo={valor:resumo.total,label:resumo.total===1?'pedido registrado':'pedidos registrados',detalhe:abertos===1?'1 em andamento':abertos+' em andamento',recente:latest?{titulo:latest.id,detalhe:latest.status,data:latest.data}:null};
-    const apps={pedidos:pedidosResumo,gastos:gastos,fornecedores:fornecedores,maquinas:maquinas,frotas:frotas};
-    const atividades=[
-      {app:'Pedidos',tone:'gold',titulo:pedidosResumo.recente?pedidosResumo.recente.titulo:'Sem pedidos recentes',detalhe:pedidosResumo.recente?pedidosResumo.recente.detalhe:'',data:pedidosResumo.recente?pedidosResumo.recente.data:''},
-      {app:'Controle de Gastos',tone:'green',titulo:gastos.recente?gastos.recente.titulo:'Sem gastos recentes',detalhe:gastos.recente?gastos.recente.detalhe:'',data:gastos.recente?gastos.recente.data:''},
-      {app:'Fornecedores',tone:'purple',titulo:fornecedores.recente?fornecedores.recente.titulo:'Sem fornecedores recentes',detalhe:fornecedores.recente?fornecedores.recente.detalhe:'',data:fornecedores.recente?fornecedores.recente.data:''},
-      {app:'Frotas',tone:'blue',titulo:frotas.recente?frotas.recente.titulo:'Sem veículos recentes',detalhe:frotas.recente?frotas.recente.detalhe:'',data:''}
-    ];
-    const out={ok:true,usuario:{id:usuario.id,nome:usuario.nome,login:usuario.login,email:usuario.email,perfil:usuario.perfil,foto:usuario.foto||'',permissoes:usuario.permissoes||{}},ambiente:resumo.ambiente,atualizadoEm:resumo.atualizadoEm,vazio:resumo.vazio,apps:apps,atividades:atividades};
-    try{cache.put(cacheKey,JSON.stringify(out),30);}catch(e){}
-    return out;
-  }catch(e){
-    return {ok:false,error:'Não foi possível carregar os indicadores: '+String(e&&e.message||e)};
+   const out=JSON.parse(cached);
+   out.usuario=publico;
+   out.apps=gvguFiltrarAppsPainel_(out.apps,usuario);
+   out.atividades=gvguFiltrarAtividadesPainel_(out.atividades,usuario);
+   if(!gvguPodeVisualizar_(usuario,'pedidos'))out.vazio=false;
+   return out;
+  }catch(e){}
+ }
+ try{
+  const verPedidos=gvguPodeVisualizar_(usuario,'pedidos');
+  const resumo=verPedidos?painelResumoPedidos_():null;
+  let externos=null;
+  if(gvguPodeVisualizar_(usuario,'gastos')||gvguPodeVisualizar_(usuario,'fornecedores')||gvguPodeVisualizar_(usuario,'maquinas')||gvguPodeVisualizar_(usuario,'frotas')){
+   try{const ext=cache.get('gvg_painel_resumos_v2');if(ext)externos=JSON.parse(ext);}catch(e){}
   }
+  if(!externos||!externos.gastos||!externos.maquinas)externos={gastos:{valor:'—',label:'gastos no mês',detalhe:'Carregando…',recente:null},fornecedores:{valor:'—',label:'fornecedores ativos',detalhe:'Carregando…',recente:null},maquinas:{valor:'—',label:'equipamentos disponíveis',detalhe:'Carregando…',recente:null},frotas:{valor:'—',label:'veículos na frota',detalhe:'Carregando…',recente:null}};
+  const apps={};
+  if(verPedidos){const latest=resumo.recente,abertos=resumo.abertos;apps.pedidos={valor:resumo.total,label:resumo.total===1?'pedido registrado':'pedidos registrados',detalhe:abertos===1?'1 em andamento':abertos+' em andamento',recente:latest?{titulo:latest.id,detalhe:latest.status,data:latest.data}:null};}
+  if(gvguPodeVisualizar_(usuario,'gastos'))apps.gastos=externos.gastos;
+  if(gvguPodeVisualizar_(usuario,'fornecedores'))apps.fornecedores=externos.fornecedores;
+  if(gvguPodeVisualizar_(usuario,'maquinas'))apps.maquinas=externos.maquinas;
+  if(gvguPodeVisualizar_(usuario,'frotas'))apps.frotas=externos.frotas;
+  const atividades=[];
+  if(verPedidos)atividades.push({app:'Pedidos',tone:'gold',titulo:apps.pedidos.recente?apps.pedidos.recente.titulo:'Sem pedidos recentes',detalhe:apps.pedidos.recente?apps.pedidos.recente.detalhe:'',data:apps.pedidos.recente?apps.pedidos.recente.data:''});
+  if(gvguPodeVisualizar_(usuario,'gastos'))atividades.push({app:'Controle de Gastos',tone:'green',titulo:externos.gastos.recente?externos.gastos.recente.titulo:'Sem gastos recentes',detalhe:externos.gastos.recente?externos.gastos.recente.detalhe:'',data:externos.gastos.recente?externos.gastos.recente.data:''});
+  if(gvguPodeVisualizar_(usuario,'fornecedores'))atividades.push({app:'Fornecedores',tone:'purple',titulo:externos.fornecedores.recente?externos.fornecedores.recente.titulo:'Sem fornecedores recentes',detalhe:externos.fornecedores.recente?externos.fornecedores.recente.detalhe:'',data:externos.fornecedores.recente?externos.fornecedores.recente.data:''});
+  if(gvguPodeVisualizar_(usuario,'frotas'))atividades.push({app:'Frotas',tone:'blue',titulo:externos.frotas.recente?externos.frotas.recente.titulo:'Sem veículos recentes',detalhe:externos.frotas.recente?externos.frotas.recente.detalhe:'',data:''});
+  const out={ok:true,usuario:publico,ambiente:resumo?resumo.ambiente:'TESTE',atualizadoEm:resumo?resumo.atualizadoEm:Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'dd/MM/yyyy HH:mm'),vazio:verPedidos?resumo.vazio:false,apps:apps,atividades:atividades};
+  try{cache.put(cacheKey,JSON.stringify(out),30);}catch(e){}
+  return out;
+ }catch(e){
+  return {ok:false,error:'Não foi possível carregar os indicadores: '+String(e&&e.message||e)};
+ }
 }
 function getPainelExternos(sessao){
-  try{gvguVerificarSessao_(sessao);}catch(e){return {ok:false,error:String(e&&e.message||e)};}
-  try{
-    const r=painelResumosExternos_();
-    return {ok:true,apps:{gastos:r.gastos,fornecedores:r.fornecedores,maquinas:r.maquinas,frotas:r.frotas}};
-  }catch(e){return {ok:false,error:'Não foi possível carregar os resumos: '+String(e&&e.message||e)};}
+ let usuario;
+ try{usuario=gvguVerificarSessao_(sessao);}catch(e){return {ok:false,error:String(e&&e.message||e)};}
+ try{
+  const r=painelResumosExternos_();const apps={};
+  if(gvguPodeVisualizar_(usuario,'gastos'))apps.gastos=r.gastos;
+  if(gvguPodeVisualizar_(usuario,'fornecedores'))apps.fornecedores=r.fornecedores;
+  if(gvguPodeVisualizar_(usuario,'maquinas'))apps.maquinas=r.maquinas;
+  if(gvguPodeVisualizar_(usuario,'frotas'))apps.frotas=r.frotas;
+  return {ok:true,apps:apps};
+ }catch(e){return {ok:false,error:'Não foi possível carregar os resumos: '+String(e&&e.message||e)};}
 }
-

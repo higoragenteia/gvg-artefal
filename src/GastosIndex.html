@@ -34,8 +34,9 @@ body.authing header,body.authing main,body.authing footer{display:none!important
 <section id="budgets" class="hide"><div class="panel"><h3>Definir orçamento por mês</h3><p class="muted">Uma alteração começa no mês escolhido e segue nos próximos. Meses anteriores permanecem com valores históricos.</p><form id="budgetForm" class="fields"><div><label>A partir do mês</label><input id="budgetMonth" type="month" required></div><div><label>Funcionário</label><select id="budgetPerson" required></select></div><div><label>Categoria</label><select id="budgetCategory" required></select></div><div><label>Novo limite mensal (R$)</label><input id="budgetValue" type="number" min="0" step="0.01" required></div><div class="wide"><button>Salvar orçamento</button></div></form></div><div class="panel"><h3>Orçamento, gasto e saldo por pessoa/categoria</h3><div id="budgetTable" class="scroll"></div></div></section>
 <section id="records" class="hide"><div class="panel"><h3>Adicionar funcionário, categoria, empresa ou forma de pagamento</h3><form id="recordForm" class="fields"><div><label>Tipo</label><select id="recordKind"><option value="person">Funcionário</option><option value="category">Categoria</option><option value="company">Empresa</option><option value="payment">Forma de pagamento</option></select></div><div><label>Nome</label><input id="recordValue" required></div><div><label>&nbsp;</label><button>Adicionar cadastro</button></div></form><p class="muted">Para um funcionário novo participar do orçamento, adicione também sua coluna na aba “Orçamento Mensal”. Os lançamentos antigos permanecem intactos.</p></div><div class="panel" id="recordList"></div></section><section id="users" class="hide"><div class="panel"><h3>Cadastros pendentes</h3><div id="pendingUsers"></div></div><div class="panel"><h3>Usuários ativos</h3><div id="activeUsers"></div></div><div class="panel"><h3>Bloqueados e recusados</h3><div id="otherUsers"></div></div></section></main><footer>GVG & ARTEFAL • Os lançamentos são gravados na planilha Google Sheets vinculada</footer>
 <script>
-let DATA=null,USER=null,IS_ADMIN=false;const TOKEN_KEY='gvgGastosToken';let MEMORY_TOKEN='';const $=id=>document.getElementById(id),money=n=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(Number(n)||0);const safe=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function rpc(name,...args){return new Promise((resolve,reject)=>{if(typeof google==='undefined'||!google.script||!google.script.run){reject(Error('Execute como aplicativo Google Apps Script; prévia local sem conexão.'));return;}google.script.run.withSuccessHandler(resolve).withFailureHandler(err=>reject(Error(err&&err.message?err.message:String(err)))).apiCall(name,args,getToken())})}
+let DATA=null,USER=null,IS_ADMIN=false,PAINEL_REQUIRED=false;const TOKEN_KEY='gvgGastosToken';let MEMORY_TOKEN='';const $=id=>document.getElementById(id),money=n=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(Number(n)||0);const safe=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function getPanelToken(){try{return localStorage.getItem('gvgUsrToken')||''}catch(e){return ''}}
+function rpc(name,...args){return new Promise((resolve,reject)=>{if(typeof google==='undefined'||!google.script||!google.script.run){reject(Error('Execute como aplicativo Google Apps Script; prévia local sem conexão.'));return;}google.script.run.withSuccessHandler(resolve).withFailureHandler(err=>reject(Error(err&&err.message?err.message:String(err)))).apiCall(name,args,getToken(),getPanelToken())})}
 function message(x,isErr=false){$('msg').textContent=x;$('msg').style.color=isErr?'#ff9eaa':'#f2c846';}
 async function task(name,args,success='Operação concluída'){message('Processando...');try{await rpc(name,args);message(success);await refresh();return true}catch(e){message(e.message||String(e),true);return false}}
 function tab(id){if(!IS_ADMIN&&['adjust','budgets','records','users'].indexOf(id)>=0)id='overview';document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));document.querySelectorAll('main>section').forEach(x=>x.classList.toggle('hide',x.id!==id));if(id==='users')loadUsers();}
@@ -69,6 +70,7 @@ function setAuthMsg(type,text){ const el=$('authMsg'); if(!el) return; el.classN
 function showAuth(){ $('authScreen').classList.remove('hide'); document.body.classList.add('authing'); $('sessionBox').classList.add('hide'); renderAuth('login'); }
 function hideAuth(){ $('authScreen').classList.add('hide'); document.body.classList.remove('authing'); $('sessionBox').classList.remove('hide'); }
 function renderAuth(mode){
+  if(PAINEL_REQUIRED){$('authBody').innerHTML='<h2>Acesso pelo Painel</h2><p class="auth-desc">O acesso direto ao Controle de Gastos está desativado. Entre no Painel GVG&ARTEFAL e abra o módulo pelo menu.</p><p class="auth-note">Se você já está no painel, confirme com o Superadministrador se o seu perfil tem permissão para este projeto.</p><button type="button" class="auth-btn" onclick="location.reload()">Tentar novamente</button>';return;}
   const reg=mode==='register';
   const body=reg
     ? '<h2>Criar cadastro</h2><p class="auth-desc">Seu cadastro será enviado para aprovação do administrador.</p>'
@@ -91,14 +93,15 @@ function renderAuth(mode){
   $('authBody').innerHTML=body;
 }
 async function bootAuth(){
-  if(!getToken()){ showAuth(); return; }
+  if(!getToken()&&!getPanelToken()){ PAINEL_REQUIRED=true; showAuth(); return; }
   try{
     const r=await rpc('getBootstrap');
     if(r && r.ok && r.user){
-      USER=r.user; IS_ADMIN=USER.perfil==='ADMIN';
+      PAINEL_REQUIRED=false; USER=r.user; IS_ADMIN=USER.perfil==='ADMIN';
       hideAuth(); applySession(); await refresh(); return;
     }
-  }catch(e){}
+    if(r&&r.painelRequired){PAINEL_REQUIRED=true;showAuth();return;}
+  }catch(e){PAINEL_REQUIRED=true;}
   setToken(''); USER=null; IS_ADMIN=false; showAuth();
 }
 function applySession(){

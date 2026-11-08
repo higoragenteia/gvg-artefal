@@ -149,6 +149,23 @@ Branch `perf/otimizacao-mobile`, produção v83 preservada. Detalhes e mediçõe
 | Botão Sair após sessão | OK — corrigido; permanece disponível após evento de sessão e troca de módulos |
 | Limpeza pós-publicação | OK — usuário e sessões de teste removidos; implantações temporárias excluídas |
 
+## Gerenciamento de usuários e permissões (08/11/2026)
+
+Branch `feat/permissoes-projetos`, produção v90 preservada. Detalhes em [`PERMISSOES.md`](PERMISSOES.md).
+
+| Teste | Resultado |
+|---|---|
+| Operador — Pedidos Operar / Máquinas Visualizar | OK — pedido registrado; alteração em Máquinas negada com “somente leitura” |
+| Administrador limitado — dois projetos | OK — Pedidos e Máquinas com Gestão/Gerenciar; Gastos, Fornecedores e Frotas ocultos |
+| Superadministrador | OK — cinco projetos no menu e gerenciamento global de usuários |
+| Acesso direto a projeto bloqueado | OK — sem token do painel: “Acesse pelo Painel”; com token sem permissão: negado no backend |
+| Alteração de permissão | OK — remoção de Máquinas ocultou o menu e bloqueou novas operações; Pedidos permaneceu |
+| Criação de usuário pela interface | OK — Operador/Visualizar criado e login funcionando |
+| Proteção da conta principal | OK — rebaixamento e bloqueio do Superadministrador recusados |
+| Escalação por Administrador | OK — promoção para Superadministrador e listagem global recusadas |
+| Limpeza | OK — usuários, sessões, auditorias, histórico e implantações de teste removidos; coluna temporária limpa |
+| Produção | OK — v90 inalterada; HEAD restaurado; implantação de teste excluída |
+
 ## Pendências
 
 - Integrar Frotas. Controle de Gastos, Fornecedores e Controle de Máquinas já estão integrados.

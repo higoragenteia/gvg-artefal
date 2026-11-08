@@ -90,6 +90,17 @@ O Apps Script é **vinculado à planilha de teste original** e abre a planilha a
 - O painel e o Pedidos tiveram redução de aproximadamente 52% e 45% no HTML comprimido, respectivamente.
 - Medições, riscos e procedimento de reversão: [`docs/OTIMIZACOES.md`](docs/OTIMIZACOES.md).
 
+## Usuários e permissões
+
+- **Superadministrador:** acesso global a todos os projetos e ao gerenciamento de usuários/permissões.
+- **Administrador:** poder completo somente nos projetos com nível **Gerenciar**; não altera usuários globais nem as próprias permissões.
+- **Operador:** usa as funções operacionais dos projetos autorizados; não recebe nível **Gerenciar**.
+- Cada projeto pode ficar **Sem acesso**, **Visualizar**, **Operar** ou **Gerenciar**.
+- O menu lateral, os cartões da visão geral e os dados do backend respeitam as permissões.
+- Os módulos Gastos, Fornecedores e Máquinas usam o login central do painel; o acesso direto sem sessão do painel é negado.
+- A conta principal `higorjose.gvgesquadrias@gmail.com` é protegida como Superadministrador.
+- Modelo, testes, limitações e implantação: [`docs/PERMISSOES.md`](docs/PERMISSOES.md).
+
 ## Abas da planilha ativa (cópia oficial)
 
 `PRODUTOS`, `CATEGORIAS`, `OBRAS`, `CONFIG`, `PEDIDOS`, `ITENS_PEDIDO`, `AUDITORIA`, `GVG_USUARIOS`, `SESSOES_GVG`, `PEDIDOS_USUARIOS` e `LEIA-ME`.
