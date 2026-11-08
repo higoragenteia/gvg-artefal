@@ -74,6 +74,7 @@ O Apps Script é **vinculado à planilha de teste original** e abre a planilha a
 ## Módulos do menu
 
 - **Visão geral** — indicadores calculados da base ativa: pedidos, em andamento, entregues, itens, produtos ativos, obras ativas, pedidos recentes e mais solicitados. Com base vazia, exibe estado vazio com atalho para Pedidos. A visão alterna automaticamente entre **dois layouts** (Executivo e Monitor) a cada **30 segundos**, com transição; o botão **Pausar/Retomar** fica no topo. Os dados são atualizados a cada troca.
+- **Abertura dos módulos** — Pedidos, Gastos, Fornecedores e Máquinas abrem em **tela ampliada**, ocupando toda a área útil ao lado do menu; a topbar do painel é recolhida e o retorno é pela **Visão geral**.
 - **Pedidos** — aplicativo original preservado: catálogo, carrinho, obras, solicitação, histórico do usuário, Gestão, disponibilidade de produtos, relatório, conferência de entrega e foto de produto.
 - **Controle de Gastos** — app oficial integrado ao painel, com dashboard financeiro, despesas, orçamento, saldo, cadastros e usuários; usa a cópia de teste da planilha de Gastos e fica disponível somente para administradores.
 - **Fornecedores** — app oficial integrado ao painel, com fornecedores, produtos/serviços, cotações, comparação de preços, compras, relatórios, usuários e configurações; usa a cópia de teste da planilha de Fornecedores e fica disponível somente para administradores.

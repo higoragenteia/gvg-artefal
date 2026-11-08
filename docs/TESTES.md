@@ -34,6 +34,8 @@ Ambiente: navegador Chromium 156, conta administradora existente, base nova `GVG
 | Fornecedores | OK — app oficial integrado em iframe, login próprio, dashboard e permissão de administrador |
 | Controle de Máquinas | OK — app oficial integrado em iframe, login próprio, dashboard e permissão de administrador |
 | Frotas | OK — selo “Em breve” e tela de integração futura |
+| Ícones do menu lateral | OK — efeito 3D dourado em Visão geral, Pedidos, Gastos, Fornecedores, Máquinas e Frotas |
+| Abertura dos módulos | OK — modo expandido ocupando toda a área útil; retorno pela Visão geral |
 | Voltar à visão geral | OK |
 
 ## Login e permissões
