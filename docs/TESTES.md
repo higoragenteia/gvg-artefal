@@ -166,6 +166,19 @@ Branch `feat/permissoes-projetos`, produção v90 preservada. Detalhes em [`PERM
 | Limpeza | OK — usuários, sessões, auditorias, histórico e implantações de teste removidos; coluna temporária limpa |
 | Produção | OK — v90 inalterada; HEAD restaurado; implantação de teste excluída |
 
+## Publicação das permissões — v99 (08/11/2026)
+
+| Teste | Resultado |
+|---|---|
+| Backup dos usuários | OK — aba `BACKUP_GVG_USUARIOS_PRE_PERMISSOES_20261108` criada |
+| Publicação do Apps Script | OK — versão 99 na implantação oficial |
+| Superadministrador em produção | OK — cinco projetos, modal de usuários e proteção da conta principal |
+| Administrador limitado em produção | OK — somente Pedidos e Máquinas; leitura administrativa do módulo funcionando |
+| Operador em produção | OK — Pedidos e Máquinas; Máquinas em modo somente leitura e escrita negada |
+| Módulos na produção | OK — Máquinas, Gastos e Fornecedores com SSO do painel |
+| Limpeza | OK — usuários e sessões de teste removidos; nenhum pedido de teste permaneceu |
+| GitHub Pages | OK — wrapper atualizado para a v99 |
+
 ## Pendências
 
 - Integrar Frotas. Controle de Gastos, Fornecedores e Controle de Máquinas já estão integrados.

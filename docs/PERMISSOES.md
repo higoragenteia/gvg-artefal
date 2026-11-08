@@ -2,8 +2,8 @@
 
 Branch de trabalho: `feat/permissoes-projetos`  
 Ponto de restauração: tag `pre-permissoes-20261108`  
-Produção: **v90, inalterada**  
-Status: **não publicado** — aguardando aprovação.
+Produção: **v99, publicada em 08/11/2026**  
+Status: **publicado**.
 
 ## 1. Modelo de acesso
 
@@ -122,22 +122,25 @@ Ambiente: Chromium 158 headless, emulação Pixel 5 e desktop, implantação tem
 - O módulo Frotas ainda não possui aplicativo; a permissão controla apenas menu/tela futura.
 - O e-mail de acesso aos módulos é o mesmo do cadastro do painel. Contas antigas dos módulos que não existirem no painel não terão acesso até serem cadastradas e autorizadas.
 
-## 10. Implantação (não executada)
+## 10. Publicação realizada
 
-Após aprovação:
+Em 08/11/2026:
 
-1. Fazer backup da aba `GVG_USUARIOS`.
-2. Publicar esta branch no Apps Script.
-3. Entrar com a conta principal e abrir **Usuários** para confirmar que a coluna `Perm_Maquinas` e a aba `GVG_PERMISSOES` foram criadas.
-4. Revisar as permissões de Hanani, Ana e higorjes antes de liberar o acesso aos módulos.
-5. Testar o acesso de um operador e de um administrador limitado.
-6. Publicar o GitHub Pages e validar o PWA.
+1. A aba `GVG_USUARIOS` foi duplicada como `BACKUP_GVG_USUARIOS_PRE_PERMISSOES_20261108`.
+2. A branch foi integrada à `main`.
+3. O Apps Script foi publicado na versão 99 e a implantação oficial foi atualizada.
+4. A coluna `Perm_Maquinas` foi criada automaticamente.
+5. A conta principal foi confirmada como Superadministrador protegido.
+6. Um Superadministrador, um Administrador limitado e um Operador de teste validaram menu, módulos, SSO e bloqueios.
+7. Os usuários e sessões de teste foram removidos.
+8. O GitHub Pages foi atualizado para a v99.
 
-Nada disso foi executado em produção. A v90 continua no ar.
+A aba `GVG_PERMISSOES` será criada automaticamente na primeira alteração de permissões feita pelo Superadministrador.
 
 ## 11. Reversão
 
 - Reapontar a implantação oficial para a versão 90.
-- Reverter o commit da branch no Git.
+- Reverter o commit da branch no Git e enviar a `main`.
 - Restaurar `src/Code.gs`, `src/Painel.html`, `src/index.html`, `src/Gastos.gs`, `src/GastosIndex.html`, `src/Fornecedores.gs`, `src/FornecedoresIndex.html`, `src/Maquinas.gs` e `src/MaquinasIndex.html` da versão anterior.
 - A coluna `Perm_Maquinas` e a aba `GVG_PERMISSOES` podem ser removidas manualmente se a funcionalidade for descartada; não há exclusão automática de usuários.
+- O backup `BACKUP_GVG_USUARIOS_PRE_PERMISSOES_20261108` deve ser preservado.
