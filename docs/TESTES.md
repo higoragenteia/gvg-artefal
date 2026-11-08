@@ -190,6 +190,16 @@ Branch `feat/permissoes-projetos`, produção v90 preservada. Detalhes em [`PERM
 | Retorno visual | OK — ranking, histórico e contador de alertas zerados; mensagem de confirmação |
 | Teste em produção | OK — funcionalidade validada em cópia; pedidos reais preservados |
 
+## Publicação da limpeza de demonstração — v102 (08/11/2026)
+
+| Teste | Resultado |
+|---|---|
+| Botão na Gestão do Pedidos | OK — tecla discreta “🧹 Limpar histórico” ao lado de “Atualizar pedidos” |
+| Visibilidade | OK — somente Superadministrador; Administrador não vê e o backend recusa |
+| Teste em cópia | OK — pedidos, itens, vínculos e auditorias de entrega zerados; 297 produtos e usuários preservados |
+| Produção | OK — botão visível na conta de teste; pedidos reais não foram apagados |
+| Publicação | OK — Apps Script v102 e GitHub Pages v102 |
+
 ## Pendências
 
 - Integrar Frotas. Controle de Gastos, Fornecedores e Controle de Máquinas já estão integrados.
