@@ -200,6 +200,17 @@ Branch `feat/permissoes-projetos`, produção v90 preservada. Detalhes em [`PERM
 | Produção | OK — botão visível na conta de teste; pedidos reais não foram apagados |
 | Publicação | OK — Apps Script v102 e GitHub Pages v102 |
 
+## Correção dos textos do hero — v103 (08/11/2026)
+
+| Teste | Resultado |
+|---|---|
+| Catálogo inicial | OK — “ESQUADRIAS”, “Catálogo de materiais” e “AQUI CUMPRIMOS COM O QUE PROMETEMOS!” em HTML nítido |
+| Gestão do Pedidos | OK — título e subtítulo sem sobreposição; frase corrigida no rodapé do hero |
+| Arte com texto embutido | OK — texto antigo coberto pela camada escura; nenhuma frase rasurada visível |
+| Celular | OK — 320 px e 390 px sem corte ou sobreposição |
+| Tablet/desktop | OK — 768 px e 1280 px com proporção preservada |
+| Publicação | OK — Apps Script v103 e GitHub Pages v103 |
+
 ## Pendências
 
 - Integrar Frotas. Controle de Gastos, Fornecedores e Controle de Máquinas já estão integrados.
