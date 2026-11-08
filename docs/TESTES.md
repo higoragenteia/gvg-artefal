@@ -126,6 +126,25 @@ Itens: 1 Pacote de Parafuso 4,2x16 (100 un.) + 1 Caixa de Silicone neutro (24 un
 | Saída do painel | OK — sessão de Máquinas encerrada e token local removido |
 | Limpeza | OK — usuários, sessões e auditorias de teste removidos |
 
+## Otimizações de desempenho (08/11/2026)
+
+Branch `perf/otimizacao-mobile`, produção v83 preservada. Detalhes e medições completas em [`OTIMIZACOES.md`](OTIMIZACOES.md).
+
+| Teste | Resultado |
+|---|---|
+| Payload do painel | OK — HTML de 366.093 B para 236.607 B; comprimido de 206.081 B para 99.243 B (−51,8%) |
+| Payload do Pedidos | OK — HTML de 268.230 B para 177.650 B; comprimido de 159.800 B para 88.311 B (−44,7%) |
+| Imagens responsivas | OK — imagens do dashboard de 879.675 B para 213.338 B no celular (−75,7%) |
+| Catálogo progressivo | OK — 36 produtos no celular e 96 no desktop; restante ao rolar; busca, categorias e carrinho funcionando |
+| DOM inicial do catálogo | OK — 5.016 para 815 nós no celular (−83,8%) |
+| Memória no celular | OK — 4 para 2 iframes carregados; heap após GC de 29,4 MB para 20,5 MB (−30,3%) |
+| Recarregamento de módulos | OK — evento de sessão com o mesmo token não recarrega mais o iframe |
+| PWA offline | OK — shell do GitHub Pages servido pelo cache; nenhum dado operacional armazenado |
+| Permissões do operador | OK — somente Pedidos visível; Gestão oculta |
+| Gestão do Pedidos | OK — atualização automática de 120 s, formulário e conferência preservados |
+| Produção | OK — v83 inalterada; implantações de teste removidas; HEAD restaurado |
+| Limpeza | OK — usuários, sessões e pedidos de teste removidos; planilhas sem registros de teste |
+
 ## Pendências
 
 - Integrar Frotas. Controle de Gastos, Fornecedores e Controle de Máquinas já estão integrados.

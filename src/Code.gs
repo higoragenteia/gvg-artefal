@@ -139,8 +139,8 @@ function admin_(credential){
 function adminSessionUser_(credential){try{return gvguVerificarSessao_(String(credential||''));}catch(e){return null;}}
 function activeAdminCount_(){return gvguUsuarios_().getDataRange().getValues().slice(1).filter(function(r){return String(r[6]||'').toUpperCase()==='ATIVO'&&String(r[10]||'').toUpperCase()==='ADMIN';}).length;}
 function revogarSessoesUsuario_(id,manterToken){const sh=gvguSessoes_(),v=sh.getDataRange().getValues(),keep=manterToken?gvguSHA_(String(manterToken)):'';for(let i=1;i<v.length;i++)if(String(v[i][1])===String(id)&&(!keep||String(v[i][0])!==keep))sh.getRange(i+1,4).setValue('SIM');}
-function abasGestao_(){const ss=gvgPlanilha_();if(GVG_GESTAO_EXECUCAO_)return ss;const a=[['PEDIDOS',['Pedido_ID','Data','Solicitante','Obra','Observacoes','Canal','Situacao','Data_entrega']],['ITENS_PEDIDO',['Pedido_ID','Codigo','Produto','Quantidade','Unidade','Unidades_equivalentes','Quantidade_entregue','Unidades_entregues','Observacao_entrega']],['AUDITORIA',['Data','Acao','Codigo','Produto','Detalhes']]]; a.forEach(([name,header])=>{let sh=ss.getSheetByName(name);if(!sh)sh=ss.insertSheet(name);if(sh.getLastRow()===0)sh.appendRow(header);else if(name==='PEDIDOS' && sh.getLastColumn()<8){sh.getRange(1,8).setValue('Data_entrega');}else if(name==='ITENS_PEDIDO' && sh.getLastColumn()<9){sh.getRange(1,7,1,3).setValues([header.slice(6)]);}});GVG_GESTAO_EXECUCAO_=true;return ss;}
-function instalarAbasGestao(){abasGestao_();return 'Abas de gestão preparadas';}
+function abasGestao_(forcar){const ss=gvgPlanilha_();if(GVG_GESTAO_EXECUCAO_)return ss;const cache=CacheService.getScriptCache();if(!forcar){try{if(cache.get('gvg_estrutura_ok_v1')==='1'){GVG_GESTAO_EXECUCAO_=true;return ss;}}catch(e){}}const a=[['PEDIDOS',['Pedido_ID','Data','Solicitante','Obra','Observacoes','Canal','Situacao','Data_entrega']],['ITENS_PEDIDO',['Pedido_ID','Codigo','Produto','Quantidade','Unidade','Unidades_equivalentes','Quantidade_entregue','Unidades_entregues','Observacao_entrega']],['AUDITORIA',['Data','Acao','Codigo','Produto','Detalhes']]]; a.forEach(([name,header])=>{let sh=ss.getSheetByName(name);if(!sh)sh=ss.insertSheet(name);if(sh.getLastRow()===0)sh.appendRow(header);else if(name==='PEDIDOS' && sh.getLastColumn()<8){sh.getRange(1,8).setValue('Data_entrega');}else if(name==='ITENS_PEDIDO' && sh.getLastColumn()<9){sh.getRange(1,7,1,3).setValues([header.slice(6)]);}});try{cache.put('gvg_estrutura_ok_v1','1',300);}catch(e){}GVG_GESTAO_EXECUCAO_=true;return ss;}
+function instalarAbasGestao(){try{CacheService.getScriptCache().remove('gvg_estrutura_ok_v1');}catch(e){}abasGestao_(true);return 'Abas de gestão preparadas';}
 function adminListar(pin){admin_(pin);const ss=abasGestao_();const produtos=ss.getSheetByName('PRODUTOS').getDataRange().getDisplayValues().slice(1).filter(r=>r[0]&&r[1]).map(r=>({id:r[0],nome:r[1],categoria:r[2],unidade:r[3],descricao:r[4],porCaixa:fatorEmbalagemGVG_(r),ativo:r[6]||'SIM',imagem:r[7]||''}));return {produtos};}
 function textoSeguro_(x,max){let t=String(x==null?'':x).slice(0,max||200);return /^[=+@\-]/.test(t)?'\''+t:t;}
 function salvarProduto(pin,d){
@@ -193,7 +193,7 @@ function registrarSolicitacao(d){
  const lock=LockService.getScriptLock();lock.waitLock(20000);try{
   const ss=abasGestao_(),sh=ss.getSheetByName('PRODUTOS');const vals=sh.getDataRange().getValues();const mapa=new Map(vals.slice(1).filter(r=>r[0]&&String(r[6]).toUpperCase()==='SIM').map(r=>[String(r[0]),r]));
   let linhas=[];for(const x of d.itens){const r=mapa.get(String(x.id));if(!r)throw new Error('Produto indisponível ou retirado: '+x.id+'. Atualize o catálogo.');const q=Number(x.quantidade);if(!Number.isInteger(q)||q<1||q>10000)throw new Error('Quantidade inválida.');const u=['Unidade','Caixa','Pacote','Litro','Quilo'].includes(x.unidade)?x.unidade:'Unidade';const f=fatorEmbalagemGVG_(r);if(['Caixa','Pacote'].includes(u)&&f<=1)throw new Error('Embalagem indisponível para '+r[1]);if(u==='Pacote'&&String(r[2]||'').trim().toLowerCase()!=='parafusos')throw new Error('Pacote indisponível para '+r[1]);const base=String(r[3]||'').toLowerCase();if(u==='Litro'&&!(/litro/.test(base)||/litro/.test(String(r[1]))))throw new Error('Litro indisponível para '+r[1]);if(u==='Quilo'&&!(/quilo/.test(base)||/estopa/.test(String(r[1]))))throw new Error('Quilo indisponível para '+r[1]);linhas.push([String(x.id),String(r[1]),q,u,q*(['Caixa','Pacote'].includes(u)?f:1)])}
-  const pedido='PED-'+Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'yyyyMMdd')+'-'+Utilities.getUuid().slice(0,6).toUpperCase();const agora=new Date();const p=ss.getSheetByName('PEDIDOS');p.appendRow([pedido,agora,textoSeguro_(d.nome,120),textoSeguro_(d.obra,120),textoSeguro_(d.observacao,500),String(d.canal||'WhatsApp'),'REGISTRADO — ENVIO NÃO VERIFICADO']);const itens=ss.getSheetByName('ITENS_PEDIDO');itens.getRange(itens.getLastRow()+1,1,linhas.length,6).setValues(linhas.map(x=>[pedido,...x]));gvguVincularPedido_(ss,pedido,d.usuarioId);try{CacheService.getScriptCache().remove('gvg_painel_v4_'+auth.id);}catch(e){}return {pedido};
+  const pedido='PED-'+Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'yyyyMMdd')+'-'+Utilities.getUuid().slice(0,6).toUpperCase();const agora=new Date();const p=ss.getSheetByName('PEDIDOS');p.appendRow([pedido,agora,textoSeguro_(d.nome,120),textoSeguro_(d.obra,120),textoSeguro_(d.observacao,500),String(d.canal||'WhatsApp'),'REGISTRADO — ENVIO NÃO VERIFICADO']);const itens=ss.getSheetByName('ITENS_PEDIDO');itens.getRange(itens.getLastRow()+1,1,linhas.length,6).setValues(linhas.map(x=>[pedido,...x]));gvguVincularPedido_(ss,pedido,d.usuarioId);try{const cache=CacheService.getScriptCache();cache.remove('gvg_painel_v4_'+auth.id);cache.remove('gvg_painel_pedidos_v1');}catch(e){}return {pedido};
  }finally{lock.releaseLock()}
 }
 function relatorioAdmin(pin){admin_(pin);const ss=abasGestao_();const p=ss.getSheetByName('PEDIDOS').getDataRange().getValues().slice(1),i=ss.getSheetByName('ITENS_PEDIDO').getDataRange().getValues().slice(1);const pedidos=p.map(r=>({id:String(r[0]),data:r[1] instanceof Date?r[1].toISOString():String(r[1]),solicitante:String(r[2]),obra:String(r[3]),canal:String(r[5]),situacao:String(r[6]),dataEntrega:r[7] instanceof Date?r[7].toISOString():''}));const itens=i.map(r=>({id:String(r[0]),codigo:String(r[1]),nome:String(r[2]),qtd:Number(r[3])||0,unidade:String(r[4]),equiv:Number(r[5])||0,entregue:r[6]===''?null:Number(r[6])||0,entregueEquiv:r[7]===''?0:Number(r[7])||0,nota:String(r[8]||'')}));return {pedidos,itens};}
@@ -231,6 +231,7 @@ function confirmarEntrega(pin,id,linhas){
   const status=delivered===0?'NÃO ENTREGUE':full?'ENTREGUE':'ENTREGUE PARCIAL';
   ps.getRange(row+1,7,1,2).setValues([[status,new Date()]]);
   ss.getSheetByName('AUDITORIA').appendRow([new Date(),'ENTREGA',id,String(p[row][2]),status+'; '+delivered+' unidades equivalentes']);
+  try{CacheService.getScriptCache().remove('gvg_painel_pedidos_v1');}catch(e){}
   return {status,unidades:delivered};
  }finally{lock.releaseLock();}
 }
@@ -607,6 +608,26 @@ function aquecerResumos(){
   const r=painelResumosExternos_();
   return {gastos:r.gastos.valor,fornecedores:r.fornecedores.valor,maquinas:r.maquinas.valor,frotas:r.frotas.valor};
 }
+function painelResumoPedidos_(){
+  const cache=CacheService.getScriptCache(),key='gvg_painel_pedidos_v1';
+  const cached=cache.get(key);
+  if(cached){try{return JSON.parse(cached);}catch(e){}}
+  const ss=abasGestao_();
+  const pedidos=ss.getSheetByName('PEDIDOS').getDataRange().getValues().slice(1).filter(r=>r[0]);
+  const config=ss.getSheetByName('CONFIG').getDataRange().getValues().slice(1);
+  const cfg=key=>{const r=config.find(x=>String(x[0])===key);return r?r[1]:'';};
+  const finalizados=['ENTREGUE','ENTREGUE PARCIAL','NÃO ENTREGUE','CANCELADO'];
+  let abertos=0,latest=null,latestMs=-1;
+  pedidos.forEach(r=>{
+    const status=String(r[6]||'');
+    if(!finalizados.includes(status.toUpperCase()))abertos++;
+    const ms=r[1] instanceof Date?r[1].getTime():0;
+    if(!latest||ms>=latestMs){latestMs=ms;latest={id:String(r[0]),status:status,data:painelData_(r[1])};}
+  });
+  const out={vazio:pedidos.length===0,ambiente:String(cfg('AMBIENTE')||'TESTE'),total:pedidos.length,abertos:abertos,recente:latest,atualizadoEm:Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'dd/MM/yyyy HH:mm')};
+  try{cache.put(key,JSON.stringify(out),30);}catch(e){}
+  return out;
+}
 function getPainelInicial(sessao){
   let usuario;
   try{usuario=gvguVerificarSessao_(sessao);}catch(e){return {ok:false,error:String(e&&e.message||e)};}
@@ -621,23 +642,13 @@ function getPainelInicial(sessao){
     }catch(e){}
   }
   try{
-    const ss=abasGestao_();
-    const pedidos=ss.getSheetByName('PEDIDOS').getDataRange().getValues().slice(1).filter(r=>r[0]);
-    const config=ss.getSheetByName('CONFIG').getDataRange().getValues().slice(1);
-    const cfg=key=>{const r=config.find(x=>String(x[0])===key);return r?r[1]:'';};
-    const finalizados=['ENTREGUE','ENTREGUE PARCIAL','NÃO ENTREGUE','CANCELADO'];
-    let abertos=0,latest=null,latestMs=-1;
-    pedidos.forEach(r=>{
-      const status=String(r[6]||'');
-      if(!finalizados.includes(status.toUpperCase()))abertos++;
-      const ms=r[1] instanceof Date?r[1].getTime():0;
-      if(!latest||ms>=latestMs){latestMs=ms;latest={id:String(r[0]),status:status,data:painelData_(r[1])};}
-    });
+    const resumo=painelResumoPedidos_();
     let externos=null;
     try{const ext=cache.get('gvg_painel_resumos_v2');if(ext)externos=JSON.parse(ext);}catch(e){}
     if(!externos||!externos.gastos||!externos.maquinas)externos={gastos:{valor:'—',label:'gastos no mês',detalhe:'Carregando…',recente:null},fornecedores:{valor:'—',label:'fornecedores ativos',detalhe:'Carregando…',recente:null},maquinas:{valor:'—',label:'equipamentos disponíveis',detalhe:'Carregando…',recente:null},frotas:{valor:'—',label:'veículos na frota',detalhe:'Carregando…',recente:null}};
     const gastos=externos.gastos,fornecedores=externos.fornecedores,maquinas=externos.maquinas,frotas=externos.frotas;
-    const pedidosResumo={valor:pedidos.length,label:pedidos.length===1?'pedido registrado':'pedidos registrados',detalhe:abertos===1?'1 em andamento':abertos+' em andamento',recente:latest?{titulo:latest.id,detalhe:latest.status,data:latest.data}:null};
+    const latest=resumo.recente,abertos=resumo.abertos;
+    const pedidosResumo={valor:resumo.total,label:resumo.total===1?'pedido registrado':'pedidos registrados',detalhe:abertos===1?'1 em andamento':abertos+' em andamento',recente:latest?{titulo:latest.id,detalhe:latest.status,data:latest.data}:null};
     const apps={pedidos:pedidosResumo,gastos:gastos,fornecedores:fornecedores,maquinas:maquinas,frotas:frotas};
     const atividades=[
       {app:'Pedidos',tone:'gold',titulo:pedidosResumo.recente?pedidosResumo.recente.titulo:'Sem pedidos recentes',detalhe:pedidosResumo.recente?pedidosResumo.recente.detalhe:'',data:pedidosResumo.recente?pedidosResumo.recente.data:''},
@@ -645,7 +656,7 @@ function getPainelInicial(sessao){
       {app:'Fornecedores',tone:'purple',titulo:fornecedores.recente?fornecedores.recente.titulo:'Sem fornecedores recentes',detalhe:fornecedores.recente?fornecedores.recente.detalhe:'',data:fornecedores.recente?fornecedores.recente.data:''},
       {app:'Frotas',tone:'blue',titulo:frotas.recente?frotas.recente.titulo:'Sem veículos recentes',detalhe:frotas.recente?frotas.recente.detalhe:'',data:''}
     ];
-    const out={ok:true,usuario:{id:usuario.id,nome:usuario.nome,login:usuario.login,email:usuario.email,perfil:usuario.perfil,foto:usuario.foto||'',permissoes:usuario.permissoes||{}},ambiente:String(cfg('AMBIENTE')||'TESTE'),atualizadoEm:Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'dd/MM/yyyy HH:mm'),vazio:pedidos.length===0,apps:apps,atividades:atividades};
+    const out={ok:true,usuario:{id:usuario.id,nome:usuario.nome,login:usuario.login,email:usuario.email,perfil:usuario.perfil,foto:usuario.foto||'',permissoes:usuario.permissoes||{}},ambiente:resumo.ambiente,atualizadoEm:resumo.atualizadoEm,vazio:resumo.vazio,apps:apps,atividades:atividades};
     try{cache.put(cacheKey,JSON.stringify(out),30);}catch(e){}
     return out;
   }catch(e){
