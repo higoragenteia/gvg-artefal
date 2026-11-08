@@ -674,7 +674,7 @@ body.gvg-access-locked{overflow:hidden}
  function gateAccess(authorized){gate.classList.toggle('gvg-gate-open',!authorized);document.body.classList.toggle('gvg-access-locked',!authorized)}
  gateAccess(true); // ativado apos vincular os manipuladores; evita flash prematuro
  const notify=(m,ok=false)=>{const el=$('gvgLoginMessage');el.textContent=m;el.classList.toggle('gvg-msg-ok',ok);el.classList.toggle('gvg-msg-error',!ok);el.setAttribute('role','status');};
- function forgetAdmin(){adminToken='';adminAccess=false;store.remove('gvgAdminToken');store.remove('gvgAdminSeen');$('adminPin').value='';$('adminPanel').classList.add('hidden');$('orders').innerHTML='';$('ranking').innerHTML='';admProducts=[];reportData={pedidos:[],itens:[]};stopAdminAlerts();}
+ function forgetAdmin(){adminToken='';adminAccess=false;store.remove('gvgAdminToken');store.remove('gvgAdminSeen');$('adminPin').value='';$('adminPanel').classList.add('hidden');$('orders').innerHTML='';$('ranking').innerHTML='';admProducts=[];reportData={pedidos:[],itens:[]};stopAdminAlerts();stopAdminAutoRefresh();}
  function forgetEmployee(){token='';account=null;store.remove('gvgUsrToken');}
  function renderAccount(){
   const is=!!account,authorized=is||adminAccess,pending=!authorized&&(sessionRestoring||sessionPending);
@@ -703,7 +703,7 @@ body.gvg-access-locked{overflow:hidden}
    else result=await originalCall('entrarAdminGVG',credential);
    if(epoch!==authEpoch)throw new Error('Acesso encerrado neste aparelho.');
    if(!result||!result.token)throw new Error('O servidor não confirmou a sessão administrativa. Atualize também o Código.gs.');
-   adminToken=result.token;adminAccess=true;sessionPending=false;store.set('gvgAdminToken',adminToken);$('adminPin').value=adminToken;$('gvgAccessPin').value='';renderAccount();startAdminAlerts();
+   adminToken=result.token;adminAccess=true;sessionPending=false;store.set('gvgAdminToken',adminToken);$('adminPin').value=adminToken;$('gvgAccessPin').value='';renderAccount();startAdminAlerts();startAdminAutoRefresh();
    return adminToken;
   })().finally(()=>{if(adminAuthentication===pending)adminAuthentication=null;});
   return pending.promise;
@@ -725,7 +725,7 @@ body.gvg-access-locked{overflow:hidden}
      if(result.ok){account={id:result.id||'',nome:result.nome,login:result.login,email:result.email||'',perfil:String(result.perfil||'CONSULTA').toUpperCase(),permissoes:result.permissoes||{}};if(account.perfil==='ADMIN'){adminToken=token;adminAccess=true;$('adminPin').value=adminToken;}else{adminToken='';adminAccess=false;}if(!DATA.produtos.length)loadAuthenticatedCatalog(token).catch(e=>notify('Não foi possível carregar o catálogo: '+(e.message||String(e))));}else{forgetEmployee();clearCatalog();}
     }
    }catch(e){if(epoch===authEpoch){sessionPending=true;notify('Não foi possível verificar sua sessão agora. Tente novamente; seu acesso salvo foi mantido.');}}
-   finally{if(epoch===authEpoch){sessionRestoring=false;renderAccount();if(adminAccess)startAdminAlerts();}}
+   finally{if(epoch===authEpoch){sessionRestoring=false;renderAccount();if(adminAccess){startAdminAlerts();startAdminAutoRefresh();}}}
   })().finally(()=>{restoration=null;});
   return restoration;
  }
@@ -743,6 +743,7 @@ body.gvg-access-locked{overflow:hidden}
    if(!d||!d.token)throw new Error('O servidor não confirmou seu acesso.');
    forgetAdmin();token=d.token;store.set('gvgUsrToken',token);account={id:d.id||'',nome:d.nome,login:d.login,email:d.email||'',perfil:String(d.perfil||'CONSULTA').toUpperCase(),permissoes:d.permissoes||{}};
    if(account.perfil==='ADMIN'){adminToken=d.token;adminAccess=true;$('adminPin').value=adminToken;}else{adminToken='';adminAccess=false;}
+   if(adminAccess)startAdminAutoRefresh();
    sessionPending=false;sessionRestoring=false;renderAccount();show('catalog');$('gvgPassword').value='';notify('Acesso autorizado.',true);loadAuthenticatedCatalog(token).catch(e=>notify('Não foi possível carregar o catálogo: '+(e.message||String(e))));
   }catch(e){notify(e.message||String(e));}finally{b.disabled=false;}
  };
@@ -793,11 +794,30 @@ body.gvg-access-locked{overflow:hidden}
  };
 
  // Admin: reload only dashboard data, leaving catalogue and unsaved edits intact.
- const tools=document.createElement('div');tools.className='gvg-addon';tools.innerHTML=`<div class="gvg-addon-row"><strong>Gestão · ferramentas</strong><button type="button" id="gvgRefresh" style="flex:0 0 auto">↻ Atualizar pedidos</button></div><p id="gvgRefreshMsg" class="gvg-addon-message"></p><h3>Gerenciar usuários</h3><div class="gvg-addon-row"><label for="gvgUserFilter">Exibir cadastros<select id="gvgUserFilter" style="display:block;width:100%;margin-top:6px;padding:10px;border-radius:9px;background:#21242a;color:#fff;border:1px solid #785c20"><option value="TODOS" selected>Todos os cadastros</option><option value="PENDENTE">Pendentes de aprovação</option><option value="ATIVO">Aprovados / ativos</option><option value="BLOQUEADO">Bloqueados</option></select></label><button type="button" id="gvgLoadUsers">Atualizar usuários</button><button type="button" id="gvgToggleUsers" aria-expanded="true" aria-controls="gvgUsers">Ocultar lista</button></div><p class="gvg-addon-message">Escolha o perfil antes de aprovar. Todos os cadastros ficam visíveis abaixo; excluir remove o cadastro da planilha e preserva o histórico de pedidos.</p><p id="gvgUsersMessage" class="gvg-addon-message" role="status" aria-live="polite"></p><div id="gvgUsers" aria-live="polite"></div>`;
+ const tools=document.createElement('div');tools.className='gvg-addon';tools.innerHTML=`<div class="gvg-addon-row"><strong>Gestão · ferramentas</strong><button type="button" id="gvgRefresh" style="flex:0 0 auto">↻ Atualizar pedidos</button></div><p id="gvgRefreshMsg" class="gvg-addon-message"></p><p class="gvg-addon-message">O painel e o histórico de pedidos são atualizados automaticamente a cada 2 minutos. Uma conferência de entrega aberta não é fechada pela atualização automática.</p><h3>Gerenciar usuários</h3><div class="gvg-addon-row"><label for="gvgUserFilter">Exibir cadastros<select id="gvgUserFilter" style="display:block;width:100%;margin-top:6px;padding:10px;border-radius:9px;background:#21242a;color:#fff;border:1px solid #785c20"><option value="TODOS" selected>Todos os cadastros</option><option value="PENDENTE">Pendentes de aprovação</option><option value="ATIVO">Aprovados / ativos</option><option value="BLOQUEADO">Bloqueados</option></select></label><button type="button" id="gvgLoadUsers">Atualizar usuários</button><button type="button" id="gvgToggleUsers" aria-expanded="true" aria-controls="gvgUsers">Ocultar lista</button></div><p class="gvg-addon-message">Escolha o perfil antes de aprovar. Todos os cadastros ficam visíveis abaixo; excluir remove o cadastro da planilha e preserva o histórico de pedidos.</p><p id="gvgUsersMessage" class="gvg-addon-message" role="status" aria-live="polite"></p><div id="gvgUsers" aria-live="polite"></div>`;
  adminPanel.insertBefore(tools,adminPanel.firstChild);
  // Exibir gestão de usuários automaticamente após login administrativo.
  const originalAdminLoad=window.adminLoad;window.adminLoad=async function(...args){const value=await originalAdminLoad(...args);if($('adminPanel')&&!$('adminPanel').classList.contains('hidden'))$('gvgLoadUsers').click();return value};
  $('gvgRefresh').onclick=async()=>{try{if(!$('separation').classList.contains('hidden')){if(!confirm('Existe uma conferência aberta. Atualizar os pedidos e fechar essa conferência sem salvar?'))return;$('separation').classList.add('hidden')}const v=await gsCall('relatorioAdmin',$('adminPin').value);reportData=v;renderReport();$('gvgRefreshMsg').textContent='Pedidos atualizados às '+new Date().toLocaleTimeString('pt-BR')}catch(e){$('gvgRefreshMsg').textContent=e.message}};
+ // Atualização automática do painel de Gestão a cada 2 minutos (120 segundos).
+ let adminAutoTimer=null,adminAutoFlight=false;
+ function stopAdminAutoRefresh(){if(adminAutoTimer){clearInterval(adminAutoTimer);adminAutoTimer=null;}adminAutoFlight=false;}
+ function startAdminAutoRefresh(){if(!adminAccess||!adminToken){stopAdminAutoRefresh();return;}if(adminAutoTimer)return;adminAutoTimer=setInterval(()=>{void autoRefreshAdmin();},120000);}
+ async function autoRefreshAdmin(){
+  if(adminAutoFlight||!adminAccess||!adminToken)return;
+  const separation=$('separation');
+  if(separation&&!separation.classList.contains('hidden'))return;
+  const epoch=authEpoch,credential=adminToken;adminAutoFlight=true;
+  try{
+   const v=await gsCall('relatorioAdmin',$('adminPin').value);
+   if(epoch!==authEpoch||credential!==adminToken||!adminAccess)return;
+   reportData=v;renderReport();
+   $('gvgRefreshMsg').textContent='Atualização automática às '+new Date().toLocaleTimeString('pt-BR')+' · a cada 2 minutos';
+  }catch(e){
+   if(epoch===authEpoch&&credential===adminToken&&adminAccess)$('gvgRefreshMsg').textContent='A atualização automática falhou; tentaremos novamente em 2 minutos.';
+  }finally{adminAutoFlight=false;}
+ }
+
  // A lista inicial é uma fila de aprovação; outros status continuam consultáveis.
  let usersRequest=0,userChangeInProgress=false;
  const userStatus=u=>String(u.status||'').trim().toUpperCase();
