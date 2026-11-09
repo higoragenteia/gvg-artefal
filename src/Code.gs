@@ -326,9 +326,13 @@ function atualizarPedidoAdmin(credencial,id,dados){
   const novoStatus=dados.status?gvgStatusNormalizar_(dados.status):statusAtual;
   if(gvgStatusIndex_(novoStatus)<0)throw new Error('Status inválido.');
   if(gvgStatusIndex_(novoStatus)<gvgStatusIndex_(statusAtual))throw new Error('Não é permitido voltar o status do pedido.');
-  const rows=[];const v=its.getDataRange().getValues();
-  for(let i=1;i<v.length;i++)if(String(v[i][0])===id)rows.push({idx:i,rec:v[i]});
-  if(!rows.length)throw new Error('Pedido sem itens.');
+  const precisaItens=dados.itens!==undefined||novoStatus==='RETIRADO';
+  const rows=[];
+  if(precisaItens){
+   const v=its.getDataRange().getValues();
+   for(let i=1;i<v.length;i++)if(String(v[i][0])===id)rows.push({idx:i,rec:v[i]});
+  }
+  if(precisaItens&&!rows.length)throw new Error('Pedido sem itens.');
   if(novoStatus==='RETIRADO'){
    const pendentes=[];rows.forEach(function(o){
     const codigo=String(o.rec[1]),unidade=String(o.rec[4]);let q=o.rec[6]===''?null:Number(o.rec[6]);
