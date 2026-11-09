@@ -21,7 +21,7 @@ function gvgPlanilha_(){return GVG_PLANILHA_EXECUCAO_||(GVG_PLANILHA_EXECUCAO_=S
  */
 function doGet(e){
   const modulo=String(e&&e.parameter&&e.parameter.modulo||'').toLowerCase();
-  if(modulo==='pedidos')return doGetPedidos_(e);
+  if(modulo==='pedidos')return doGetPedidos_();
   if(modulo==='gastos')return doGetGastos_();
   if(modulo==='fornecedores')return doGetFornecedores_(e);
   if(modulo==='maquinas')return doGetMaquinas_();
@@ -59,11 +59,10 @@ function doGetFornecedores_(e){
     .setFaviconUrl('https://higoragenteia.github.io/gvg-fornecedores/icons/apple-touch-icon-v3.png')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
-function doGetPedidos_(e){
+function doGetPedidos_(){
   const modelo = HtmlService.createTemplateFromFile('index');
   // O catálogo só é carregado depois do login, com sessão válida.
   modelo.initialData = 'null';
-  modelo.pedidoInicial = JSON.stringify(String(e&&e.parameter&&e.parameter.pedido||''));
   return modelo.evaluate()
     .setTitle('PEDIDOS')
     .addMetaTag('viewport','width=device-width, initial-scale=1')
@@ -144,86 +143,10 @@ function admin_(credential){
  throw new Error('GVG_SEM_PERMISSAO_GERENCIAR: seu perfil não permite administrar o Pedidos.');
 }
 function revogarSessoesUsuario_(id,manterToken){const sh=gvguSessoes_(),v=sh.getDataRange().getValues(),keep=manterToken?gvguSHA_(String(manterToken)):'';for(let i=1;i<v.length;i++)if(String(v[i][1])===String(id)&&(!keep||String(v[i][0])!==keep))sh.getRange(i+1,4).setValue('SIM');}
-function abasGestao_(forcar){
- const ss=gvgPlanilha_();
- if(GVG_GESTAO_EXECUCAO_)return ss;
- const cache=CacheService.getScriptCache();
- if(!forcar){try{if(cache.get('gvg_estrutura_ok_v2')==='1'){GVG_GESTAO_EXECUCAO_=true;return ss;}}catch(e){}}
- const defs=[
-  ['PEDIDOS',['Pedido_ID','Data','Solicitante','Obra','Observacoes','Canal','Situacao','Data_entrega','Status_em','Status_por','Observacao_almoxarife','Atualizado_em','Atualizado_por']],
-  ['ITENS_PEDIDO',['Pedido_ID','Codigo','Produto','Quantidade','Unidade','Unidades_equivalentes','Quantidade_entregue','Unidades_entregues','Observacao_entrega','Confirmado_em','Confirmado_por','Atualizado_em','Atualizado_por']],
-  ['AUDITORIA',['Data','Acao','Codigo','Produto','Detalhes']],
-  ['PEDIDO_HISTORICO',['Data','Pedido_ID','Acao','Produto','Qtd_solicitada','Qtd_anterior','Qtd_confirmada','Status_anterior','Status_novo','Usuario_ID','Usuario_nome','Observacao']],
-  ['NOTIFICACOES',['ID','Pedido_ID','Usuario_ID','Tipo','Titulo','Mensagem','Criada_em','Lida','Lida_em']]
- ];
- defs.forEach(function(def){
-  const name=def[0],header=def[1];
-  let sh=ss.getSheetByName(name);
-  if(!sh){try{sh=ss.insertSheet(name);}catch(e){sh=ss.getSheetByName(name);if(!sh)throw e;}}
-  if(sh.getLastRow()===0){sh.getRange(1,1,1,header.length).setValues([header]);return;}
-  const current=sh.getLastColumn();
-  if(name==='PEDIDOS'&&current<13)sh.getRange(1,9,1,5).setValues([header.slice(8)]);
-  if(name==='ITENS_PEDIDO'&&current<13)sh.getRange(1,10,1,4).setValues([header.slice(9)]);
-  if((name==='PEDIDO_HISTORICO'||name==='NOTIFICACOES')&&current<header.length)sh.getRange(1,current+1,1,header.length-current).setValues([header.slice(current)]);
- });
- try{cache.put('gvg_estrutura_ok_v2','1',300);}catch(e){}
- GVG_GESTAO_EXECUCAO_=true;return ss;
-}
-function instalarAbasGestao(){try{const c=CacheService.getScriptCache();c.remove('gvg_estrutura_ok_v1');c.remove('gvg_estrutura_ok_v2');}catch(e){}abasGestao_(true);return 'Abas de gestão preparadas';}
+function abasGestao_(forcar){const ss=gvgPlanilha_();if(GVG_GESTAO_EXECUCAO_)return ss;const cache=CacheService.getScriptCache();if(!forcar){try{if(cache.get('gvg_estrutura_ok_v1')==='1'){GVG_GESTAO_EXECUCAO_=true;return ss;}}catch(e){}}const a=[['PEDIDOS',['Pedido_ID','Data','Solicitante','Obra','Observacoes','Canal','Situacao','Data_entrega']],['ITENS_PEDIDO',['Pedido_ID','Codigo','Produto','Quantidade','Unidade','Unidades_equivalentes','Quantidade_entregue','Unidades_entregues','Observacao_entrega']],['AUDITORIA',['Data','Acao','Codigo','Produto','Detalhes']]]; a.forEach(([name,header])=>{let sh=ss.getSheetByName(name);if(!sh)sh=ss.insertSheet(name);if(sh.getLastRow()===0)sh.appendRow(header);else if(name==='PEDIDOS' && sh.getLastColumn()<8){sh.getRange(1,8).setValue('Data_entrega');}else if(name==='ITENS_PEDIDO' && sh.getLastColumn()<9){sh.getRange(1,7,1,3).setValues([header.slice(6)]);}});try{cache.put('gvg_estrutura_ok_v1','1',300);}catch(e){}GVG_GESTAO_EXECUCAO_=true;return ss;}
+function instalarAbasGestao(){try{CacheService.getScriptCache().remove('gvg_estrutura_ok_v1');}catch(e){}abasGestao_(true);return 'Abas de gestão preparadas';}
 function adminListar(pin){admin_(pin);const ss=abasGestao_();const produtos=ss.getSheetByName('PRODUTOS').getDataRange().getDisplayValues().slice(1).filter(r=>r[0]&&r[1]).map(r=>({id:r[0],nome:r[1],categoria:r[2],unidade:r[3],descricao:r[4],porCaixa:fatorEmbalagemGVG_(r),ativo:r[6]||'SIM',imagem:r[7]||''}));return {produtos};}
 function textoSeguro_(x,max){let t=String(x==null?'':x).slice(0,max||200);return /^[=+@\-]/.test(t)?'\''+t:t;}
-
-// ===== ACOMPANHAMENTO DE PEDIDOS =====
-const GVG_STATUS_FLOW=['EM ANÁLISE','EM SEPARAÇÃO','PRONTO PARA RETIRADA','RETIRADO'];
-function gvgStatusNormalizar_(v){
- const s=String(v==null?'':v).trim().toUpperCase().replace(/\s+/g,' ');
- if(!s)return 'EM ANÁLISE';
- if(/^EM\s*AN[ÁA]LISE$/.test(s)||/^REGISTRADO/.test(s))return 'EM ANÁLISE';
- if(/^EM\s*SEPARA/.test(s))return 'EM SEPARAÇÃO';
- if(/^PRONTO/.test(s))return 'PRONTO PARA RETIRADA';
- if(s==='RETIRADO'||s==='ENTREGUE'||s==='ENTREGUE PARCIAL'||s==='NÃO ENTREGUE'||s==='NAO ENTREGUE'||s==='CANCELADO')return 'RETIRADO';
- return s;
-}
-function gvgStatusIndex_(v){return GVG_STATUS_FLOW.indexOf(gvgStatusNormalizar_(v));}
-function gvgStatusFinalizado_(v){return gvgStatusIndex_(v)===GVG_STATUS_FLOW.length-1;}
-function gvgDataISO_(v){return v instanceof Date?v.toISOString():String(v||'');}
-function gvgLinkPedido_(id){
- const base=ScriptApp.getService().getUrl();
- return base+(base.indexOf('?')>=0?'&':'?')+'modulo=pedidos&pedido='+encodeURIComponent(String(id||''));
-}
-function gvgDestinatariosPedido_(ss,pedido){
- const sh=ss.getSheetByName('PEDIDOS_USUARIOS');if(!sh)return [];
- const v=sh.getDataRange().getValues();const out=[];
- v.slice(1).forEach(function(r){if(String(r[0])===String(pedido)&&r[1]){const id=String(r[1]);if(out.indexOf(id)<0)out.push(id);}});
- return out;
-}
-function gvgNotifCacheKey_(uid){return 'gvg_notif_'+String(uid||'');}
-function gvgNotifInvalidar_(uid){try{CacheService.getScriptCache().remove(gvgNotifCacheKey_(uid));}catch(e){}}
-function gvgNotifSheet_(){return abasGestao_().getSheetByName('NOTIFICACOES');}
-function gvgPedidoHistoricoSheet_(){return abasGestao_().getSheetByName('PEDIDO_HISTORICO');}
-function gvgPedidoHistorico_(acao,pedido,info){
- info=info||{};const sh=gvgPedidoHistoricoSheet_();if(!sh)return;
- sh.appendRow([new Date(),String(pedido||''),String(acao||''),String(info.produto||''),info.qtdSolicitada===undefined?'':Number(info.qtdSolicitada),info.qtdAnterior===undefined||info.qtdAnterior===null?'':Number(info.qtdAnterior),info.qtdConfirmada===undefined?'':Number(info.qtdConfirmada),String(info.statusAnterior||''),String(info.statusNovo||''),String(info.usuarioId||''),String(info.usuarioNome||''),String(info.observacao||'').slice(0,500)]);
-}
-function gvgNotificarPedido_(ss,pedido,tipo,titulo,mensagem){
- const ids=gvgDestinatariosPedido_(ss,pedido);if(!ids.length)return 0;
- const sh=gvgNotifSheet_();if(!sh)return 0;
- const agora=new Date();let n=0;
- ids.forEach(function(uid){
-  sh.appendRow(['NOT-'+Utilities.getUuid(),String(pedido),String(uid),String(tipo),String(titulo).slice(0,160),String(mensagem).slice(0,500),agora,'NÃO','']);
-  gvgNotifInvalidar_(uid);n++;
- });
- return n;
-}
-function gvgNotificacaoStatusMensagem_(status){
- const s=gvgStatusNormalizar_(status);
- if(s==='EM SEPARAÇÃO')return 'Seu pedido está em separação pelo almoxarifado.';
- if(s==='PRONTO PARA RETIRADA')return 'Seus materiais estão prontos para retirada.';
- if(s==='RETIRADO')return 'Pedido retirado. Obrigado!';
- return 'Seu pedido está em análise pelo almoxarifado.';
-}
-function gvgNumeroQtd_(n){const v=Number(n);return Number.isFinite(v)?v.toLocaleString('pt-BR',{maximumFractionDigits:2}):'0';}
-
 function salvarProduto(pin,d){
  admin_(pin);if(!d||!String(d.nome||'').trim()||!String(d.categoria||'').trim())throw new Error('Informe nome e categoria.');
  const allowed=['SIM','NÃO','EM FALTA'];const ativo=String(d.ativo||'SIM').toUpperCase();if(!allowed.includes(ativo))throw new Error('Estado inválido.');
@@ -274,117 +197,10 @@ function registrarSolicitacao(d){
  const lock=LockService.getScriptLock();lock.waitLock(20000);try{
   const ss=abasGestao_(),sh=ss.getSheetByName('PRODUTOS');const vals=sh.getDataRange().getValues();const mapa=new Map(vals.slice(1).filter(r=>r[0]&&String(r[6]).toUpperCase()==='SIM').map(r=>[String(r[0]),r]));
   let linhas=[];for(const x of d.itens){const r=mapa.get(String(x.id));if(!r)throw new Error('Produto indisponível ou retirado: '+x.id+'. Atualize o catálogo.');const q=Number(x.quantidade);if(!Number.isInteger(q)||q<1||q>10000)throw new Error('Quantidade inválida.');const u=['Unidade','Caixa','Pacote','Litro','Quilo'].includes(x.unidade)?x.unidade:'Unidade';const f=fatorEmbalagemGVG_(r);if(['Caixa','Pacote'].includes(u)&&f<=1)throw new Error('Embalagem indisponível para '+r[1]);if(u==='Pacote'&&String(r[2]||'').trim().toLowerCase()!=='parafusos')throw new Error('Pacote indisponível para '+r[1]);const base=String(r[3]||'').toLowerCase();if(u==='Litro'&&!(/litro/.test(base)||/litro/.test(String(r[1]))))throw new Error('Litro indisponível para '+r[1]);if(u==='Quilo'&&!(/quilo/.test(base)||/estopa/.test(String(r[1]))))throw new Error('Quilo indisponível para '+r[1]);linhas.push([String(x.id),String(r[1]),q,u,q*(['Caixa','Pacote'].includes(u)?f:1)])}
-  const pedido='PED-'+Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'yyyyMMdd')+'-'+Utilities.getUuid().slice(0,6).toUpperCase();
-  const agora=new Date();const p=ss.getSheetByName('PEDIDOS');
-  p.appendRow([pedido,agora,textoSeguro_(d.nome,120),textoSeguro_(d.obra,120),textoSeguro_(d.observacao,500),String(d.canal||'WhatsApp'),'EM ANÁLISE','',agora,auth.nome,'',agora,auth.nome]);
-  const itens=ss.getSheetByName('ITENS_PEDIDO');
-  itens.getRange(itens.getLastRow()+1,1,linhas.length,13).setValues(linhas.map(x=>[pedido,...x,'','','','','',agora,auth.nome]));
-  gvguVincularPedido_(ss,pedido,d.usuarioId);
-  gvgPedidoHistorico_('CRIADO',pedido,{statusNovo:'EM ANÁLISE',usuarioId:auth.id,usuarioNome:auth.nome,observacao:'Pedido registrado pelo aplicativo.'});
-  try{const cache=CacheService.getScriptCache();cache.remove('gvg_painel_v4_'+auth.id);cache.remove('gvg_painel_pedidos_v1');}catch(e){}
-  return {pedido,link:gvgLinkPedido_(pedido)};
+  const pedido='PED-'+Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'yyyyMMdd')+'-'+Utilities.getUuid().slice(0,6).toUpperCase();const agora=new Date();const p=ss.getSheetByName('PEDIDOS');p.appendRow([pedido,agora,textoSeguro_(d.nome,120),textoSeguro_(d.obra,120),textoSeguro_(d.observacao,500),String(d.canal||'WhatsApp'),'REGISTRADO — ENVIO NÃO VERIFICADO']);const itens=ss.getSheetByName('ITENS_PEDIDO');itens.getRange(itens.getLastRow()+1,1,linhas.length,6).setValues(linhas.map(x=>[pedido,...x]));gvguVincularPedido_(ss,pedido,d.usuarioId);try{const cache=CacheService.getScriptCache();cache.remove('gvg_painel_v4_'+auth.id);cache.remove('gvg_painel_pedidos_v1');}catch(e){}return {pedido};
  }finally{lock.releaseLock()}
 }
-function relatorioAdmin(pin){
- admin_(pin);
- const ss=abasGestao_();
- const p=ss.getSheetByName('PEDIDOS').getDataRange().getValues().slice(1).filter(r=>r[0]);
- const i=ss.getSheetByName('ITENS_PEDIDO').getDataRange().getValues().slice(1).filter(r=>r[0]);
- const pedidos=p.map(r=>({
-  id:String(r[0]),data:gvgDataISO_(r[1]),solicitante:String(r[2]||''),obra:String(r[3]||''),canal:String(r[5]||''),
-  situacao:gvgStatusNormalizar_(r[6]),dataEntrega:gvgDataISO_(r[7]),statusEm:gvgDataISO_(r[8]),statusPor:String(r[9]||''),
-  observacaoAlmox:String(r[10]||''),atualizadoEm:gvgDataISO_(r[11]),atualizadoPor:String(r[12]||'')
- }));
- const itens=i.map(r=>({
-  id:String(r[0]),codigo:String(r[1]||''),nome:String(r[2]||''),qtd:Number(r[3])||0,unidade:String(r[4]||''),equiv:Number(r[5])||0,
-  entregue:r[6]===''?null:Number(r[6])||0,entregueEquiv:r[7]===''?0:Number(r[7])||0,nota:String(r[8]||''),
-  confirmadoEm:gvgDataISO_(r[9]),confirmadoPor:String(r[10]||''),atualizadoEm:gvgDataISO_(r[11]),atualizadoPor:String(r[12]||'')
- }));
- return {pedidos,itens};
-}
-function historicoPedido(credencial,id){
- admin_(credencial);
- const sh=gvgPedidoHistoricoSheet_();if(!sh||sh.getLastRow()<2)return {historico:[]};
- const v=sh.getDataRange().getValues().slice(1);
- const historico=v.filter(r=>String(r[1])===String(id)).map(r=>({
-  data:gvgDataISO_(r[0]),pedidoId:String(r[1]||''),acao:String(r[2]||''),produto:String(r[3]||''),
-  qtdSolicitada:r[4]===''?null:Number(r[4]),qtdAnterior:r[5]===''?null:Number(r[5]),qtdConfirmada:r[6]===''?null:Number(r[6]),
-  statusAnterior:String(r[7]||''),statusNovo:String(r[8]||''),usuarioId:String(r[9]||''),usuarioNome:String(r[10]||''),observacao:String(r[11]||'')
- }));
- return {historico};
-}
-function atualizarPedidoAdmin(credencial,id,dados){
- const ator=admin_(credencial);id=String(id||'').trim();dados=dados||{};
- if(!id)throw new Error('Pedido não informado.');
- const lock=LockService.getScriptLock();lock.waitLock(20000);
- try{
-  const ss=abasGestao_(),ps=ss.getSheetByName('PEDIDOS'),its=ss.getSheetByName('ITENS_PEDIDO');
-  const p=ps.getDataRange().getValues();const row=p.findIndex((r,i)=>i>0&&String(r[0])===id);
-  if(row<0)throw new Error('Pedido não encontrado.');
-  const statusAtual=gvgStatusNormalizar_(p[row][6]);
-  if(statusAtual==='RETIRADO')throw new Error('Pedido já retirado. Não é possível alterar.');
-  const novoStatus=dados.status?gvgStatusNormalizar_(dados.status):statusAtual;
-  if(gvgStatusIndex_(novoStatus)<0)throw new Error('Status inválido.');
-  if(gvgStatusIndex_(novoStatus)<gvgStatusIndex_(statusAtual))throw new Error('Não é permitido voltar o status do pedido.');
-  const precisaItens=dados.itens!==undefined||novoStatus==='RETIRADO';
-  const rows=[];
-  if(precisaItens){
-   const v=its.getDataRange().getValues();
-   for(let i=1;i<v.length;i++)if(String(v[i][0])===id)rows.push({idx:i,rec:v[i]});
-  }
-  if(precisaItens&&!rows.length)throw new Error('Pedido sem itens.');
-  if(novoStatus==='RETIRADO'){
-   const pendentes=[];rows.forEach(function(o){
-    const codigo=String(o.rec[1]),unidade=String(o.rec[4]);let q=o.rec[6]===''?null:Number(o.rec[6]);
-    if(Array.isArray(dados.itens)){const inp=dados.itens.find(function(x){return String(x&&x.codigo)===codigo&&String(x&&x.unidade)===unidade;});if(inp&&inp.qtd!==undefined&&inp.qtd!==null&&String(inp.qtd).trim()!=='')q=Number(inp.qtd);}
-    if(q===null)pendentes.push(String(o.rec[2]||codigo));
-   });
-   if(pendentes.length)throw new Error('Confirme todos os itens antes de finalizar. Pendentes: '+pendentes.join(', ')+'. Use 0 para material indisponível.');
-  }
-  const agora=new Date();const changes=[];
-  if(dados.itens!==undefined){
-   if(!Array.isArray(dados.itens))throw new Error('Conferência inválida.');
-   const byKey=new Map();rows.forEach(function(o){byKey.set(String(o.rec[1])+'|'+String(o.rec[4]),o);});
-   const seen=new Set();
-   dados.itens.forEach(function(inp){
-    const codigo=String(inp&&inp.codigo||''),unidade=String(inp&&inp.unidade||'');const key=codigo+'|'+unidade;
-    const o=byKey.get(key);if(!o)throw new Error('Item não pertence ao pedido: '+key);if(seen.has(key))throw new Error('Item duplicado na conferência: '+key);seen.add(key);
-    // Campo vazio/null = item ainda pendente; não altera nem confirma os demais.
-    if(inp.qtd===undefined||inp.qtd===null||String(inp.qtd).trim()==='')return;
-    const asked=Number(o.rec[3])||0;const qty=Number(inp.qtd);
-    if(!Number.isInteger(qty)||qty<0||qty>asked)throw new Error('Quantidade confirmada inválida para '+o.rec[2]+'. Use de 0 a '+asked+'.');
-    const nota=String(inp.nota||'').slice(0,200);
-    const anterior=o.rec[6]===''?null:Number(o.rec[6]);const notaAnterior=String(o.rec[8]||'');
-    if(anterior!==qty||notaAnterior!==nota){
-     const perUnit=asked>0?Number(o.rec[5])/asked:1;const equiv=Math.round(qty*perUnit*100)/100;
-     its.getRange(o.idx+1,7,1,7).setValues([[qty,equiv,nota,agora,ator.nome,agora,ator.nome]]);
-     changes.push({codigo,nome:String(o.rec[2]||''),unidade,asked,anterior,qtd:qty,nota,equiv});
-    }
-   });
-  }
-  const obsNova=dados.observacaoAlmox!==undefined?String(dados.observacaoAlmox||'').trim().slice(0,500):String(p[row][10]||'');
-  const obsAnterior=String(p[row][10]||'');
-  const statusMudou=novoStatus!==statusAtual;const obsMudou=obsNova!==obsAnterior;
-  if(!statusMudou&&!obsMudou&&!changes.length)return {ok:true,status:statusAtual,alteracoes:0,notificacoes:0};
-  const dataEntrega=statusMudou&&novoStatus==='RETIRADO'?agora:(p[row][7]||'');
-  const statusEm=statusMudou?agora:(p[row][8]||'');
-  const statusPor=statusMudou?ator.nome:(p[row][9]||'');
-  ps.getRange(row+1,7,1,7).setValues([[novoStatus,dataEntrega,statusEm,statusPor,obsNova,agora,ator.nome]]);
-  if(statusMudou)gvgPedidoHistorico_('STATUS',id,{statusAnterior:statusAtual,statusNovo:novoStatus,usuarioId:ator.id,usuarioNome:ator.nome,observacao:'Status atualizado pelo almoxarifado.'});
-  if(obsMudou)gvgPedidoHistorico_('OBSERVACAO',id,{statusAnterior:statusAtual,statusNovo:novoStatus,usuarioId:ator.id,usuarioNome:ator.nome,observacao:obsNova});
-  changes.forEach(function(c){gvgPedidoHistorico_('QUANTIDADE',id,{produto:c.nome,qtdSolicitada:c.asked,qtdAnterior:c.anterior,qtdConfirmada:c.qtd,statusAnterior:statusAtual,statusNovo:novoStatus,usuarioId:ator.id,usuarioNome:ator.nome,observacao:c.nota});});
-  let notificacoes=0;const titulo='PEDIDO '+id;
-  changes.forEach(function(c){
-   const msg=c.qtd===0?'Material indisponível: '+c.nome+'. Quantidade confirmada: 0 '+c.unidade+'.':'Você solicitou '+gvgNumeroQtd_(c.asked)+' '+c.unidade+' de '+c.nome+'. O almoxarifado confirmou '+gvgNumeroQtd_(c.qtd)+' '+c.unidade+'.';
-   notificacoes+=gvgNotificarPedido_(ss,id,'QUANTIDADE',titulo,msg);
-  });
-  if(statusMudou)notificacoes+=gvgNotificarPedido_(ss,id,'STATUS',titulo,gvgNotificacaoStatusMensagem_(novoStatus));
-  if(obsMudou&&obsNova)notificacoes+=gvgNotificarPedido_(ss,id,'OBSERVACAO',titulo,'Observação do almoxarifado: '+obsNova);
-  ss.getSheetByName('AUDITORIA').appendRow([agora,'PEDIDO_ATUALIZADO',id,String(p[row][2]||''),JSON.stringify({status:novoStatus,alteracoes:changes.map(function(c){return {produto:c.nome,de:c.anterior,para:c.qtd};}),observacao:obsMudou})]);
-  try{CacheService.getScriptCache().remove('gvg_painel_pedidos_v1');}catch(e){}
-  return {ok:true,status:novoStatus,alteracoes:changes.length,notificacoes:notificacoes};
- }finally{lock.releaseLock();}
-}
+function relatorioAdmin(pin){admin_(pin);const ss=abasGestao_();const p=ss.getSheetByName('PEDIDOS').getDataRange().getValues().slice(1),i=ss.getSheetByName('ITENS_PEDIDO').getDataRange().getValues().slice(1);const pedidos=p.map(r=>({id:String(r[0]),data:r[1] instanceof Date?r[1].toISOString():String(r[1]),solicitante:String(r[2]),obra:String(r[3]),canal:String(r[5]),situacao:String(r[6]),dataEntrega:r[7] instanceof Date?r[7].toISOString():''}));const itens=i.map(r=>({id:String(r[0]),codigo:String(r[1]),nome:String(r[2]),qtd:Number(r[3])||0,unidade:String(r[4]),equiv:Number(r[5])||0,entregue:r[6]===''?null:Number(r[6])||0,entregueEquiv:r[7]===''?0:Number(r[7])||0,nota:String(r[8]||'')}));return {pedidos,itens};}
 // Limpeza exclusiva para demonstração: apaga pedidos, itens, vínculos e auditorias de entrega.
 // Mantém produtos, obras, usuários, configurações e demais históricos intactos.
 function limparPedidosDemo(credencial,confirmacao){
@@ -392,11 +208,11 @@ function limparPedidosDemo(credencial,confirmacao){
  if(String(confirmacao||'').trim().toUpperCase()!=='LIMPAR')throw new Error('Confirmação inválida. Digite LIMPAR.');
  const lock=LockService.getScriptLock();lock.waitLock(30000);
  try{
-  const ss=abasGestao_();const res={pedidos:0,itens:0,vinculos:0,historico:0,notificacoes:0,auditoria:0};
-  ['PEDIDOS','ITENS_PEDIDO','PEDIDOS_USUARIOS','PEDIDO_HISTORICO','NOTIFICACOES'].forEach(function(name){
+  const ss=abasGestao_();const res={pedidos:0,itens:0,vinculos:0,auditoria:0};
+  ['PEDIDOS','ITENS_PEDIDO','PEDIDOS_USUARIOS'].forEach(function(name){
    const sh=ss.getSheetByName(name);if(!sh)return;
    const n=Math.max(0,sh.getLastRow()-1);if(n){sh.deleteRows(2,n);}
-   if(name==='PEDIDOS')res.pedidos=n;else if(name==='ITENS_PEDIDO')res.itens=n;else if(name==='PEDIDOS_USUARIOS')res.vinculos=n;else if(name==='PEDIDO_HISTORICO')res.historico=n;else res.notificacoes=n;
+   if(name==='PEDIDOS')res.pedidos=n;else if(name==='ITENS_PEDIDO')res.itens=n;else res.vinculos=n;
   });
   const aud=ss.getSheetByName('AUDITORIA');
   if(aud&&aud.getLastRow()>1){
@@ -409,16 +225,49 @@ function limparPedidosDemo(credencial,confirmacao){
    for(let i=rows.length-1;i>=0;i--)aud.deleteRow(rows[i]);
    res.auditoria=rows.length;
   }
-  try{const cache=CacheService.getScriptCache();cache.remove('gvg_painel_pedidos_v1');cache.remove('gvg_painel_v4_'+ator.id);const us=gvguUsuarios_().getDataRange().getValues();us.slice(1).forEach(function(u){if(u[0])gvgNotifInvalidar_(u[0]);});}catch(e){}
+  try{const cache=CacheService.getScriptCache();cache.remove('gvg_painel_pedidos_v1');cache.remove('gvg_painel_v4_'+ator.id);}catch(e){}
   gvguAuditar_('LIMPAR_PEDIDOS_DEMO',ator.id,JSON.stringify(res));
   SpreadsheetApp.flush();
-  return {ok:true,pedidos:res.pedidos,itens:res.itens,vinculos:res.vinculos,historico:res.historico,notificacoes:res.notificacoes,auditoria:res.auditoria};
+  return {ok:true,pedidos:res.pedidos,itens:res.itens,vinculos:res.vinculos,auditoria:res.auditoria};
  }finally{lock.releaseLock()}
 }
 // Grava quantidade REAL ENTREGUE por item. Não altera quantidade solicitada.
 function confirmarEntrega(pin,id,linhas){
- const r=atualizarPedidoAdmin(pin,id,{itens:linhas,status:'RETIRADO'});
- return {status:r.status,unidades:0};
+ admin_(pin);
+ if(!Array.isArray(linhas)||!linhas.length)throw new Error('Informe a conferência de cada item.');
+ const lock=LockService.getScriptLock();lock.waitLock(20000);
+ try{
+  const ss=abasGestao_(),ps=ss.getSheetByName('PEDIDOS'),its=ss.getSheetByName('ITENS_PEDIDO');
+  const p=ps.getDataRange().getValues(),v=its.getDataRange().getValues();
+  const row=p.findIndex((r,i)=>i>0&&String(r[0])===String(id));
+  if(row<0)throw new Error('Pedido não encontrado.');
+  if(['ENTREGUE','ENTREGUE PARCIAL','NÃO ENTREGUE'].includes(String(p[row][6])))throw new Error('Este pedido já foi confirmado. Não é possível contabilizar duas vezes.');
+  const rows=[];for(let i=1;i<v.length;i++)if(String(v[i][0])===String(id))rows.push({idx:i,rec:v[i]});
+  if(!rows.length||rows.length!==linhas.length)throw new Error('Itens divergentes. Atualize a lista de pedidos.');
+  const seen=new Set();let full=true,delivered=0;
+  const changes=rows.map(o=>{
+   const codigo=String(o.rec[1]),unidade=String(o.rec[4]);
+   const inp=linhas.find(x=>String(x.codigo)===codigo && String(x.unidade)===unidade);
+   const key=codigo+'|'+unidade;if(!inp||seen.has(key))throw new Error('Conferência incompleta ou duplicada: '+key);seen.add(key);
+   const asked=Number(o.rec[3]);const qty=Number(inp.qtd);
+   if(!Number.isInteger(qty)||qty<0||qty>asked)throw new Error('Quantidade entregue inválida para '+o.rec[2]);
+   if(qty!==asked)full=false;
+   const perUnit=asked>0?Number(o.rec[5])/asked:1;
+   const equiv=qty*perUnit;delivered+=equiv;
+   return {idx:o.idx,qty,equiv,nota:String(inp.nota||'').slice(0,200),codigo,nome:String(o.rec[2])};
+  });
+  // Agrupa apenas linhas consecutivas do mesmo pedido, sem escrever nas linhas de outros pedidos.
+  for(let start=0;start<changes.length;){
+   let end=start+1;while(end<changes.length&&changes[end].idx===changes[end-1].idx+1)end++;
+   its.getRange(changes[start].idx+1,7,end-start,3).setValues(changes.slice(start,end).map(x=>[x.qty,x.equiv,x.nota]));
+   start=end;
+  }
+  const status=delivered===0?'NÃO ENTREGUE':full?'ENTREGUE':'ENTREGUE PARCIAL';
+  ps.getRange(row+1,7,1,2).setValues([[status,new Date()]]);
+  ss.getSheetByName('AUDITORIA').appendRow([new Date(),'ENTREGA',id,String(p[row][2]),status+'; '+delivered+' unidades equivalentes']);
+  try{CacheService.getScriptCache().remove('gvg_painel_pedidos_v1');}catch(e){}
+  return {status,unidades:delivered};
+ }finally{lock.releaseLock();}
 }
 
 // SOMENTE proprietário/editor do Apps Script: para trocar a senha depois,
@@ -592,57 +441,9 @@ function gvguVincularPedido_(ss,pedido,id){gvguVinculos_().appendRow([pedido,id]
 function meusPedidos(token){
  const u=gvguVerificarSessao_(token);
  if(!gvguPodeVisualizar_(u,'pedidos'))throw new Error('GVG_SEM_ACESSO_PROJETO: seu perfil não tem acesso ao Pedidos.');
- const ss=abasGestao_(),linked=gvguVinculos_().getDataRange().getValues();
- const ids=new Set(linked.slice(1).filter(r=>String(r[1])===String(u.id)).map(r=>String(r[0])));
- const pedidos=ss.getSheetByName('PEDIDOS').getDataRange().getValues().slice(1).filter(r=>r[0]&&ids.has(String(r[0]))).map(r=>({
-  id:String(r[0]),data:gvgDataISO_(r[1]),solicitante:String(r[2]||''),obra:String(r[3]||''),canal:String(r[5]||''),
-  status:gvgStatusNormalizar_(r[6]),statusEm:gvgDataISO_(r[8]),statusPor:String(r[9]||''),
-  observacaoAlmox:String(r[10]||''),dataEntrega:gvgDataISO_(r[7]),atualizadoEm:gvgDataISO_(r[11]),atualizadoPor:String(r[12]||'')
- }));
- const itens=ss.getSheetByName('ITENS_PEDIDO').getDataRange().getValues().slice(1).filter(r=>r[0]&&ids.has(String(r[0]))).map(r=>({
-  id:String(r[0]),codigo:String(r[1]||''),nome:String(r[2]||''),solicitado:Number(r[3])||0,unidade:String(r[4]||''),equiv:Number(r[5])||0,
-  entregue:r[6]===''?null:Number(r[6])||0,entregueEquiv:r[7]===''?0:Number(r[7])||0,nota:String(r[8]||''),
-  confirmadoEm:gvgDataISO_(r[9]),confirmadoPor:String(r[10]||'')
- }));
- const hs=ss.getSheetByName('PEDIDO_HISTORICO');let historico=[];
- if(hs&&hs.getLastRow()>1)historico=hs.getDataRange().getValues().slice(1).filter(r=>ids.has(String(r[1]))).map(r=>({
-  data:gvgDataISO_(r[0]),pedidoId:String(r[1]||''),acao:String(r[2]||''),produto:String(r[3]||''),
-  qtdSolicitada:r[4]===''?null:Number(r[4]),qtdAnterior:r[5]===''?null:Number(r[5]),qtdConfirmada:r[6]===''?null:Number(r[6]),
-  statusAnterior:String(r[7]||''),statusNovo:String(r[8]||''),usuarioNome:String(r[10]||''),observacao:String(r[11]||'')
- }));
- return {pedidos,itens,historico};
-}
-function notificacoesUsuario(token){
- const u=gvguVerificarSessao_(token);
- if(!gvguPodeVisualizar_(u,'pedidos'))throw new Error('GVG_SEM_ACESSO_PROJETO: seu perfil não tem acesso ao Pedidos.');
- const cache=CacheService.getScriptCache(),key=gvgNotifCacheKey_(u.id);const cached=cache.get(key);
- if(cached){try{return JSON.parse(cached);}catch(e){}}
- const sh=gvgNotifSheet_();const out=[];
- if(sh&&sh.getLastRow()>1){
-  sh.getDataRange().getValues().slice(1).forEach(function(r){
-   if(String(r[2])!==String(u.id))return;
-   out.push({id:String(r[0]),pedidoId:String(r[1]),tipo:String(r[3]),titulo:String(r[4]),mensagem:String(r[5]),criadaEm:gvgDataISO_(r[6]),lida:String(r[7]).toUpperCase()==='SIM',lidaEm:gvgDataISO_(r[8])});
-  });
- }
- out.sort(function(a,b){return String(b.criadaEm||'').localeCompare(String(a.criadaEm||''));});
- const res={notificacoes:out.slice(0,100),naoLidas:out.filter(function(n){return !n.lida;}).length};
- try{cache.put(key,JSON.stringify(res),30);}catch(e){}
- return res;
-}
-function marcarNotificacaoLida(token,id){
- const u=gvguVerificarSessao_(token);const sh=gvgNotifSheet_();if(!sh)throw new Error('Notificação não encontrada.');
- const v=sh.getDataRange().getValues();
- for(let i=1;i<v.length;i++)if(String(v[i][0])===String(id)&&String(v[i][2])===String(u.id)){
-  if(String(v[i][7]).toUpperCase()!=='SIM')sh.getRange(i+1,8,1,2).setValues([['SIM',new Date()]]);
-  gvgNotifInvalidar_(u.id);return {ok:true};
- }
- throw new Error('Notificação não encontrada.');
-}
-function marcarTodasNotificacoesLidas(token){
- const u=gvguVerificarSessao_(token);const sh=gvgNotifSheet_();if(!sh)return {ok:true,atualizadas:0};
- const v=sh.getDataRange().getValues();let n=0;const agora=new Date();
- for(let i=1;i<v.length;i++)if(String(v[i][2])===String(u.id)&&String(v[i][7]).toUpperCase()!=='SIM'){sh.getRange(i+1,8,1,2).setValues([['SIM',agora]]);n++;}
- gvgNotifInvalidar_(u.id);return {ok:true,atualizadas:n};
+ const ss=abasGestao_(),linked=gvguVinculos_().getDataRange().getValues();const ids=new Set(linked.slice(1).filter(r=>String(r[1])===u.id).map(r=>String(r[0])));
+ const pedidos=ss.getSheetByName('PEDIDOS').getDataRange().getValues().slice(1).filter(r=>ids.has(String(r[0]))).map(r=>({id:String(r[0]),data:r[1] instanceof Date?r[1].toISOString():'',obra:r[3],status:r[6]}));
+ const itens=ss.getSheetByName('ITENS_PEDIDO').getDataRange().getValues().slice(1).filter(r=>ids.has(String(r[0]))).map(r=>({id:String(r[0]),nome:r[2],solicitado:Number(r[3])||0,unidade:String(r[4]),entregue:r[6]===''?null:Number(r[6]),nota:String(r[8]||'')}));return {pedidos,itens};
 }
 function gvguAuditar_(acao,id,det){abasGestao_().getSheetByName('AUDITORIA').appendRow([new Date(),acao,id,'USUARIOS_GVG',String(det||'').slice(0,500)])}
 function gvguHistoricoPermissoes_(){return gvguSheet_('GVG_PERMISSOES',['Data','Responsavel','Usuario_ID','Login','Perfil','Status','Projetos','Detalhes'])}
@@ -810,7 +611,8 @@ function avisosPedidosAdminGVG(credencial){
  admin_(credencial);const sh=gvgPlanilha_().getSheetByName('PEDIDOS');
  if(!sh||sh.getLastRow()<2)return {ids:[],total:0};
  const rows=sh.getRange(2,1,sh.getLastRow()-1,7).getValues();
- const ids=rows.filter(r=>r[0]&&!gvgStatusFinalizado_(r[6])).map(r=>String(r[0]));
+ const finalizados=['ENTREGUE','ENTREGUE PARCIAL','NÃO ENTREGUE','CANCELADO'];
+ const ids=rows.filter(r=>r[0]&&!finalizados.includes(String(r[6]||'').trim().toUpperCase())).map(r=>String(r[0]));
  return {ids,total:ids.length};
 }
 
@@ -966,10 +768,11 @@ function painelResumoPedidos_(){
   const pedidos=ss.getSheetByName('PEDIDOS').getDataRange().getValues().slice(1).filter(r=>r[0]);
   const config=ss.getSheetByName('CONFIG').getDataRange().getValues().slice(1);
   const cfg=key=>{const r=config.find(x=>String(x[0])===key);return r?r[1]:'';};
+  const finalizados=['ENTREGUE','ENTREGUE PARCIAL','NÃO ENTREGUE','CANCELADO'];
   let abertos=0,latest=null,latestMs=-1;
   pedidos.forEach(r=>{
-    const status=gvgStatusNormalizar_(r[6]);
-    if(status!=='RETIRADO')abertos++;
+    const status=String(r[6]||'');
+    if(!finalizados.includes(status.toUpperCase()))abertos++;
     const ms=r[1] instanceof Date?r[1].getTime():0;
     if(!latest||ms>=latestMs){latestMs=ms;latest={id:String(r[0]),status:status,data:painelData_(r[1])};}
   });

@@ -212,26 +212,6 @@ Branch `feat/permissoes-projetos`, produção v90 preservada. Detalhes em [`PERM
 | Tablet/desktop | OK — 768 px e 1280 px com a mesma arte e layout |
 | Publicação | OK — Apps Script v104 e GitHub Pages v104 |
 
-## Acompanhamento de pedidos — v113 (09/11/2026)
-
-| Teste | Resultado |
-|---|---|
-| Criação do pedido | OK — ID único, itens e vínculo com o funcionário |
-| WhatsApp | OK — texto contém número do pedido e link direto de acompanhamento |
-| Meus pedidos | OK — funcionário vê apenas os próprios pedidos, com quantidades e status |
-| Privacidade | OK — segundo funcionário não vê o pedido e o backend bloqueia alterações |
-| Edição de quantidade | OK — solicitado preservado; confirmado gravado separadamente |
-| Item individual | OK — confirmar um item deixou os demais pendentes |
-| Quantidade zero | OK — material indisponível registrado e notificado |
-| Status | OK — EM ANÁLISE → EM SEPARAÇÃO → PRONTO PARA RETIRADA → RETIRADO |
-| Pedido finalizado | OK — interface somente leitura e backend recusa novas alterações |
-| Notificações | OK — quantidade, indisponibilidade, status e observação; leitura e histórico |
-| Persistência | OK — notificações e status permanecem após recarregar o app |
-| Link direto | OK — abre o pedido correspondente após o login |
-| Limpeza de demonstração | OK — pedidos, itens, vínculos, histórico e notificações zerados; produtos e usuários preservados |
-| Desempenho | OK — catálogo sem regressão relevante (medição de ponta a ponta na mesma faixa) |
-| Produção | OK — Apps Script v115 e GitHub Pages v115 |
-
 ## Pendências
 
 - Integrar Frotas. Controle de Gastos, Fornecedores e Controle de Máquinas já estão integrados.
