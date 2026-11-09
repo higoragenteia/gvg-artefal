@@ -212,6 +212,14 @@ Branch `feat/permissoes-projetos`, produção v90 preservada. Detalhes em [`PERM
 | Tablet/desktop | OK — 768 px e 1280 px com a mesma arte e layout |
 | Publicação | OK — Apps Script v104 e GitHub Pages v104 |
 
+## Gestão compacta — v116 (09/11/2026)
+
+| Teste | Resultado |
+|---|---|
+| Formulário de produto | OK — recolhido por padrão; abre/fecha pelo botão e abre ao clicar em Editar |
+| Cartões de alertas/ferramentas | OK — compactados, com textos longos dentro de “saiba mais” |
+| Layout | OK — sem alteração no catálogo, carrinho ou dados |
+
 ## Pendências
 
 - Integrar Frotas. Controle de Gastos, Fornecedores e Controle de Máquinas já estão integrados.
