@@ -1,6 +1,6 @@
 # Acompanhamento de pedidos — GVG & ARTEFAL
 
-Produção: **v114, publicada em 09/11/2026** (sujeita à validação final da publicação).
+Produção: **v115, publicada em 09/11/2026** (sujeita à validação final da publicação).
 
 ## Fluxo de status
 

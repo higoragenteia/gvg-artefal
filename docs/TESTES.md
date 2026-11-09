@@ -230,7 +230,7 @@ Branch `feat/permissoes-projetos`, produção v90 preservada. Detalhes em [`PERM
 | Link direto | OK — abre o pedido correspondente após o login |
 | Limpeza de demonstração | OK — pedidos, itens, vínculos, histórico e notificações zerados; produtos e usuários preservados |
 | Desempenho | OK — catálogo sem regressão relevante (medição de ponta a ponta na mesma faixa) |
-| Produção | OK — Apps Script v114 e GitHub Pages v114 |
+| Produção | OK — Apps Script v115 e GitHub Pages v115 |
 
 ## Pendências
 
