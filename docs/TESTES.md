@@ -220,6 +220,17 @@ Branch `feat/permissoes-projetos`, produção v90 preservada. Detalhes em [`PERM
 | Cartões de alertas/ferramentas | OK — compactados, com textos longos dentro de “saiba mais” |
 | Layout | OK — sem alteração no catálogo, carrinho ou dados |
 
+## Visual da lista de materiais — v117 (09/11/2026)
+
+| Teste | Resultado |
+|---|---|
+| Busca e categoria | OK — campos lado a lado, categoria filtrando a lista |
+| Cartões | OK — fundo escuro, foto, nome, código/categoria, status e ações |
+| Interruptor | OK — bege quando disponível, cinza quando indisponível |
+| Editar | OK — botão dourado e abertura do cadastro |
+| Formulário | OK — continua recolhido por padrão |
+| Catálogo/carrinho | OK — sem alteração |
+
 ## Pendências
 
 - Integrar Frotas. Controle de Gastos, Fornecedores e Controle de Máquinas já estão integrados.
