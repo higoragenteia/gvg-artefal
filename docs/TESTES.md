@@ -231,6 +231,16 @@ Branch `feat/permissoes-projetos`, produção v90 preservada. Detalhes em [`PERM
 | Formulário | OK — continua recolhido por padrão |
 | Catálogo/carrinho | OK — sem alteração |
 
+## Correção da lista de materiais — v118 (09/11/2026)
+
+| Teste | Resultado |
+|---|---|
+| Erro de JavaScript | OK — corrigido o trecho que impedia a lista de renderizar |
+| Cores | OK — fundo `#0f141b`, cartões `#1c232b`, busca `#1d242c` e dourado `#e4b75f` |
+| Lista real | OK — 100 itens carregados, sem erro de página |
+| Categoria | OK — opções reais preenchidas e filtro funcional |
+| Formulário | OK — recolhido por padrão |
+
 ## Pendências
 
 - Integrar Frotas. Controle de Gastos, Fornecedores e Controle de Máquinas já estão integrados.
