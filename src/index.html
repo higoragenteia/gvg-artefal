@@ -306,7 +306,7 @@ body{background:linear-gradient(150deg,#e6eef6,#f4f8fb)!important}
    const rows=data.filter(p=>`${p.nome} ${p.id} ${p.categoria}`.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().includes(term)).filter(p=>!cat||String(p.categoria||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()===cat).slice(0,100);
    $('gvgCards').innerHTML=rows.map(p=>{
      const active=String(p.ativo).toUpperCase()==='SIM';
-     const img=String(p.imagem||'').startsWith('https://')?`<img loading="lazy" src="${safeTxt(p.imagem)}" alt="">`:'📦';
+     const img=String(p.imagem||'').startsWith('https:')?`<img loading="lazy" src="${safeTxt(p.imagem)}" alt="">`:'📦';
      return `<div class="gvg-item" data-id="${safeTxt(p.id)}"><div class="gvg-image">${img}</div><div class="gvg-detail"><b>${safeTxt(p.nome)}</b><small>${safeTxt(p.id)} · ${safeTxt(p.categoria)}</small><span class="gvg-state ${active?'':'off'}">${active?'Disponível':'Indisponível'}</span></div><input class="gvg-switch" type="checkbox" aria-label="Alterar disponibilidade" ${active?'checked':''} data-toggle="${safeTxt(p.id)}"><button type="button" class="gvg-edit" data-edit="${safeTxt(p.id)}">Editar</button></div>`;
    }).join('')||'<p>Nenhum produto corresponde à pesquisa.</p>';
  }
@@ -1180,30 +1180,31 @@ async function loadUsers(){
 </style>
 
 <style id="gvg-gestao-visual">
+#adminView{background:#0f141b!important}
 /* Gestão de materiais — layout escuro compacto */
 #adminView #gvgModernManagement .gvg-stats{gap:7px;margin-bottom:10px}
-#adminView #gvgModernManagement .gvg-stat{background:#191b20;border:1px solid #2d3037;border-radius:10px;padding:8px 6px;color:#f3f4f6;box-shadow:none}
-#adminView #gvgModernManagement .gvg-stat b{color:#e9d39a;font-size:20px;line-height:1.15}
+#adminView #gvgModernManagement .gvg-stat{background:#1c232b;border:1px solid #2b343e;border-radius:10px;padding:8px 6px;color:#f3f4f6;box-shadow:none}
+#adminView #gvgModernManagement .gvg-stat b{color:#e4b75f;font-size:20px;line-height:1.15}
 #adminView #gvgModernManagement .gvg-stat small{color:#9ba0a8;font-size:9px}
 #adminView #gvgModernManagement .gvg-filters{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:8px;margin:8px 0 11px}
-#adminView #gvgModernManagement .gvg-filter{position:relative;display:flex;align-items:center;gap:7px;height:40px;background:#1b1d22;border:1px solid #34373e;border-radius:9px;padding:0 10px;color:#f3f4f6;min-width:0}
+#adminView #gvgModernManagement .gvg-filter{position:relative;display:flex;align-items:center;gap:7px;height:40px;background:#1d242c;border:1px solid #2b343e;border-radius:9px;padding:0 10px;color:#f3f4f6;min-width:0}
 #adminView #gvgModernManagement .gvg-ico{font-size:17px;line-height:1;color:#c9cdd4;flex:0 0 auto}
 #adminView #gvgModernManagement .gvg-filter input,#adminView #gvgModernManagement .gvg-filter select{display:block;width:100%;height:100%;min-width:0;margin:0;padding:0;border:0;outline:none;background:transparent!important;color:#f3f4f6!important;font-family:inherit;font-size:11px;line-height:1.2;box-shadow:none!important;appearance:none}
 #adminView #gvgModernManagement .gvg-filter input::placeholder{color:#8f949d;opacity:1}
 #adminView #gvgModernManagement .gvg-filter select{cursor:pointer;padding-right:16px}
 #adminView #gvgModernManagement .gvg-caret{position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:12px;color:#c9cdd4;pointer-events:none}
 #adminView #gvgModernManagement .gvg-list{gap:9px;max-height:560px;overflow-y:auto;padding-right:2px}
-#adminView #gvgModernManagement .gvg-item{background:#1b1d22;border:1px solid #30333a;border-radius:11px;padding:7px 10px;gap:10px;box-shadow:none;color:#f4f5f7}
+#adminView #gvgModernManagement .gvg-item{background:#1c232b;border:1px solid #2b343e;border-radius:11px;padding:7px 10px;gap:10px;box-shadow:none;color:#f4f5f7}
 #adminView #gvgModernManagement .gvg-image{width:64px;height:64px;border-radius:8px;background:#101114;border:1px solid #2b2e35;font-size:29px}
 #adminView #gvgModernManagement .gvg-detail b{font-size:13.5px;line-height:1.25;color:#f5f6f8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #adminView #gvgModernManagement .gvg-detail small{font-size:9.5px;line-height:1.3;color:#9da3ac;margin-top:2px}
-#adminView #gvgModernManagement .gvg-state{display:inline-flex;align-items:center;margin-top:5px;padding:3px 8px;border-radius:999px;background:#143a2b;color:#4ade80;border:1px solid #1d5a40;font-size:8.5px;font-weight:800}
+#adminView #gvgModernManagement .gvg-state{display:inline-flex;align-items:center;margin-top:5px;padding:3px 8px;border-radius:999px;background:#1c4634;color:#4ade80;border:1px solid #2a6b4a;font-size:8.5px;font-weight:800}
 #adminView #gvgModernManagement .gvg-state.off{background:#2a2c33;color:#c8ccd2;border-color:#44474f}
-#adminView #gvgModernManagement .gvg-switch{width:44px;height:25px;background:#3b3e46;border:1px solid #4b4f58;flex:0 0 auto}
+#adminView #gvgModernManagement .gvg-switch{width:44px;height:25px;background:#3a3f48;border:1px solid #4a505a;flex:0 0 auto}
 #adminView #gvgModernManagement .gvg-switch::after{top:2px;left:2px;width:19px;height:19px;background:#fff;box-shadow:0 1px 3px #0008}
-#adminView #gvgModernManagement .gvg-switch:checked{background:#e9d39a;border-color:#e9d39a}
+#adminView #gvgModernManagement .gvg-switch:checked{background:#e4b75f;border-color:#e4b75f}
 #adminView #gvgModernManagement .gvg-switch:checked::after{transform:translateX(19px)}
-#adminView #gvgModernManagement .gvg-edit{background:#e9d39a;color:#1c1d20;border:1px solid #e9d39a;border-radius:7px;padding:8px 12px;font-size:10px;font-weight:800;min-width:54px;cursor:pointer;flex:0 0 auto}
+#adminView #gvgModernManagement .gvg-edit{background:#e4b75f;color:#1c1d20;border:1px solid #e4b75f;border-radius:7px;padding:8px 12px;font-size:10px;font-weight:800;min-width:54px;cursor:pointer;flex:0 0 auto}
 #adminView #gvgModernManagement .gvg-list>p{color:#a4a9b2;font-size:11px}
 #adminView #gvgModernManagement>p{color:#8b919b!important;font-size:10px!important}
 @media(max-width:420px){
@@ -1220,8 +1221,8 @@ async function loadUsers(){
 #adminView #gvgModernManagement .gvg-item{min-width:0;width:100%}
 #adminView #gvgModernManagement .gvg-detail{min-width:0}
 #adminView #gvgModernManagement .gvg-filter input,#adminView #gvgModernManagement .gvg-filter select{border:0!important;background:transparent!important;color:#f3f4f6!important;box-shadow:none!important}
-#adminView #gvgModernManagement .gvg-switch{background:#3b3e46!important;border:1px solid #4b4f58!important}
-#adminView #gvgModernManagement .gvg-switch:checked{background:#e9d39a!important;border-color:#e9d39a!important}
+#adminView #gvgModernManagement .gvg-switch{background:#3a3f48!important;border:1px solid #4a505a!important}
+#adminView #gvgModernManagement .gvg-switch:checked{background:#e4b75f!important;border-color:#e4b75f!important}
 
 </style>
 </body></html>
