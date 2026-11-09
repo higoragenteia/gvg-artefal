@@ -2,7 +2,7 @@
 
 Branch de trabalho: `perf/otimizacao-mobile`  
 Ponto de restauração: tag `pre-perf-20261108`  
-Produção: **v113, publicada em 09/11/2026** (otimizações da v90 preservadas)  
+Produção: **v114, publicada em 09/11/2026** (otimizações da v90 preservadas)  
 Status: **publicado** — branch integrada à `main`; ponto de restauração preservado.
 
 ## 1. Arquitetura encontrada
