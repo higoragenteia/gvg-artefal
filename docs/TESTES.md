@@ -241,6 +241,15 @@ Branch `feat/permissoes-projetos`, produção v90 preservada. Detalhes em [`PERM
 | Categoria | OK — opções reais preenchidas e filtro funcional |
 | Formulário | OK — recolhido por padrão |
 
+## Menu de categoria escuro — v119 (09/11/2026)
+
+| Teste | Resultado |
+|---|---|
+| Menu nativo branco | OK — substituído por lista escura personalizada |
+| Filtro por categoria | OK — seleção atualiza o rótulo e filtra os cartões |
+| Fechamento | OK — clique fora ou Esc fecha |
+| Restante da Gestão | OK — sem alterações |
+
 ## Pendências
 
 - Integrar Frotas. Controle de Gastos, Fornecedores e Controle de Máquinas já estão integrados.
