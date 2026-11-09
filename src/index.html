@@ -285,18 +285,25 @@ body{background:linear-gradient(150deg,#e6eef6,#f4f8fb)!important}
    if(!panel || !Array.isArray(window.admProducts) && typeof admProducts==='undefined')return;
    const prods=typeof admProducts!=='undefined'?admProducts:window.admProducts;
    let root=$('gvgModernManagement');
-   if(!root){root=document.createElement('div');root.id='gvgModernManagement';panel.insertBefore(root,panel.firstChild);root.innerHTML='<div class="gvg-hero"><b>Gestão de materiais</b><span>Disponibilidade e edição rápida do catálogo GVG</span></div><div id="gvgStats" class="gvg-stats"></div><div class="gvg-filters"><label class="gvg-filter gvg-filter-search" for="gvgFind"><span class="gvg-ico" aria-hidden="true">⌕</span><input id="gvgFind" placeholder="Buscar produto"></label><label class="gvg-filter gvg-filter-cat" for="gvgCategory"><span class="gvg-ico" aria-hidden="true">▤</span><select id="gvgCategory"><option value="">Categoria</option></select><span class="gvg-caret" aria-hidden="true">⌄</span></label></div><div id="gvgCards" class="gvg-list"></div><p style="font-size:10px;color:#8b919b">Ligado: disponível. Desligado: indisponível e bloqueado para novos pedidos. Use Editar para alterar o cadastro.</p>';$('gvgFind').addEventListener('input',drawCards);$('gvgCategory').addEventListener('change',drawCards);}
+   if(!root){root=document.createElement('div');root.id='gvgModernManagement';panel.insertBefore(root,panel.firstChild);root.innerHTML='<div class="gvg-hero"><b>Gestão de materiais</b><span>Disponibilidade e edição rápida do catálogo GVG</span></div><div id="gvgStats" class="gvg-stats"></div><div class="gvg-filters"><label class="gvg-filter gvg-filter-search" for="gvgFind"><span class="gvg-ico" aria-hidden="true">⌕</span><input id="gvgFind" placeholder="Buscar produto"></label><div class="gvg-filter gvg-filter-cat" id="gvgCategoryWrap"><span class="gvg-ico" aria-hidden="true">▤</span><button type="button" id="gvgCategoryBtn" aria-haspopup="listbox" aria-expanded="false"><span id="gvgCategoryLabel">Categoria</span></button><span class="gvg-caret" aria-hidden="true">⌄</span><div class="gvg-cat-menu" id="gvgCategoryMenu" role="listbox" hidden></div><input type="hidden" id="gvgCategory" value=""></div></div><div id="gvgCards" class="gvg-list"></div><p style="font-size:10px;color:#8b919b">Ligado: disponível. Desligado: indisponível e bloqueado para novos pedidos. Use Editar para alterar o cadastro.</p>';$('gvgFind').addEventListener('input',drawCards);const catBtn=$('gvgCategoryBtn'),catMenu=$('gvgCategoryMenu');if(catBtn&&catMenu){catBtn.addEventListener('click',function(e){e.stopPropagation();const open=catMenu.hidden;catMenu.hidden=!open;catBtn.setAttribute('aria-expanded',String(open));if(open)fillCategories();});catMenu.addEventListener('click',function(e){const opt=e.target.closest('[data-cat-value]');if(!opt)return;setCategory(opt.dataset.catValue);catMenu.hidden=true;catBtn.setAttribute('aria-expanded','false');drawCards();});document.addEventListener('click',function(e){if(!catMenu.hidden&&!e.target.closest('#gvgCategoryWrap')){catMenu.hidden=true;catBtn.setAttribute('aria-expanded','false');}});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!catMenu.hidden){catMenu.hidden=true;catBtn.setAttribute('aria-expanded','false');catBtn.focus();}});}}
    const countOn=prods.filter(p=>String(p.ativo).toUpperCase()==='SIM').length;
    $('gvgStats').innerHTML=`<div class="gvg-stat"><b>${prods.length}</b><small>Total</small></div><div class="gvg-stat"><b>${countOn}</b><small>Disponíveis</small></div><div class="gvg-stat"><b>${prods.length-countOn}</b><small>Indisponíveis</small></div>`;
    fillCategories();drawCards();
  }
+ function setCategory(value){
+   const input=$('gvgCategory'),label=$('gvgCategoryLabel'),menu=$('gvgCategoryMenu');
+   const current=String(value==null?'':value);
+   if(input)input.value=current;
+   if(label)label.textContent=current||'Categoria';
+   if(menu)menu.querySelectorAll('[data-cat-value]').forEach(function(b){const sel=String(b.dataset.catValue||'')===current;b.classList.toggle('sel',sel);b.setAttribute('aria-selected',String(sel));});
+ }
  function fillCategories(){
-   const sel=$('gvgCategory');if(!sel)return;
+   const menu=$('gvgCategoryMenu');if(!menu)return;
    const data=typeof admProducts!=='undefined'?admProducts:window.admProducts;
-   const current=sel.value;
+   const current=String($('gvgCategory')?$('gvgCategory').value:'');
    const cats=Array.from(new Set((data||[]).map(p=>String(p.categoria||'').trim()).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'pt-BR'));
-   sel.innerHTML='<option value="">Categoria</option>'+cats.map(c=>`<option value="${safeTxt(c)}">${safeTxt(c)}</option>`).join('');
-   if(cats.indexOf(current)>=0)sel.value=current;
+   menu.innerHTML=[['','Categoria']].concat(cats.map(c=>[c,c])).map(function(item){const sel=String(item[0])===current;return `<button type="button" role="option" class="gvg-cat-option ${sel?'sel':''}" data-cat-value="${safeTxt(item[0])}" aria-selected="${sel}">${safeTxt(item[1])}</button>`;}).join('');
+   setCategory(current);
  }
  function drawCards(){
    const data=typeof admProducts!=='undefined'?admProducts:window.admProducts;
@@ -1223,6 +1230,15 @@ async function loadUsers(){
 #adminView #gvgModernManagement .gvg-filter input,#adminView #gvgModernManagement .gvg-filter select{border:0!important;background:transparent!important;color:#f3f4f6!important;box-shadow:none!important}
 #adminView #gvgModernManagement .gvg-switch{background:#3a3f48!important;border:1px solid #4a505a!important}
 #adminView #gvgModernManagement .gvg-switch:checked{background:#e4b75f!important;border-color:#e4b75f!important}
+#adminView #gvgModernManagement .gvg-filter-cat{cursor:pointer}
+#adminView #gvgModernManagement #gvgCategoryBtn{display:flex;align-items:center;width:100%;height:100%;min-width:0;margin:0;padding:0 17px 0 0;border:0!important;background:transparent!important;color:#f3f4f6!important;font-family:inherit;font-size:11px;line-height:1.2;text-align:left;cursor:pointer;outline:none;box-shadow:none!important}
+#gvgCategoryLabel{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#adminView #gvgModernManagement .gvg-cat-menu{position:absolute;left:0;right:0;top:calc(100% + 5px);z-index:60;max-height:250px;overflow-y:auto;background:#1c232b;border:1px solid #2b343e;border-radius:9px;padding:4px;box-shadow:0 14px 35px #000a}
+#gvgCategoryMenu[hidden]{display:none!important}
+#adminView #gvgModernManagement .gvg-cat-option{display:block;width:100%;margin:0;border:0!important;background:transparent!important;color:#e7eaee!important;font-family:inherit;font-size:11px;line-height:1.2;text-align:left;padding:9px;border-radius:6px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:none!important}
+#adminView #gvgModernManagement .gvg-cat-option:hover,#adminView #gvgModernManagement .gvg-cat-option:focus{background:#2a3440!important;outline:none}
+#adminView #gvgModernManagement .gvg-cat-option.sel{background:#2a3440!important;color:#e4b75f!important;font-weight:800}
+@media(max-width:420px){#adminView #gvgModernManagement .gvg-cat-menu{max-height:220px}}
 
 </style>
 </body></html>
