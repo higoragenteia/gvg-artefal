@@ -159,8 +159,8 @@ function abasGestao_(forcar){
  defs.forEach(function(def){
   const name=def[0],header=def[1];
   let sh=ss.getSheetByName(name);
-  if(!sh)sh=ss.insertSheet(name);
-  if(sh.getLastRow()===0){sh.appendRow(header);return;}
+  if(!sh){try{sh=ss.insertSheet(name);}catch(e){sh=ss.getSheetByName(name);if(!sh)throw e;}}
+  if(sh.getLastRow()===0){sh.getRange(1,1,1,header.length).setValues([header]);return;}
   const current=sh.getLastColumn();
   if(name==='PEDIDOS'&&current<13)sh.getRange(1,9,1,5).setValues([header.slice(8)]);
   if(name==='ITENS_PEDIDO'&&current<13)sh.getRange(1,10,1,4).setValues([header.slice(9)]);
