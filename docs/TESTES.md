@@ -271,6 +271,17 @@ Branch `feat/permissoes-projetos`, produção v90 preservada. Detalhes em [`PERM
 | Pedido por unidade | OK — backend aceitou e registrou |
 | Limpeza | OK — pedidos de teste removidos; produção limpa |
 
+## Nome ORDER CATALOG — v122 (10/11/2026)
+
+| Teste | Resultado |
+|---|---|
+| Logo e título | OK — ORDER CATALOG no cabeçalho e na aba |
+| Login | OK — “Minha conta · ORDER CATALOG” |
+| Painel | OK — menu e cartão do módulo ORDER CATALOG |
+| Permissões | OK — rótulo ORDER CATALOG |
+| WhatsApp | OK — cabeçalho ORDER CATALOG |
+| Frases em português | OK — “pedido/pedidos” preservados no texto comum |
+
 ## Pendências
 
 - Integrar Frotas. Controle de Gastos, Fornecedores e Controle de Máquinas já estão integrados.
