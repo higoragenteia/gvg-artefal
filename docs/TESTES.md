@@ -260,6 +260,17 @@ Branch `feat/permissoes-projetos`, produção v90 preservada. Detalhes em [`PERM
 | Catálogo/Gestão | OK — heros e ícones com o domínio novo |
 | Link do painel | OK — aponta para o domínio novo |
 
+## Papel toalha — pacote de 24 — v121 (10/11/2026)
+
+| Teste | Resultado |
+|---|---|
+| Cadastro | OK — PT01 atualizado para 24 unidades por pacote |
+| Catálogo | OK — opções “Unidade” e “Pacote (24)” no cartão |
+| Padrão | OK — pacote selecionado, 24 unidades equivalentes |
+| Pedido por pacote | OK — backend aceitou e registrou |
+| Pedido por unidade | OK — backend aceitou e registrou |
+| Limpeza | OK — pedidos de teste removidos; produção limpa |
+
 ## Pendências
 
 - Integrar Frotas. Controle de Gastos, Fornecedores e Controle de Máquinas já estão integrados.
