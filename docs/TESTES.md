@@ -250,6 +250,16 @@ Branch `feat/permissoes-projetos`, produção v90 preservada. Detalhes em [`PERM
 | Fechamento | OK — clique fora ou Esc fecha |
 | Restante da Gestão | OK — sem alterações |
 
+## Domínio novo — v120 (10/11/2026)
+
+| Teste | Resultado |
+|---|---|
+| URLs antigas | OK — todas as imagens migradas para `https://gvgartefalesquadrias.com.br/assets/` |
+| Ícones do painel | OK — arquivos retornam HTTP 200 no domínio novo |
+| Login visual | OK — referência HTTPS atualizada |
+| Catálogo/Gestão | OK — heros e ícones com o domínio novo |
+| Link do painel | OK — aponta para o domínio novo |
+
 ## Pendências
 
 - Integrar Frotas. Controle de Gastos, Fornecedores e Controle de Máquinas já estão integrados.
