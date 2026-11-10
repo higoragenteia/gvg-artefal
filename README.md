@@ -4,7 +4,7 @@ Painel interno acessível por um único link, com o módulo **Pedidos** integrad
 
 ## Link oficial (GitHub Pages)
 
-**https://higoragenteia.github.io/gvg-artefal/**
+**https://gvgartefalesquadrias.com.br/**
 
 O GitHub Pages abre o painel embutido e oculta a faixa azul do Google Apps Script. O login é o mesmo do aplicativo e funciona no desktop e no celular.
 
@@ -21,7 +21,7 @@ O GitHub Pages abre o painel embutido e oculta a faixa azul do Google Apps Scrip
 
 | Item | Link |
 |---|---|
-| Link oficial (GitHub Pages) | https://higoragenteia.github.io/gvg-artefal/ |
+| Link oficial (GitHub Pages) | https://gvgartefalesquadrias.com.br/ |
 | Painel direto no Apps Script (alternativa) | https://script.google.com/macros/s/AKfycby35-KiTddoqhEuo9zalGkVC2Wfspw5lG7i9Vt-_qJXZBa_wqeyiV51_42xh4ITtHhL/exec |
 | Código completo do app Pedidos | [`src/index.html`](src/index.html) — 199 KB, 983 linhas, catálogo/carrinho/gestão completos |
 | Shell do painel | [`src/Painel.html`](src/Painel.html) |
@@ -32,7 +32,7 @@ O GitHub Pages abre o painel embutido e oculta a faixa azul do Google Apps Scrip
 
 | Recurso | Referência |
 |---|---|
-| GitHub Pages | [Abrir link oficial](https://higoragenteia.github.io/gvg-artefal/) |
+| GitHub Pages | [Abrir link oficial](https://gvgartefalesquadrias.com.br/) |
 | Pasta principal no Drive | [GVG&ARTEFAL](https://drive.google.com/drive/folders/1eWXZren3iZClUFg4GU0yTIMg1h4__hb2) |
 | Planilha ativa (cópia de teste do app oficial) | [APLICATIVO DE PEDIDOS - CÓPIA TESTE](https://docs.google.com/spreadsheets/d/19bO6gkJX9yre2a3Qzt5EUxsNacj_-sR9C6hrz-UhBG4/edit) |
 | Pasta do app oficial copiado | [07 - App Pedidos Oficial (teste)](https://drive.google.com/drive/folders/1L5L4vFmlyaMMTIcVwEeGnnpqrT9CoXgI) |
