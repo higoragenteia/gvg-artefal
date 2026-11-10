@@ -64,7 +64,7 @@ function doGetPedidos_(){
   // O catálogo só é carregado depois do login, com sessão válida.
   modelo.initialData = 'null';
   return modelo.evaluate()
-    .setTitle('ORDER CATALOG')
+    .setTitle('Order Catalog')
     .addMetaTag('viewport','width=device-width, initial-scale=1')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
@@ -99,7 +99,7 @@ function fatorEmbalagemGVG_(r){
 
 function getCatalogo(sessao){
   const auth=gvguVerificarSessao_(sessao);
-  if(!gvguPodeVisualizar_(auth,'pedidos'))throw new Error('GVG_SEM_ACESSO_PROJETO: seu perfil não tem acesso ao ORDER CATALOG.');
+  if(!gvguPodeVisualizar_(auth,'pedidos'))throw new Error('GVG_SEM_ACESSO_PROJETO: seu perfil não tem acesso ao Order Catalog.');
   const acesso={nivel:gvguNivelProjeto_(auth,'pedidos'),podeOperar:gvguPodeOperar_(auth,'pedidos'),podeGerenciar:gvguPodeGerenciar_(auth,'pedidos')};
   const cache=CacheService.getScriptCache();
   const cacheKey='gvg_catalogo_v3';
@@ -141,7 +141,7 @@ function admin_(credential){
   try{const u=gvguVerificarSessao_(c);if(gvguPodeGerenciar_(u,'pedidos'))return u;}catch(e){}
  }
  const h=PropertiesService.getScriptProperties().getProperty('GVG_ADMIN_HASH');if(h&&c&&hashPin_(c)===String(h))return {perfil:'SUPERADMIN',permissoes:{pedidos:'GERENCIAR'},superadmin:true};
- throw new Error('GVG_SEM_PERMISSAO_GERENCIAR: seu perfil não permite administrar o ORDER CATALOG.');
+ throw new Error('GVG_SEM_PERMISSAO_GERENCIAR: seu perfil não permite administrar o Order Catalog.');
 }
 function revogarSessoesUsuario_(id,manterToken){const sh=gvguSessoes_(),v=sh.getDataRange().getValues(),keep=manterToken?gvguSHA_(String(manterToken)):'';for(let i=1;i<v.length;i++)if(String(v[i][1])===String(id)&&(!keep||String(v[i][0])!==keep))sh.getRange(i+1,4).setValue('SIM');}
 function abasGestao_(forcar){const ss=gvgPlanilha_();if(GVG_GESTAO_EXECUCAO_)return ss;const cache=CacheService.getScriptCache();if(!forcar){try{if(cache.get('gvg_estrutura_ok_v1')==='1'){GVG_GESTAO_EXECUCAO_=true;return ss;}}catch(e){}}const a=[['PEDIDOS',['Pedido_ID','Data','Solicitante','Obra','Observacoes','Canal','Situacao','Data_entrega']],['ITENS_PEDIDO',['Pedido_ID','Codigo','Produto','Quantidade','Unidade','Unidades_equivalentes','Quantidade_entregue','Unidades_entregues','Observacao_entrega']],['AUDITORIA',['Data','Acao','Codigo','Produto','Detalhes']]]; a.forEach(([name,header])=>{let sh=ss.getSheetByName(name);if(!sh)sh=ss.insertSheet(name);if(sh.getLastRow()===0)sh.appendRow(header);else if(name==='PEDIDOS' && sh.getLastColumn()<8){sh.getRange(1,8).setValue('Data_entrega');}else if(name==='ITENS_PEDIDO' && sh.getLastColumn()<9){sh.getRange(1,7,1,3).setValues([header.slice(6)]);}});try{cache.put('gvg_estrutura_ok_v1','1',300);}catch(e){}GVG_GESTAO_EXECUCAO_=true;return ss;}
@@ -192,7 +192,7 @@ function salvarFotoPerfil(sessao,foto){
 }
 // Registra SOLICITAÇÃO, não comprova envio no WhatsApp nem entrega de materiais.
 function registrarSolicitacao(d){
- const auth=gvguVerificarSessao_(d&&d.sessao); if(!gvguPodeOperar_(auth,'pedidos'))throw new Error('Seu acesso ao ORDER CATALOG é somente leitura.'); d.nome=auth.nome; d.usuarioId=auth.id;
+ const auth=gvguVerificarSessao_(d&&d.sessao); if(!gvguPodeOperar_(auth,'pedidos'))throw new Error('Seu acesso ao Order Catalog é somente leitura.'); d.nome=auth.nome; d.usuarioId=auth.id;
  if(!d||!String(d.nome||'').trim()||!String(d.obra||'').trim()||!Array.isArray(d.itens)||!d.itens.length)throw new Error('Pedido incompleto.');
  if(d.itens.length>100)throw new Error('Limite de itens do pedido excedido.');
  const lock=LockService.getScriptLock();lock.waitLock(20000);try{
@@ -334,7 +334,7 @@ function gvguFotoCol_(sh){
 }
 const GVG_PERM_KEYS=['pedidos','gastos','fornecedores','frotas','maquinas'];
 const GVG_PROJETOS=[
- {key:'pedidos',label:'ORDER CATALOG'},
+ {key:'pedidos',label:'Order Catalog'},
  {key:'gastos',label:'Controle de Gastos'},
  {key:'fornecedores',label:'Fornecedores'},
  {key:'maquinas',label:'Controle de Máquinas'},
@@ -441,7 +441,7 @@ function sairFuncionario(token){const h=gvguSHA_(token),sh=gvguSessoes_(),v=sh.g
 function gvguVincularPedido_(ss,pedido,id){gvguVinculos_().appendRow([pedido,id])}
 function meusPedidos(token){
  const u=gvguVerificarSessao_(token);
- if(!gvguPodeVisualizar_(u,'pedidos'))throw new Error('GVG_SEM_ACESSO_PROJETO: seu perfil não tem acesso ao ORDER CATALOG.');
+ if(!gvguPodeVisualizar_(u,'pedidos'))throw new Error('GVG_SEM_ACESSO_PROJETO: seu perfil não tem acesso ao Order Catalog.');
  const ss=abasGestao_(),linked=gvguVinculos_().getDataRange().getValues();const ids=new Set(linked.slice(1).filter(r=>String(r[1])===u.id).map(r=>String(r[0])));
  const pedidos=ss.getSheetByName('PEDIDOS').getDataRange().getValues().slice(1).filter(r=>ids.has(String(r[0]))).map(r=>({id:String(r[0]),data:r[1] instanceof Date?r[1].toISOString():'',obra:r[3],status:r[6]}));
  const itens=ss.getSheetByName('ITENS_PEDIDO').getDataRange().getValues().slice(1).filter(r=>ids.has(String(r[0]))).map(r=>({id:String(r[0]),nome:r[2],solicitado:Number(r[3])||0,unidade:String(r[4]),entregue:r[6]===''?null:Number(r[6]),nota:String(r[8]||'')}));return {pedidos,itens};
