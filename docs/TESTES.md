@@ -282,6 +282,13 @@ Branch `feat/permissoes-projetos`, produção v90 preservada. Detalhes em [`PERM
 | WhatsApp | OK — cabeçalho ORDER CATALOG |
 | Frases em português | OK — “pedido/pedidos” preservados no texto comum |
 
+## Grafia Order Catalog — v123 (10/11/2026)
+
+| Teste | Resultado |
+|---|---|
+| Nome do app | OK — “Order Catalog” no logo, título, painel, login, permissão e WhatsApp |
+| Frases em português | OK — “pedido/pedidos” preservados no texto comum |
+
 ## Pendências
 
 - Integrar Frotas. Controle de Gastos, Fornecedores e Controle de Máquinas já estão integrados.
