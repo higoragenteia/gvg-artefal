@@ -90,13 +90,15 @@ function show(page){for(const p of ['catalog','cart','help','admin']){el(p==='ca
 function draw(){const cats=['Todos',...new Set(DATA.produtos.map(p=>p.categoria))];el('categories').innerHTML=cats.map(c=>`<button class="${c===cat?'active':''}" data-cat="${safe(c)}">${safe(c)}</button>`).join('');const list=DATA.produtos.filter(p=>(cat==='Todos'||normalizarBusca(p.categoria)===normalizarBusca(cat))&&normalizarBusca(`${p.nome} ${p.id} ${p.categoria} ${p.descricao}`).includes(normalizarBusca(text)));el('results').textContent=`${list.length} de ${DATA.produtos.length} produtos`;el('products').innerHTML=list.slice(0,500).map(p=>`<article class="product"><div class="visual">${gvgProductArtwork(p)}</div><h3>${safe(p.nome)}</h3><div class="desc">${safe(p.id)} · ${safe(p.descricao)}</div><div class="foot"><span class="category">${safe(p.categoria)}</span><button class="add" data-add="${safe(p.id)}">＋</button></div></article>`).join('')||'<div class="empty">Nenhum produto encontrado.</div>';count()}
 function key(id,unit){return id+'|'+unit}function add(id,unit='Unidade'){const p=DATA.produtos.find(x=>x.id===id);if(!p)return;const k=key(id,unit);cart[k]=(cart[k]||0)+1;save();count()}function save(){localStorage.setItem('gvgCart',JSON.stringify(cart))}function count(){el('cartCount').textContent=`Carrinho (${Object.values(cart).reduce((a,b)=>a+b,0)})`}
 
-// A embalagem vem do cadastro (categoria + unidade); nunca de palavras incidentais no nome.
+// A embalagem vem do cadastro (categoria + unidade) e de regras acordadas; nunca de palavras incidentais no nome.
 function gvgTipoEmbalagem(p){
  const categoria=String(p.categoria||'').trim().toLocaleLowerCase('pt-BR');
  const unidade=String(p.unidade||'').toLocaleLowerCase('pt-BR');
+ const nome=String(p.nome||'').toLocaleLowerCase('pt-BR');
  const fator=Math.max(1,Number(p.porCaixa)||1);
  if(unidade.includes('litro'))return {tipo:'Litro',fator:1,alternativa:true};
  if(unidade.includes('quilo'))return {tipo:'Quilo',fator:1,alternativa:true};
+ if(/papel\s*toalha/.test(nome))return {tipo:'Pacote',fator:24,alternativa:true};
  if(categoria==='parafusos' && (unidade.includes('pacote')||fator>1))return {tipo:'Pacote',fator:fator>1?fator:100,alternativa:true};
  if(unidade.includes('caixa')&&fator>1)return {tipo:'Caixa',fator,alternativa:true};
  return {tipo:'Unidade',fator:1,alternativa:false};

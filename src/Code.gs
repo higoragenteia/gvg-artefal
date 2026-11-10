@@ -87,6 +87,7 @@ function fatorEmbalagemGVG_(r){
  const n=Number(r[5])||1;
  const tipo=String(r[2]||'')+' '+String(r[1]||'');
  // Conversões específicas acordadas para GVG & ARTEFAL.
+ if(/papel\s*toalha/i.test(String(r[1]||'')))return 24;
  if(String(r[2]||'').trim().toLowerCase()==='parafusos')return n>1?n:100;
  if(/silicone/i.test(tipo)&&/estrutural/i.test(tipo))return 16;
  if(/silicone/i.test(tipo)&&/neutro/i.test(tipo))return 24;
@@ -101,7 +102,7 @@ function getCatalogo(sessao){
   if(!gvguPodeVisualizar_(auth,'pedidos'))throw new Error('GVG_SEM_ACESSO_PROJETO: seu perfil não tem acesso ao Pedidos.');
   const acesso={nivel:gvguNivelProjeto_(auth,'pedidos'),podeOperar:gvguPodeOperar_(auth,'pedidos'),podeGerenciar:gvguPodeGerenciar_(auth,'pedidos')};
   const cache=CacheService.getScriptCache();
-  const cacheKey='gvg_catalogo_v2';
+  const cacheKey='gvg_catalogo_v3';
   const cached=cache.get(cacheKey);
   if(cached){try{const out=JSON.parse(cached);out.acesso=acesso;return out;}catch(e){}}
   const ss = gvgPlanilha_();
@@ -160,11 +161,11 @@ function salvarProduto(pin,d){
   const values=[id,textoSeguro_(String(d.nome).trim(),180),textoSeguro_(String(d.categoria).trim(),80),textoSeguro_(unit,50),textoSeguro_(d.descricao,350),q,ativo,img];
   if(row)sh.getRange(row,1,1,8).setValues([values]);else sh.appendRow(values);
   ss.getSheetByName('AUDITORIA').appendRow([new Date(),row?'EDITAR':'CRIAR',id,values[1],ativo]);
-  try{CacheService.getScriptCache().remove('gvg_catalogo_v2');}catch(e){}
+  try{CacheService.getScriptCache().remove('gvg_catalogo_v3');}catch(e){}
    return {id};
  }finally{lock.releaseLock()}
 }
-function alterarDisponibilidade(pin,id,novo){admin_(pin);if(!['SIM','NÃO','EM FALTA'].includes(novo))throw new Error('Situação inválida.');const lock=LockService.getScriptLock();lock.waitLock(20000);try{const ss=abasGestao_(),sh=ss.getSheetByName('PRODUTOS'),v=sh.getDataRange().getValues();const idx=v.findIndex((r,i)=>i>0&&String(r[0])===String(id));if(idx<0)throw new Error('Produto não encontrado.');sh.getRange(idx+1,7).setValue(novo);try{CacheService.getScriptCache().remove('gvg_catalogo_v2');}catch(e){}ss.getSheetByName('AUDITORIA').appendRow([new Date(),'DISPONIBILIDADE',id,v[idx][1],novo]);return true}finally{lock.releaseLock()}}
+function alterarDisponibilidade(pin,id,novo){admin_(pin);if(!['SIM','NÃO','EM FALTA'].includes(novo))throw new Error('Situação inválida.');const lock=LockService.getScriptLock();lock.waitLock(20000);try{const ss=abasGestao_(),sh=ss.getSheetByName('PRODUTOS'),v=sh.getDataRange().getValues();const idx=v.findIndex((r,i)=>i>0&&String(r[0])===String(id));if(idx<0)throw new Error('Produto não encontrado.');sh.getRange(idx+1,7).setValue(novo);try{CacheService.getScriptCache().remove('gvg_catalogo_v3');}catch(e){}ss.getSheetByName('AUDITORIA').appendRow([new Date(),'DISPONIBILIDADE',id,v[idx][1],novo]);return true}finally{lock.releaseLock()}}
 function gvguPerfilFolder_(){
   try{return DriveApp.getFolderById(GVG_PERFIL_FOLDER_ID);}catch(e){}
   const base=DriveApp.getFolderById(GVG_BASE_FOLDER_ID);
@@ -196,7 +197,7 @@ function registrarSolicitacao(d){
  if(d.itens.length>100)throw new Error('Limite de itens do pedido excedido.');
  const lock=LockService.getScriptLock();lock.waitLock(20000);try{
   const ss=abasGestao_(),sh=ss.getSheetByName('PRODUTOS');const vals=sh.getDataRange().getValues();const mapa=new Map(vals.slice(1).filter(r=>r[0]&&String(r[6]).toUpperCase()==='SIM').map(r=>[String(r[0]),r]));
-  let linhas=[];for(const x of d.itens){const r=mapa.get(String(x.id));if(!r)throw new Error('Produto indisponível ou retirado: '+x.id+'. Atualize o catálogo.');const q=Number(x.quantidade);if(!Number.isInteger(q)||q<1||q>10000)throw new Error('Quantidade inválida.');const u=['Unidade','Caixa','Pacote','Litro','Quilo'].includes(x.unidade)?x.unidade:'Unidade';const f=fatorEmbalagemGVG_(r);if(['Caixa','Pacote'].includes(u)&&f<=1)throw new Error('Embalagem indisponível para '+r[1]);if(u==='Pacote'&&String(r[2]||'').trim().toLowerCase()!=='parafusos')throw new Error('Pacote indisponível para '+r[1]);const base=String(r[3]||'').toLowerCase();if(u==='Litro'&&!(/litro/.test(base)||/litro/.test(String(r[1]))))throw new Error('Litro indisponível para '+r[1]);if(u==='Quilo'&&!(/quilo/.test(base)||/estopa/.test(String(r[1]))))throw new Error('Quilo indisponível para '+r[1]);linhas.push([String(x.id),String(r[1]),q,u,q*(['Caixa','Pacote'].includes(u)?f:1)])}
+  let linhas=[];for(const x of d.itens){const r=mapa.get(String(x.id));if(!r)throw new Error('Produto indisponível ou retirado: '+x.id+'. Atualize o catálogo.');const q=Number(x.quantidade);if(!Number.isInteger(q)||q<1||q>10000)throw new Error('Quantidade inválida.');const u=['Unidade','Caixa','Pacote','Litro','Quilo'].includes(x.unidade)?x.unidade:'Unidade';const f=fatorEmbalagemGVG_(r);if(['Caixa','Pacote'].includes(u)&&f<=1)throw new Error('Embalagem indisponível para '+r[1]);if(u==='Pacote'&&String(r[2]||'').trim().toLowerCase()!=='parafusos'&&!/papel\s*toalha/i.test(String(r[1]||'')))throw new Error('Pacote indisponível para '+r[1]);const base=String(r[3]||'').toLowerCase();if(u==='Litro'&&!(/litro/.test(base)||/litro/.test(String(r[1]))))throw new Error('Litro indisponível para '+r[1]);if(u==='Quilo'&&!(/quilo/.test(base)||/estopa/.test(String(r[1]))))throw new Error('Quilo indisponível para '+r[1]);linhas.push([String(x.id),String(r[1]),q,u,q*(['Caixa','Pacote'].includes(u)?f:1)])}
   const pedido='PED-'+Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'yyyyMMdd')+'-'+Utilities.getUuid().slice(0,6).toUpperCase();const agora=new Date();const p=ss.getSheetByName('PEDIDOS');p.appendRow([pedido,agora,textoSeguro_(d.nome,120),textoSeguro_(d.obra,120),textoSeguro_(d.observacao,500),String(d.canal||'WhatsApp'),'REGISTRADO — ENVIO NÃO VERIFICADO']);const itens=ss.getSheetByName('ITENS_PEDIDO');itens.getRange(itens.getLastRow()+1,1,linhas.length,6).setValues(linhas.map(x=>[pedido,...x]));gvguVincularPedido_(ss,pedido,d.usuarioId);try{const cache=CacheService.getScriptCache();cache.remove('gvg_painel_v4_'+auth.id);cache.remove('gvg_painel_pedidos_v1');}catch(e){}return {pedido};
  }finally{lock.releaseLock()}
 }
