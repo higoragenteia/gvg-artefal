@@ -314,6 +314,8 @@
     .product-cell{display:flex;align-items:center;gap:11px;min-width:0}
     .product-cell .pc-body{min-width:0}
     .product-cell .pc-body .main-cell{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:340px}
+    .quote-product-cell .pc-body{min-width:120px}
+    .quote-product-cell .pc-body .main-cell{white-space:normal}
     .image-editor{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:12px;border:1px solid var(--line);border-radius:13px;background:var(--soft)}
     .image-preview{width:112px;height:112px;border-radius:13px;object-fit:cover;background:#eef3f7;border:1px solid #d8e4ec;box-shadow:0 8px 20px rgba(11,34,57,.12)}
     .image-preview.placeholder{display:grid;place-items:center;font-size:30px;color:#93a8b7}
@@ -648,6 +650,11 @@
       if(/^https?:\/\//i.test(s)) return s;
       return '';
     }
+    function productThumbnail(p){
+      const img=productImageUrl(p&&p.imagem,180);
+      if(!img) return '<div class="thumb placeholder" title="Sem imagem">📦</div>';
+      return '<img class="thumb" loading="lazy" decoding="async" width="48" height="48" src="'+escAttr(img)+'" alt="Imagem de '+escAttr(p.nome)+'" onclick="app.openProductImage(\''+jsq(p.id)+'\')" onerror="app.imageFallback(this,\''+jsq(p.id)+'\')">';
+    }
     function integerOnly(el){
       el.value=String(el.value||'').replace(/[^\d]/g,'');
     }
@@ -843,8 +850,7 @@
       const toolbar='<div class="toolbar"><div class="grow"><input style="width:100%;border:1px solid #d3e0e9;border-radius:10px;padding:10px 12px" placeholder="Pesquisar produto, especificação..." value="'+escAttr(f.produtos)+'" onchange="app.setFilter(\'produtos\',this.value)"></div><select style="border:1px solid #d3e0e9;border-radius:10px;padding:10px" onchange="app.setFilter(\'produtosStatus\',this.value)"><option value="">Todos os ativos</option>'+statusOpts.map(x=>'<option '+(f.produtosStatus===x?'selected':'')+'>'+x+'</option>').join('')+'</select><select style="border:1px solid #d3e0e9;border-radius:10px;padding:10px" onchange="app.setFilter(\'produtosCategoria\',this.value)"><option value="">Todas as categorias</option>'+cats.map(x=>'<option '+(f.produtosCategoria===x?'selected':'')+'>'+esc(x)+'</option>').join('')+'</select>'+(state.canEdit?'<button class="btn primary" onclick="app.openProduct()">+ Novo produto</button>':'')+'</div>';
       const table=rows.length?'<div class="table-wrap"><table class="table"><thead><tr><th>Produto / serviço</th><th>Categoria</th><th>Unidade</th><th>Ofertas</th><th>Status</th><th class="actions">Ações</th></tr></thead><tbody>'+rows.map(x=>{
         const ofertas=(state.data.cotacoes||[]).filter(c=>c.produtoId===x.id).length;
-        const img=productImageUrl(x.imagem,180);
-        const thumb=img?'<img class="thumb" loading="lazy" src="'+escAttr(img)+'" alt="Imagem de '+escAttr(x.nome)+'" onclick="app.openProductImage(\''+jsq(x.id)+'\')" onerror="app.imageFallback(this,\''+jsq(x.id)+'\')">':'<div class="thumb placeholder" title="Sem imagem">📦</div>';
+        const thumb=productThumbnail(x);
         const excluido=norm(x.status)==='excluido';
         return '<tr><td><div class="product-cell">'+thumb+'<div class="pc-body"><div class="main-cell"'+(state.canEdit&&!excluido?' style="cursor:pointer" onclick="app.openProduct(\''+jsq(x.id)+'\')" title="Editar produto"':'')+'>'+esc(x.nome)+'</div><div class="small">'+esc(x.id)+(x.especificacao?' · '+esc(short(x.especificacao,70)):'')+'</div></div></div></td><td>'+esc(x.categoria||'—')+'</td><td>'+esc(x.unidade||'—')+'</td><td>'+esc(ofertas)+'</td><td>'+badge(x.status)+'</td><td class="actions">'+(state.canEdit&&!excluido?'<button class="btn sm" onclick="app.openProduct(\''+jsq(x.id)+'\')">Editar</button> ':'')+'<button class="btn sm" onclick="app.viewProductPrices(\''+jsq(x.id)+'\')">Preços</button>'+(state.isAdmin&&!excluido?' <button class="btn sm danger" onclick="app.deleteProduct(\''+jsq(x.id)+'\')">Excluir</button>':'')+'</td></tr>';
       }).join('')+'</tbody></table></div>':empty('📦','Nenhum produto cadastrado','Cadastre os materiais, equipamentos e serviços que a empresa compra.',state.canEdit?'<button class="btn primary" onclick="app.openProduct()">+ Novo produto</button>':'');
@@ -855,6 +861,7 @@
     function renderCotacoes(){
       const f=state.filters; const prods=state.data.produtos||[]; const forns=state.data.fornecedores||[];
       const pm={}; prods.forEach(p=>pm[p.id]=p.nome); const fm={}; forns.forEach(x=>fm[x.id]=x.nome);
+      const productsById=new Map(prods.map(p=>[String(p.id),p]));
       let rows=(state.data.cotacoes||[]).slice();
       const q=norm(f.cotacoes);
       if(q) rows=rows.filter(x=>[x.id,x.descricao,x.observacoes,x.responsavel,pm[x.produtoId],fm[x.fornecedorId]].some(v=>norm(v).includes(q)));
@@ -864,7 +871,7 @@
       rows.sort((a,b)=>String(b.data||'').localeCompare(String(a.data||'')) || String(b.id).localeCompare(String(a.id)));
       const toolbar='<div class="toolbar"><div class="grow"><input style="width:100%;border:1px solid #d3e0e9;border-radius:10px;padding:10px 12px" placeholder="Pesquisar cotação..." value="'+escAttr(f.cotacoes)+'" onchange="app.setFilter(\'cotacoes\',this.value)"></div><select style="border:1px solid #d3e0e9;border-radius:10px;padding:10px" onchange="app.setFilter(\'cotacoesStatus\',this.value)"><option value="">Todos os status</option>'+['Em elaboração','Aguardando resposta','Recebida','Em análise','Aprovada','Rejeitada','Cancelada'].map(x=>'<option '+(f.cotacoesStatus===x?'selected':'')+'>'+esc(x)+'</option>').join('')+'</select><select style="border:1px solid #d3e0e9;border-radius:10px;padding:10px" onchange="app.setFilter(\'cotacoesProduto\',this.value)"><option value="">Todos os produtos</option>'+prods.map(p=>'<option value="'+escAttr(p.id)+'" '+(f.cotacoesProduto===p.id?'selected':'')+'>'+esc(p.nome)+'</option>').join('')+'</select><select style="border:1px solid #d3e0e9;border-radius:10px;padding:10px" onchange="app.setFilter(\'cotacoesFornecedor\',this.value)"><option value="">Todos os fornecedores</option>'+forns.map(x=>'<option value="'+escAttr(x.id)+'" '+(f.cotacoesFornecedor===x.id?'selected':'')+'>'+esc(x.nome)+'</option>').join('')+'</select>'+(state.canEdit?(state.canEdit?'<button class="btn primary" onclick="app.openQuote()">+ Nova cotação</button>':''):'')+'</div>';
       const table=rows.length?'<div class="table-wrap"><table class="table"><thead><tr><th>Data / ID</th><th>Produto</th><th>Fornecedor</th><th class="num">Qtd</th><th class="num">Unitário</th><th class="num">Total</th><th>Status</th><th class="actions">Ações</th></tr></thead><tbody>'+rows.map(x=>
-        '<tr><td><div class="main-cell">'+esc(dateBR(x.data))+'</div><div class="small">'+esc(x.id)+'</div></td><td><div class="main-cell">'+esc(pm[x.produtoId]||x.produtoId)+'</div><div class="small">'+esc(short(x.descricao||'',65))+'</div></td><td>'+esc(fm[x.fornecedorId]||x.fornecedorId)+'</td><td class="num">'+esc(number(x.quantidade))+' '+esc(x.unidade||'')+'</td><td class="num">'+money(x.precoUnitario)+'</td><td class="num" style="font-weight:900">'+money(x.precoTotal)+'</td><td>'+badge(x.status)+(x.vencedor?' <span class="badge ok">Vencedora</span>':'')+'</td><td class="actions">'+(state.canEdit?'<button class="btn sm" onclick="app.openQuote(\''+jsq(x.id)+'\')">Editar</button> <button class="btn sm gold" onclick="app.openPrice(\''+jsq(x.id)+'\')">Alterar preço</button>':'<span class="muted">Consulta</span>')+(state.isAdmin?' <button class="btn sm danger" onclick="app.deleteQuote(\''+jsq(x.id)+'\')">Excluir</button>':'')+'</td></tr>'
+        '<tr><td><div class="main-cell">'+esc(dateBR(x.data))+'</div><div class="small">'+esc(x.id)+'</div></td><td><div class="product-cell quote-product-cell">'+productThumbnail(productsById.get(String(x.produtoId)))+'<div class="pc-body"><div class="main-cell">'+esc(pm[x.produtoId]||x.produtoId)+'</div><div class="small">'+esc(short(x.descricao||'',65))+'</div></div></div></td><td>'+esc(fm[x.fornecedorId]||x.fornecedorId)+'</td><td class="num">'+esc(number(x.quantidade))+' '+esc(x.unidade||'')+'</td><td class="num">'+money(x.precoUnitario)+'</td><td class="num" style="font-weight:900">'+money(x.precoTotal)+'</td><td>'+badge(x.status)+(x.vencedor?' <span class="badge ok">Vencedora</span>':'')+'</td><td class="actions">'+(state.canEdit?'<button class="btn sm" onclick="app.openQuote(\''+jsq(x.id)+'\')">Editar</button> <button class="btn sm gold" onclick="app.openPrice(\''+jsq(x.id)+'\')">Alterar preço</button>':'<span class="muted">Consulta</span>')+(state.isAdmin?' <button class="btn sm danger" onclick="app.deleteQuote(\''+jsq(x.id)+'\')">Excluir</button>':'')+'</td></tr>'
       ).join('')+'</tbody></table></div>':empty('📋','Nenhuma cotação encontrada','Registre propostas para comparar preços e escolher o melhor fornecedor.',state.canEdit?(state.canEdit?'<button class="btn primary" onclick="app.openQuote()">+ Nova cotação</button>':''):'');
       return pageHead('Cotações',rows.length+' registro(s)','<button class="btn" onclick="app.exportCotacoes()">Exportar CSV</button>')+toolbar+table;
     }
