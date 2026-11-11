@@ -96,6 +96,7 @@ O app de registro continua usando login Google e mantém o dispositivo como `pen
 | Acesso direto a `?modulo=frotas` sem sessão do painel | OK — bloqueado, sem dados |
 | Deep link `alerta=...` | OK — abriu o veículo SOD7H56 e a aba Histórico, com destaque no alerta |
 | Logout do painel | OK — token removido, iframe do Frotas descarregado, login restaurado |
+| PWA no domínio público | OK — iframe recebeu `v=127&ui=frotas&view=frotas&alerta=...`; deep link abriu SOD7H56; service worker `gvg-shell-v2` |
 | Order Catalog após a integração | OK — 36 produtos carregados |
 | Gastos após a integração | OK — dashboard carregado |
 | Fornecedores após a integração | OK — dashboard carregado em modo somente leitura |
@@ -111,6 +112,7 @@ O app de registro continua usando login Google e mantém o dispositivo como `pen
 | Geração de alerta de 10 dias | OK — chave, data e link gerados; registro de teste removido |
 | Token inválido | OK — FCM recusou, dispositivo falso marcado `invalid` no Firestore e removido |
 | Recebimento/exibição no aparelho | **Não confirmado** — depende do dispositivo físico e do sistema operacional |
+| Limpeza | OK — usuários, sessões e registros de teste removidos; produção limpa |
 
 ### Externo/manual pendente
 
