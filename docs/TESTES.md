@@ -313,6 +313,30 @@ Detalhes completos em [`FROTAS_INTEGRACAO.md`](FROTAS_INTEGRACAO.md).
 | Order Catalog, Gastos, Fornecedores e Máquinas | OK — módulos continuam carregando |
 | PWA/domínio | OK — wrapper v127, deep link e service worker `gvg-shell-v2` no domínio público |
 
+## Layout 4 — Catálogo digital — v130 (11/11/2026)
+
+Detalhes completos em [`LAYOUT_CATALOGO.md`](LAYOUT_CATALOGO.md).
+
+| Teste | Resultado |
+|---|---|
+| Visual desktop | OK — hero, cinco cartões, atalhos, “Meu dia” e rodapé |
+| Visual celular | OK — 2 colunas, atalhos com rolagem e rodapé |
+| Responsivo 360–1440 | OK — sem overflow horizontal |
+| Busca local | OK — filtrou para Frotas |
+| Atalhos rápidos | OK — 5 módulos |
+| Continuar trabalhando | OK — 3 módulos |
+| Usuário limitado | OK — somente Pedidos e Frotas |
+| Rotação A→B→A | OK — 30 s, efeitos e tema |
+| Pausa/Retomar | OK — 32 s parado e retomada em ~30 s |
+| Layout B | OK — preservado |
+| Login/logout | OK |
+| Carregamento pós-login | OK — esqueletos visíveis, sem tela vazia |
+| Order Catalog | OK — 96 produtos |
+| Demais módulos | OK |
+| Deep link Frotas | OK — veículo SOD7H56 |
+| PWA/domínio | OK — wrapper v130, SW `gvg-shell-v3` |
+| Desempenho | OK — dashboard ~3,1 s e dados ~6,2 s (antes ~4,5 s e ~7,4 s) |
+
 ## Pendências
 
 - Integrar Frotas. Controle de Gastos, Fornecedores e Controle de Máquinas já estão integrados.

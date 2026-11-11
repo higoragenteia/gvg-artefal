@@ -42,6 +42,15 @@ Navegador
 
 A planilha ativa é a cópia de teste do app oficial (`19bO6...`), com as abas `PRODUTOS`, `CATEGORIAS`, `OBRAS`, `CONFIG`, `PEDIDOS`, `ITENS_PEDIDO`, `AUDITORIA`, `GVG_USUARIOS`, `SESSOES_GVG`, `PEDIDOS_USUARIOS`, `BACKUP_PRODUTOS_20261026` e `LEIA-ME`. Os 297 produtos e as 177 fotos oficiais foram copiados; o WhatsApp está fictício e as sessões antigas foram limpas.
 
+## Layout 4 — Catálogo digital (v130)
+
+- A visão geral tem dois layouts alternados: **A (Catálogo digital, bege/dourado)** e **B (Monitor escuro)**.
+- A rotação mantém 30 s, efeitos de entrada e botão de pausa.
+- O layout A reutiliza `getPainelInicial` e `getPainelExternos`; não faz consulta nova.
+- A busca do topo filtra somente os cinco cartões no navegador.
+- O ícone do Order Catalog é um asset WebP próprio (`assets/icone-order-catalog-catalogo-*.webp`).
+- O layout B e os módulos internos não foram alterados.
+
 ## Módulo Frotas (v127)
 
 - `src/Frotas.gs`: backend original do Controle de Frotas isolado em `GVG_FROTAS_MODULE` para não colidir com as funções do painel. Expõe apenas `frotasApiCall`.

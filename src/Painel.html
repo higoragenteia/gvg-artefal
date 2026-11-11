@@ -799,10 +799,238 @@
     .gvgp-topbar-title h1{font-size:15px}
     .gvgp-topbar-title p{font-size:9px}
   }
+
+  /* ===== Layout 4 — Catálogo digital (bege/dourado) ===== */
+  .gvgp-catalog{
+    position:relative;display:block;padding:0;min-height:0;overflow:visible;
+    border:0;border-radius:0;box-shadow:none;background:transparent;color:#3c372e;
+  }
+  .gvgp-catalog:before{display:none}
+  .gvgp-cat-shell{display:block;min-width:0}
+  .gvgp-cat-hero{
+    position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:18px;
+    padding:20px 26px;margin:0 0 14px;border-radius:22px;border:1px solid #e4d0a7;
+    background:linear-gradient(105deg,#fffaf0 0%,#f7e9cd 36%,#e7c98f 61%,#faf0dd 100%);
+    box-shadow:0 12px 28px rgba(121,103,74,.12),inset 0 1px 0 rgba(255,255,255,.85);
+  }
+  .gvgp-cat-hero:before{
+    content:"";position:absolute;right:-6%;top:-80%;width:58%;height:260%;
+    background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,252,241,.86),rgba(201,154,46,.22),rgba(255,255,255,0));
+    transform:rotate(-18deg);opacity:.72;pointer-events:none;
+  }
+  .gvgp-cat-hero:after{
+    content:"";position:absolute;right:6%;bottom:-95%;width:46%;height:220%;
+    background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,248,228,.78),rgba(201,154,46,.14),rgba(255,255,255,0));
+    transform:rotate(-24deg);opacity:.62;pointer-events:none;
+  }
+  .gvgp-cat-hero-copy{position:relative;z-index:1;display:flex;align-items:center;gap:16px;min-width:0}
+  .gvgp-cat-hero-bar{width:4px;height:58px;flex:0 0 auto;border-radius:99px;background:linear-gradient(180deg,#f0d58e,#b98520);box-shadow:0 0 0 1px rgba(255,255,255,.45)}
+  .gvgp-cat-hero h2{margin:0;font-size:clamp(27px,2.8vw,36px);line-height:1.03;letter-spacing:-1.5px;color:#2f2a22}
+  .gvgp-cat-hero p{margin:6px 0 0;font-size:clamp(13px,1.2vw,17px);color:#6d5b3e;font-weight:600}
+  .gvgp-cat-hero-badge{
+    position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;flex:0 0 auto;
+    padding:10px 15px;border-radius:999px;border:1px solid #dfc78e;background:rgba(255,250,238,.72);
+    color:#6b4c12;font-size:11px;font-weight:800;white-space:nowrap;
+    box-shadow:inset 0 1px 0 #fff,0 6px 14px rgba(121,103,74,.08)
+  }
+  .gvgp-cat-hero-badge svg{width:17px;height:17px;color:#a97718;flex:0 0 auto}
+  .gvgp-cat-hero-badge b{font-weight:950;color:#3c2a08}
+  .gvgp-cat-board{
+    position:relative;overflow:hidden;padding:18px 22px 15px;border-radius:24px;
+    border:1px solid #e7dac6;background:linear-gradient(160deg,#fdf8ef,#f7efe3);
+    box-shadow:12px 16px 34px rgba(121,103,74,.10),-6px -6px 20px rgba(255,255,255,.68),inset 0 1px 0 #fff
+  }
+  .gvgp-cat-board:after{
+    content:"";position:absolute;right:-80px;top:-120px;width:300px;height:300px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.55);box-shadow:0 0 0 28px rgba(255,255,255,.10),0 0 0 56px rgba(255,255,255,.05);
+    pointer-events:none
+  }
+  .gvgp-cat-board-head{position:relative;z-index:1;min-width:0}
+  .gvgp-cat-eyebrow{
+    display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border-radius:999px;
+    border:1px solid rgba(201,154,46,.22);background:rgba(201,154,46,.08);
+    color:#9b772f;font-size:8.5px;font-weight:950;letter-spacing:2.1px;text-transform:uppercase
+  }
+  .gvgp-cat-board-head h2{margin:13px 0 4px;font-size:30px;line-height:1.04;letter-spacing:-1.4px;color:#3c372e}
+  .gvgp-cat-board-head p{margin:0;font-size:12px;color:#7c7264;line-height:1.5}
+  .gvgp-cat-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-top:18px}
+  .gvgp-cat-card{
+    position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:0;
+    padding:15px 15px 14px;border-radius:20px;border:1px solid #e8dac4;
+    background:linear-gradient(160deg,#fffaf2,#f3e9da);color:#3c372e;text-align:left;overflow:hidden;
+    box-shadow:8px 10px 22px rgba(121,103,74,.10),-5px -5px 14px rgba(255,255,255,.82),inset 0 1px 0 #fff;
+    transition:transform .2s ease,box-shadow .2s ease
+  }
+  .gvgp-cat-card:hover{transform:translateY(-3px);box-shadow:11px 15px 28px rgba(121,103,74,.15),-6px -6px 16px rgba(255,255,255,.9),inset 0 1px 0 #fff}
+  .gvgp-cat-card:after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--accent);opacity:.95}
+  .gvgp-cat-icon{
+    width:100%;max-width:150px;aspect-ratio:1/1;display:grid;place-items:center;align-self:center;
+    margin:0 auto 3px;border-radius:28px;overflow:hidden;background:#f4eee4;
+    box-shadow:6px 7px 15px rgba(121,103,74,.13),-4px -4px 12px rgba(255,255,255,.9),inset 0 1px 0 #fff
+  }
+  .gvgp-cat-photo{display:block;width:100%;height:100%;object-fit:cover;border-radius:28px}
+  .gvgp-cat-status{
+    display:inline-flex;align-items:center;align-self:center;gap:5px;padding:3px 8px;border-radius:999px;
+    border:1px solid #cce8db;background:#e7f5ee;color:#1d7a5f;font-size:7.5px;font-weight:950;letter-spacing:.7px;text-transform:uppercase
+  }
+  .gvgp-cat-status:before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+  .gvgp-cat-card h3{margin:1px 0 0;font-size:16px;line-height:1.14;letter-spacing:-.35px;color:#2f2a22}
+  .gvgp-cat-card p{margin:2px 0 0;min-height:24px;font-size:10px;line-height:1.35;color:#8b7d6a}
+  .gvgp-cat-metric{display:grid;gap:1px;margin-top:auto;padding-top:4px;padding-right:28px;min-width:0}
+  .gvgp-cat-metric strong{font-size:29px;line-height:1;letter-spacing:-1.2px;font-weight:950;font-variant-numeric:tabular-nums;color:#2f2a22}
+  .gvgp-cat-metric strong.is-money{font-size:19px;letter-spacing:-.5px}
+  .gvgp-cat-metric span{font-size:8.5px;font-weight:750;line-height:1.3;color:#8b7d6a}
+  .gvgp-cat-arrow{
+    position:absolute;right:11px;bottom:11px;width:25px;height:25px;border-radius:50%;
+    display:grid;place-items:center;border:1px solid #e3d4bd;background:#fffaf2;color:#8a6626;
+    box-shadow:3px 3px 8px rgba(121,103,74,.10),-2px -2px 6px #fff;font-size:12px;font-weight:900;
+    transition:transform .18s ease
+  }
+  .gvgp-cat-card:hover .gvgp-cat-arrow{transform:translateX(2px)}
+  .gvgp-cat-no-results{
+    position:relative;z-index:1;margin-top:14px;padding:18px;border-radius:14px;border:1px dashed #d8c5a5;
+    background:rgba(255,255,255,.28);text-align:center;color:#8b7d6a;font-size:11px;font-weight:700
+  }
+  .gvgp-cat-quick{
+    position:relative;z-index:1;display:flex;align-items:center;gap:10px;margin-top:12px;padding:8px 11px;
+    border-radius:15px;border:1px solid #e8dac4;background:linear-gradient(160deg,#fffaf2,#f6edde);
+    box-shadow:inset 0 1px 0 #fff,0 6px 14px rgba(121,103,74,.05);overflow:hidden
+  }
+  .gvgp-cat-quick-title{
+    display:flex;align-items:center;gap:7px;flex:0 0 auto;padding-right:12px;border-right:1px solid #e3d4bd;
+    color:#3c372e;font-size:11px;font-weight:950;letter-spacing:-.1px;white-space:nowrap
+  }
+  .gvgp-cat-quick-title svg{width:16px;height:16px;color:#a97718}
+  .gvgp-cat-quick-actions{display:flex;align-items:center;gap:7px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+  .gvgp-cat-quick-actions::-webkit-scrollbar{display:none}
+  .gvgp-cat-quick-btn{
+    display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;padding:8px 10px;border-radius:9px;
+    border:1px solid #e3d4bd;background:#fffaf2;color:#5d4a2c;font-size:9.5px;font-weight:800;white-space:nowrap;
+    box-shadow:0 3px 8px rgba(121,103,74,.05);transition:background .16s ease,border-color .16s ease,transform .16s ease
+  }
+  .gvgp-cat-quick-btn svg{width:14px;height:14px;color:#a97718;flex:0 0 auto}
+  .gvgp-cat-quick-btn:hover{background:#fff;border-color:#c99a2e;transform:translateY(-1px)}
+  .gvgp-cat-bottom{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:14px;margin-top:10px}
+  .gvgp-cat-day,.gvgp-cat-continue{
+    position:relative;overflow:hidden;padding:13px 16px;border-radius:18px;border:1px solid #e7dac6;
+    background:linear-gradient(160deg,#fdf8ef,#f7efe3);
+    box-shadow:8px 10px 24px rgba(121,103,74,.08),-5px -5px 16px rgba(255,255,255,.65),inset 0 1px 0 #fff
+  }
+  .gvgp-cat-day{display:flex;align-items:center;gap:15px}
+  .gvgp-cat-day-icon{
+    width:56px;height:56px;flex:0 0 auto;border-radius:14px;display:grid;place-items:center;
+    border:1px solid #e3c98f;background:linear-gradient(145deg,#fff8e8,#f1dfb8);color:#a97718;
+    box-shadow:4px 5px 12px rgba(121,103,74,.10),inset 0 1px 0 #fff
+  }
+  .gvgp-cat-day-icon svg{width:28px;height:28px}
+  .gvgp-cat-day-copy{min-width:0}
+  .gvgp-cat-day h3,.gvgp-cat-continue h3{margin:0;font-size:13px;letter-spacing:-.2px;color:#3c372e}
+  .gvgp-cat-day strong{display:block;margin-top:2px;font-size:14.5px;letter-spacing:-.3px;color:#2f2a22}
+  .gvgp-cat-day p{margin:3px 0 9px;font-size:10px;line-height:1.4;color:#8b7d6a}
+  .gvgp-cat-day-btn{
+    display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border-radius:999px;border:1px solid #c99a2e;
+    background:linear-gradient(145deg,#f3d88e,#d2a23a);color:#2f2108;font-size:9.5px;font-weight:950;
+    box-shadow:0 5px 12px rgba(121,103,74,.14),inset 0 1px 0 rgba(255,255,255,.55)
+  }
+  .gvgp-cat-day-btn:after{content:"→";margin-left:2px;font-weight:950}
+  .gvgp-cat-continue h3{margin-bottom:10px}
+  .gvgp-cat-continue-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+  .gvgp-cat-continue-btn{
+    display:flex;align-items:center;gap:5px;min-width:0;padding:8px 8px;border-radius:10px;
+    border:1px solid #e3d4bd;background:#fffaf2;color:#5d4a2c;font-size:8.5px;font-weight:850;text-align:left;
+    box-shadow:0 3px 8px rgba(121,103,74,.05);transition:background .16s ease,border-color .16s ease
+  }
+  .gvgp-cat-continue-btn:hover{background:#fff;border-color:#c99a2e}
+  .gvgp-cat-continue-icon{width:22px;height:22px;flex:0 0 auto;border-radius:7px;display:grid;place-items:center;border:1px solid #e3d4bd;background:#f8efe0;color:#a97718}
+  .gvgp-cat-continue-icon svg{width:14px;height:14px}
+  .gvgp-cat-continue-btn span:nth-child(2){min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .gvgp-cat-continue-btn b{margin-left:auto;color:#a97718;font-size:12px}
+  .gvgp-cat-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:8px 4px 0;color:#8b7d6a;font-size:8px;font-weight:750}
+  .gvgp-cat-foot span:last-child{color:#9b772f;font-weight:900;letter-spacing:.5px}
+  /* barra de rotação integrada ao layout bege */
+  #gvgpApp.gvgp-catalog-mode .gvgp-layout-bar{color:#8b7d6a;margin-bottom:5px;font-size:8.5px}
+  #gvgpApp.gvgp-catalog-mode .gvgp-layout-bar button{padding:5px 8px;font-size:8px}
+  #gvgpApp.gvgp-catalog-mode .gvgp-layout-bar button{background:#fffaf0;border-color:#e6d7ab;color:#7a5a10}
+  #gvgpApp.gvgp-catalog-mode .gvgp-live-dot{background:#c99a2e;box-shadow:0 0 0 4px rgba(201,154,46,.12),0 0 10px rgba(201,154,46,.55)}
+  /* topbar do catálogo */
+  .gvgp-top-search{display:none;align-items:center;gap:8px;width:min(300px,25vw);min-width:190px;margin-left:auto;padding:9px 14px;border-radius:999px;background:#fffaf2;border:1px solid #e4d7c2;box-shadow:inset 0 1px 0 #fff,0 4px 12px rgba(121,103,74,.05)}
+  .gvgp-top-search svg{width:16px;height:16px;color:#8b7d6a;flex:0 0 auto}
+  .gvgp-top-search input{width:100%;min-width:0;border:0;outline:none;background:transparent;color:#3c372e;font-size:12px}
+  .gvgp-top-search input::placeholder{color:#9a8c78}
+  .gvgp-top-bell{display:none;position:relative;width:40px;height:40px;flex:0 0 auto;border-radius:50%;border:1px solid #e4d7c2;background:#fffaf2;color:#8a6626;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(121,103,74,.06)}
+  .gvgp-top-bell svg{width:19px;height:19px}
+  .gvgp-top-bell-dot{position:absolute;top:8px;right:8px;width:6px;height:6px;border-radius:50%;background:#c99a2e;box-shadow:0 0 0 3px #fffaf2}
+  #gvgpApp.gvgp-catalog-mode .gvgp-content{padding-top:18px}
+  #gvgpApp.gvgp-catalog-mode .gvgp-top-search{display:flex}
+  #gvgpApp.gvgp-catalog-mode .gvgp-top-bell{display:inline-flex}
+  #gvgpApp.gvgp-catalog-mode .gvgp-top-clock{display:none}
+  #gvgpApp.gvgp-catalog-mode .gvgp-user-email{display:none}
+  #gvgpApp.gvgp-catalog-mode #gvgpLogoutBtn{background:linear-gradient(145deg,#f7e3a8,#d5a63b);border-color:#c99a2e;color:#3a2a08}
+  /* login continua ocupando a tela quando não autenticado */
+  #gvgpApp.gvgp-locked .gvgp-catalog{padding:0;min-height:100vh;display:block;overflow-y:auto;background:#dfcbb8;border:0;border-radius:0;box-shadow:none}
+  #gvgpApp.gvgp-cat-login .gvgp-cat-shell{display:none!important}
+  #gvgpApp.gvgp-locked .gvgp-cat-foot{display:none!important}
+  @media (max-width:1280px){
+    .gvgp-cat-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .gvgp-cat-icon{max-width:150px}
+  }
+  @media (max-width:1100px){
+    .gvgp-cat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .gvgp-cat-bottom{grid-template-columns:1fr}
+    .gvgp-top-search{display:none!important}
+    .gvgp-top-bell{display:none!important}
+  }
+  @media (max-width:980px){
+    .gvgp-cat-hero{padding:20px 22px}
+    .gvgp-cat-board{padding:19px 18px 16px}
+    .gvgp-cat-board-head h2{font-size:27px}
+  }
+  @media (max-width:700px){
+    .gvgp-cat-hero{flex-direction:column;align-items:flex-start;gap:14px;padding:18px;border-radius:18px}
+    .gvgp-cat-hero-copy{gap:12px}
+    .gvgp-cat-hero-bar{height:48px}
+    .gvgp-cat-hero h2{font-size:27px}
+    .gvgp-cat-hero p{font-size:12.5px}
+    .gvgp-cat-hero-badge{padding:8px 11px;font-size:9.5px}
+    .gvgp-cat-board{padding:16px 13px 14px;border-radius:18px}
+    .gvgp-cat-eyebrow{font-size:7px;letter-spacing:1.4px;padding:5px 7px}
+    .gvgp-cat-board-head h2{font-size:24px;margin-top:10px}
+    .gvgp-cat-board-head p{font-size:10.5px}
+    .gvgp-cat-grid{gap:9px;margin-top:13px}
+    .gvgp-cat-card{padding:10px 9px 11px;border-radius:14px;gap:3px}
+    .gvgp-cat-icon{max-width:100%;border-radius:18px;margin-bottom:2px}
+    .gvgp-cat-photo{border-radius:18px}
+    .gvgp-cat-status{font-size:6.5px;padding:2px 6px}
+    .gvgp-cat-card h3{font-size:12.5px}
+    .gvgp-cat-card p{font-size:8.5px;min-height:24px}
+    .gvgp-cat-metric strong{font-size:22px}
+    .gvgp-cat-metric strong.is-money{font-size:15px}
+    .gvgp-cat-metric span{font-size:7px}
+    .gvgp-cat-arrow{width:21px;height:21px;right:7px;bottom:7px;font-size:10px}
+    .gvgp-cat-quick{flex-direction:column;align-items:stretch;gap:8px;padding:9px}
+    .gvgp-cat-quick-title{border-right:0;border-bottom:1px solid #e3d4bd;padding:0 0 7px}
+    .gvgp-cat-quick-actions{gap:6px}
+    .gvgp-cat-quick-btn{padding:7px 8px;font-size:8.5px}
+    .gvgp-cat-bottom{grid-template-columns:1fr;gap:10px;margin-top:10px}
+    .gvgp-cat-day,.gvgp-cat-continue{padding:13px 12px;border-radius:14px}
+    .gvgp-cat-day{gap:10px}
+    .gvgp-cat-day-icon{width:44px;height:44px;border-radius:11px}
+    .gvgp-cat-day-icon svg{width:23px;height:23px}
+    .gvgp-cat-day h3,.gvgp-cat-continue h3{font-size:11.5px}
+    .gvgp-cat-day strong{font-size:12.5px}
+    .gvgp-cat-day p{font-size:9px}
+    .gvgp-cat-continue-grid{grid-template-columns:1fr}
+    .gvgp-cat-continue-btn{font-size:9px;padding:8px}
+    .gvgp-cat-foot{font-size:7px;margin-top:8px}
+  }
+  @media (max-width:380px){
+    .gvgp-cat-grid{grid-template-columns:1fr}
+    .gvgp-cat-icon{max-width:150px}
+  }
 </style>
 </head>
 <body>
-<div id="gvgpApp" class="gvgp-app gvgp-locked">
+<div id="gvgpApp" class="gvgp-app gvgp-locked gvgp-cat-login">
   <svg class="gvgp-nav-defs" width="0" height="0" aria-hidden="true" focusable="false"><defs><linearGradient id="gvgpNavGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff4c8"/><stop offset=".35" stop-color="#f1d27c"/><stop offset=".72" stop-color="#c99a2e"/><stop offset="1" stop-color="#7a5a18"/></linearGradient><linearGradient id="gvgpNavSide" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8f6a1d"/><stop offset="1" stop-color="#4b3610"/></linearGradient></defs></svg>
   <div id="gvgpBackdrop" class="gvgp-backdrop"></div>
   <aside id="gvgpSidebar" class="gvgp-sidebar" aria-label="Menu principal">
@@ -871,6 +1099,14 @@
         <h1 id="gvgpPageTitle">Visão geral</h1>
         <p id="gvgpPageSubtitle">Indicadores do módulo Order Catalog</p>
       </div>
+      <div class="gvgp-top-search" role="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+        <input id="gvgpPanelSearch" type="search" placeholder="Buscar no painel..." autocomplete="off" aria-label="Buscar no painel">
+      </div>
+      <button type="button" class="gvgp-top-bell" id="gvgpTopBell" data-module="frotas" aria-label="Abrir notificações da frota" title="Notificações da frota">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"/><path d="M10 21h4"/></svg>
+        <span class="gvgp-top-bell-dot" aria-hidden="true"></span>
+      </button>
       <div class="gvgp-top-clock" aria-live="off"><span id="gvgpTopDate">--/--/----</span><strong id="gvgpTopTime">--:--:--</strong></div>
       <div id="gvgpTopUser" class="gvgp-top-user"></div>
     </header>
@@ -898,14 +1134,104 @@
   <symbol id="gvgpIconVan" viewBox="0 0 64 64"><g filter="url(#gvgpShadow)"><path d="M5 22h33l7 9h10c2 0 4 2 4 4v9H5Z" fill="#f6f4ef"/><path d="M10 26h12v12H10Z" fill="#b9d9e0"/><path d="M25 26h13l5 7H25Z" fill="#b9d9e0"/><path d="M5 39h54v5H5Z" fill="#d8d2c6"/><path d="M6 37h52" stroke="#c99a2e" stroke-width="2"/><circle cx="17" cy="45" r="6" fill="#2d3138"/><circle cx="17" cy="45" r="2.6" fill="#b9c4c9"/><circle cx="49" cy="45" r="6" fill="#2d3138"/><circle cx="49" cy="45" r="2.6" fill="#b9c4c9"/><text x="38" y="35" text-anchor="middle" font-family="Arial" font-size="5" font-weight="700" fill="#0f766e">GVG</text></g></symbol>
 </svg>
         <div id="gvgpLayoutA" class="gvgp-layout gvgp-layout-a">
-          <div class="gvgp-clean">
-            <div class="gvgp-clean-head">
-              <div>
-                <span class="gvgp-clean-kicker">GVG&amp;ARTEFAL · central de operações</span>
-                <h2>Visão geral</h2>
+          <div class="gvgp-clean gvgp-catalog">
+          <div class="gvgp-cat-shell">
+            <section class="gvgp-cat-hero" aria-label="Boas-vindas">
+              <div class="gvgp-cat-hero-copy">
+                <span class="gvgp-cat-hero-bar" aria-hidden="true"></span>
+                <div>
+                  <h2>Olá, <span id="gvgpCatGreetingName">você</span>.</h2>
+                  <p>Tudo pronto para começar.</p>
+                </div>
+              </div>
+              <div class="gvgp-cat-hero-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.1 0l2-2a5 5 0 0 0-7.1-7.1l-1.2 1.2"/><path d="M14 11a5 5 0 0 0-7.1 0l-2 2A5 5 0 0 0 12 20.1l1.2-1.2"/></svg>
+                <span><b id="gvgpCatConnectedCount">5</b> <span id="gvgpCatConnectedWord">aplicativos conectados</span></span>
+              </div>
+            </section>
+
+            <section class="gvgp-cat-board" aria-labelledby="gvgpCatBoardTitle">
+              <div class="gvgp-cat-board-head">
+                <span class="gvgp-cat-eyebrow">GVG&amp;ARTEFAL · CENTRAL DE OPERAÇÕES</span>
+                <h2 id="gvgpCatBoardTitle">Visão geral</h2>
                 <p>Gestão integrada de pedidos, gastos, fornecedores, máquinas e frotas.</p>
               </div>
+              <div id="gvgpDashboard" class="gvgp-cat-grid gvgp-hidden">
+              <button type="button" class="gvgp-cat-card" data-module="pedidos" data-search="order catalog pedidos solicitacoes solicitacoes de materiais catalogo" style="--accent:#2f8fd8">
+                <span class="gvgp-cat-icon"><img class="gvgp-cat-photo" alt="" loading="eager" decoding="async" src="https://gvgartefalesquadrias.com.br/assets/icone-order-catalog-catalogo-384.webp" srcset="https://gvgartefalesquadrias.com.br/assets/icone-order-catalog-catalogo-256.webp 256w, https://gvgartefalesquadrias.com.br/assets/icone-order-catalog-catalogo-384.webp 384w" sizes="(max-width:700px) 130px, 160px"></span>
+                <span class="gvgp-cat-status">Ativo</span>
+                <h3>Order Catalog</h3>
+                <p>Solicitações e acompanhamento.</p>
+                <div class="gvgp-cat-metric"><strong id="gvgpCatPedidos">—</strong><span id="gvgpCatPedidosLabel">pedidos registrados</span></div>
+                <span class="gvgp-cat-arrow" aria-hidden="true">→</span>
+              </button>
+              <button type="button" class="gvgp-cat-card" data-module="gastos" data-search="controle de gastos gastos despesas orcamento financeiro" style="--accent:#18a999">
+                <span class="gvgp-cat-icon"><img class="gvgp-cat-photo" alt="" loading="lazy" decoding="async" src="https://gvgartefalesquadrias.com.br/assets/icone-gastos-384.webp" srcset="https://gvgartefalesquadrias.com.br/assets/icone-gastos-256.webp 256w, https://gvgartefalesquadrias.com.br/assets/icone-gastos-384.webp 384w, https://gvgartefalesquadrias.com.br/assets/icone-gastos-layout8.webp 600w" sizes="(max-width:700px) 130px, 160px"></span>
+                <span class="gvgp-cat-status">Ativo</span>
+                <h3>Controle de Gastos</h3>
+                <p>Despesas e orçamento.</p>
+                <div class="gvgp-cat-metric"><strong id="gvgpCatGastos">—</strong><span id="gvgpCatGastosLabel">gastos no mês</span></div>
+                <span class="gvgp-cat-arrow" aria-hidden="true">→</span>
+              </button>
+              <button type="button" class="gvgp-cat-card" data-module="fornecedores" data-search="fornecedores cadastro contratos compras cotacoes" style="--accent:#8a5fc7">
+                <span class="gvgp-cat-icon"><img class="gvgp-cat-photo" alt="" loading="lazy" decoding="async" src="https://gvgartefalesquadrias.com.br/assets/icone-fornecedores-384.webp" srcset="https://gvgartefalesquadrias.com.br/assets/icone-fornecedores-256.webp 256w, https://gvgartefalesquadrias.com.br/assets/icone-fornecedores-384.webp 384w, https://gvgartefalesquadrias.com.br/assets/icone-fornecedores-layout8.webp 600w" sizes="(max-width:700px) 130px, 160px"></span>
+                <span class="gvgp-cat-status">Ativo</span>
+                <h3>Fornecedores</h3>
+                <p>Cadastro e contratos.</p>
+                <div class="gvgp-cat-metric"><strong id="gvgpCatFornecedores">—</strong><span id="gvgpCatFornecedoresLabel">fornecedores ativos</span></div>
+                <span class="gvgp-cat-arrow" aria-hidden="true">→</span>
+              </button>
+              <button type="button" class="gvgp-cat-card" data-module="maquinas" data-search="controle de maquinas maquinas equipamentos ferramentas" style="--accent:#e07a2f">
+                <span class="gvgp-cat-icon"><img class="gvgp-cat-photo" alt="" loading="lazy" decoding="async" src="https://gvgartefalesquadrias.com.br/assets/icone-maquinas-384.webp" srcset="https://gvgartefalesquadrias.com.br/assets/icone-maquinas-256.webp 256w, https://gvgartefalesquadrias.com.br/assets/icone-maquinas-384.webp 384w, https://gvgartefalesquadrias.com.br/assets/icone-maquinas-layout8.webp 600w" sizes="(max-width:700px) 130px, 160px"></span>
+                <span class="gvgp-cat-status">Ativo</span>
+                <h3>Controle de Máquinas</h3>
+                <p>Máquinas e equipamentos.</p>
+                <div class="gvgp-cat-metric"><strong id="gvgpCatMaquinas">—</strong><span id="gvgpCatMaquinasLabel">equipamentos disponíveis</span></div>
+                <span class="gvgp-cat-arrow" aria-hidden="true">→</span>
+              </button>
+              <button type="button" class="gvgp-cat-card" data-module="frotas" data-search="frotas veiculos manutencao documentos vencimentos" style="--accent:#2f7ed8">
+                <span class="gvgp-cat-icon"><img class="gvgp-cat-photo" alt="" loading="lazy" decoding="async" src="https://gvgartefalesquadrias.com.br/assets/icone-frotas-384.webp" srcset="https://gvgartefalesquadrias.com.br/assets/icone-frotas-256.webp 256w, https://gvgartefalesquadrias.com.br/assets/icone-frotas-384.webp 384w, https://gvgartefalesquadrias.com.br/assets/icone-frotas-layout8.webp 600w" sizes="(max-width:700px) 130px, 160px"></span>
+                <span class="gvgp-cat-status">Ativo</span>
+                <h3>Frotas</h3>
+                <p>Veículos e manutenção.</p>
+                <div class="gvgp-cat-metric"><strong id="gvgpCatFrotas">—</strong><span id="gvgpCatFrotasLabel">veículos na frota</span></div>
+                <span class="gvgp-cat-arrow" aria-hidden="true">→</span>
+              </button>
+              </div>
+              <div id="gvgpCatNoResults" class="gvgp-cat-no-results gvgp-hidden">Nenhum aplicativo encontrado para esta busca.</div>
+              <div class="gvgp-cat-quick">
+                <span class="gvgp-cat-quick-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>Acesso rápido</span>
+                <div class="gvgp-cat-quick-actions">
+            <button type="button" class="gvgp-cat-quick-btn" data-module="pedidos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h2l2 9h9l2-6H7"/><circle cx="9" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/><path d="M12 4v6M9 7h6"/></svg><span>Novo pedido</span></button>
+            <button type="button" class="gvgp-cat-quick-btn" data-module="gastos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v5c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 11v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"/></svg><span>Lançar gasto</span></button>
+            <button type="button" class="gvgp-cat-quick-btn" data-module="fornecedores"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 12 3-3 4 4 2-2 3 3"/><path d="M3 10l4-3 5 1 5-1 4 3"/><path d="M5 12l4 4a2 2 0 0 0 3 0l4-4"/></svg><span>Cadastrar fornecedor</span></button>
+            <button type="button" class="gvgp-cat-quick-btn" data-module="maquinas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 6a4 4 0 0 0-5 5L4 16l4 4 5-5a4 4 0 0 0 5-5l-2 2-2-2 2-2Z"/></svg><span>Gerenciar máquinas</span></button>
+            <button type="button" class="gvgp-cat-quick-btn" data-module="frotas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16V8h11l4 4h3v4"/><path d="M3 16h2"/><path d="M9 16h6"/><path d="M19 16h2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg><span>Gerenciar frota</span></button>
+                </div>
+              </div>
+            </section>
+
+            <div class="gvgp-cat-bottom">
+              <section class="gvgp-cat-day" aria-labelledby="gvgpCatDayTitle">
+                <div class="gvgp-cat-day-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2h6v2"/><path d="m8 13 3 3 5-6"/></svg></div>
+                <div class="gvgp-cat-day-copy">
+                  <h3>Meu dia</h3>
+                  <strong id="gvgpCatDayTitle">Cadastre seu primeiro pedido.</strong>
+                  <p id="gvgpCatDayText">Comece agora a registrar solicitações no Order Catalog.</p>
+                  <button type="button" class="gvgp-cat-day-btn" id="gvgpCatDayBtn" data-module="pedidos">Começar agora</button>
+                </div>
+              </section>
+              <section class="gvgp-cat-continue" aria-labelledby="gvgpCatContinueTitle">
+                <h3 id="gvgpCatContinueTitle">Continuar trabalhando</h3>
+                <div class="gvgp-cat-continue-grid">
+            <button type="button" class="gvgp-cat-continue-btn" data-module="pedidos"><span class="gvgp-cat-continue-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5h14v14H5z"/><path d="M8 9h8M8 13h6"/></svg></span><span>Order Catalog</span><b aria-hidden="true">→</b></button>
+            <button type="button" class="gvgp-cat-continue-btn" data-module="maquinas"><span class="gvgp-cat-continue-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 6a4 4 0 0 0-5 5L4 16l4 4 5-5a4 4 0 0 0 5-5l-2 2-2-2 2-2Z"/></svg></span><span>Controle de Máquinas</span><b aria-hidden="true">→</b></button>
+            <button type="button" class="gvgp-cat-continue-btn" data-module="frotas"><span class="gvgp-cat-continue-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16V8h11l4 4h3v4"/><path d="M3 16h2"/><path d="M9 16h6"/><path d="M19 16h2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></span><span>Frotas</span><b aria-hidden="true">→</b></button>
+                </div>
+              </section>
             </div>
+            <div class="gvgp-cat-foot"><span id="gvgpCleanUpdated">Atualizado agora</span><span>4 · Catálogo digital</span></div>
+          </div>
             <div id="gvgpLoginCard" class="gvgp-login-card">
           <div class="gvgp-login-visual" aria-hidden="true">
             <img src="https://gvgartefalesquadrias.com.br/assets/login-visual-1080.webp" srcset="https://gvgartefalesquadrias.com.br/assets/login-visual-720.webp 720w, https://gvgartefalesquadrias.com.br/assets/login-visual-1080.webp 1080w" sizes="(max-width: 900px) 100vw, 63vw" width="1055" height="941" alt="" loading="eager" fetchpriority="high" decoding="async">
@@ -934,48 +1260,7 @@
             </div>
           </form>
         </div>
-            <div id="gvgpDashboard" class="gvgp-module-grid gvgp-hidden">
-              <button type="button" class="gvgp-module-card" data-module="pedidos" style="--accent:#c99a2e">
-                <span class="gvgp-module-icon"><img class="gvgp-app-icon is-photo" alt="" loading="lazy" decoding="async" src="https://gvgartefalesquadrias.com.br/assets/icone-pedidos-384.webp" srcset="https://gvgartefalesquadrias.com.br/assets/icone-pedidos-256.webp 256w, https://gvgartefalesquadrias.com.br/assets/icone-pedidos-384.webp 384w, https://gvgartefalesquadrias.com.br/assets/icone-pedidos-layout8.webp 600w" sizes="(max-width: 700px) 112px, 165px"></span>
-                <div class="gvgp-module-copy"><h3>Order Catalog</h3><p>Solicitações e acompanhamento.</p></div>
-                <div class="gvgp-module-metric"><strong id="gvgpAppPedidos">—</strong><span id="gvgpAppPedidosLabel">pedidos registrados</span></div>
-                <span class="gvgp-module-arrow" aria-hidden="true">→</span>
-              </button>
-              <button type="button" class="gvgp-module-card" data-module="gastos" style="--accent:#0f766e">
-                <span class="gvgp-module-icon"><img class="gvgp-app-icon is-photo" alt="" loading="lazy" decoding="async" src="https://gvgartefalesquadrias.com.br/assets/icone-gastos-384.webp" srcset="https://gvgartefalesquadrias.com.br/assets/icone-gastos-256.webp 256w, https://gvgartefalesquadrias.com.br/assets/icone-gastos-384.webp 384w, https://gvgartefalesquadrias.com.br/assets/icone-gastos-layout8.webp 600w" sizes="(max-width: 700px) 112px, 165px"></span>
-                <div class="gvgp-module-copy"><h3>Controle de Gastos</h3><p>Despesas e orçamento.</p></div>
-                <div class="gvgp-module-metric"><strong id="gvgpAppGastos">—</strong><span id="gvgpAppGastosLabel">gastos no mês</span></div>
-                <span class="gvgp-module-arrow" aria-hidden="true">→</span>
-              </button>
-              <button type="button" class="gvgp-module-card" data-module="fornecedores" style="--accent:#7d5fb0">
-                <span class="gvgp-module-icon"><img class="gvgp-app-icon is-photo" alt="" loading="lazy" decoding="async" src="https://gvgartefalesquadrias.com.br/assets/icone-fornecedores-384.webp" srcset="https://gvgartefalesquadrias.com.br/assets/icone-fornecedores-256.webp 256w, https://gvgartefalesquadrias.com.br/assets/icone-fornecedores-384.webp 384w, https://gvgartefalesquadrias.com.br/assets/icone-fornecedores-layout8.webp 600w" sizes="(max-width: 700px) 112px, 165px"></span>
-                <div class="gvgp-module-copy"><h3>Fornecedores</h3><p>Cadastro e contratos.</p></div>
-                <div class="gvgp-module-metric"><strong id="gvgpAppFornecedores">—</strong><span id="gvgpAppFornecedoresLabel">fornecedores ativos</span></div>
-                <span class="gvgp-module-arrow" aria-hidden="true">→</span>
-              </button>
-              <button type="button" class="gvgp-module-card" data-module="maquinas" style="--accent:#d97706">
-                <span class="gvgp-module-icon"><img class="gvgp-app-icon is-photo" alt="" loading="lazy" decoding="async" src="https://gvgartefalesquadrias.com.br/assets/icone-maquinas-384.webp" srcset="https://gvgartefalesquadrias.com.br/assets/icone-maquinas-256.webp 256w, https://gvgartefalesquadrias.com.br/assets/icone-maquinas-384.webp 384w, https://gvgartefalesquadrias.com.br/assets/icone-maquinas-layout8.webp 600w" sizes="(max-width: 700px) 112px, 165px"></span>
-                <div class="gvgp-module-copy"><h3>Controle de Máquinas</h3><p>Máquinas e equipamentos.</p></div>
-                <div class="gvgp-module-metric"><strong id="gvgpAppMaquinas">—</strong><span id="gvgpAppMaquinasLabel">equipamentos disponíveis</span></div>
-                <span class="gvgp-module-arrow" aria-hidden="true">→</span>
-              </button>
-              <button type="button" class="gvgp-module-card" data-module="frotas" style="--accent:#4f7fb5">
-                <span class="gvgp-module-icon"><img class="gvgp-app-icon is-photo" alt="" loading="lazy" decoding="async" src="https://gvgartefalesquadrias.com.br/assets/icone-frotas-384.webp" srcset="https://gvgartefalesquadrias.com.br/assets/icone-frotas-256.webp 256w, https://gvgartefalesquadrias.com.br/assets/icone-frotas-384.webp 384w, https://gvgartefalesquadrias.com.br/assets/icone-frotas-layout8.webp 600w" sizes="(max-width: 700px) 112px, 165px"></span>
-                <div class="gvgp-module-copy"><h3>Frotas</h3><p>Veículos e manutenção.</p></div>
-                <div class="gvgp-module-metric"><strong id="gvgpAppFrotas">—</strong><span id="gvgpAppFrotasLabel">veículos na frota</span></div>
-                <span class="gvgp-module-arrow" aria-hidden="true">→</span>
-              </button>
-            </div>
-            <div id="gvgpEmpty" class="gvgp-clean-empty gvgp-hidden">
-              <strong>A base ainda não tem pedidos.</strong>
-              <span>Cadastre o primeiro pedido para começar a acompanhar a operação.</span>
-              <button type="button" class="gvgp-module-arrow-link" data-module="pedidos">Abrir Order Catalog →</button>
-            </div>
-            <div class="gvgp-clean-foot">
-              <span id="gvgpCleanUpdated">Atualizado agora</span>
-              <span>Uma informação de cada aplicativo · rotação a cada 30s</span>
-            </div>
-          </div>
+        </div>
         </div>
 
         <div id="gvgpLayoutB" class="gvgp-layout gvgp-layout-b gvgp-hidden">
@@ -1249,6 +1534,11 @@ const FROTAS_URL = <?!= JSON.stringify(frotasUrl) ?>;
     setMetric('gvgpAppFornecedores','gvgpAppFornecedoresLabel',a.fornecedores,false);
     setMetric('gvgpAppMaquinas','gvgpAppMaquinasLabel',a.maquinas,false);
     setMetric('gvgpAppFrotas','gvgpAppFrotasLabel',a.frotas,false);
+    setMetric('gvgpCatPedidos','gvgpCatPedidosLabel',a.pedidos,false);
+    setMetric('gvgpCatGastos','gvgpCatGastosLabel',a.gastos,true);
+    setMetric('gvgpCatFornecedores','gvgpCatFornecedoresLabel',a.fornecedores,false);
+    setMetric('gvgpCatMaquinas','gvgpCatMaquinasLabel',a.maquinas,false);
+    setMetric('gvgpCatFrotas','gvgpCatFrotasLabel',a.frotas,false);
     setMetric('gvgpDarkPedidos','gvgpDarkPedidosLabel',a.pedidos,false);
     setMetric('gvgpDarkGastos','gvgpDarkGastosLabel',a.gastos,true);
     setMetric('gvgpDarkFornecedores','gvgpDarkFornecedoresLabel',a.fornecedores,false);
@@ -1427,6 +1717,7 @@ const FROTAS_URL = <?!= JSON.stringify(frotasUrl) ?>;
     const maquinasFrame=$('gvgpMaquinasFrame'); if(maquinasFrame)maquinasFrame.src='about:blank';
     const frotasFrame=$('gvgpFrotasFrame'); if(frotasFrame)frotasFrame.src='about:blank';
     $('gvgpApp').classList.add('gvgp-locked');
+    $('gvgpApp').classList.add('gvgp-cat-login');
     cadastroLoaded=false;cadastroUsers=[];closePending();
     stopRotation();
     switchLayout(1,false);
@@ -1434,7 +1725,8 @@ const FROTAS_URL = <?!= JSON.stringify(frotasUrl) ?>;
     $('gvgpLayoutBar').classList.add('gvgp-hidden');
     $('gvgpLoginCard').classList.remove('gvgp-hidden');
     $('gvgpDashboard').classList.add('gvgp-hidden');
-    $('gvgpEmpty').classList.add('gvgp-hidden');
+    const emptyLoggedOut=$('gvgpEmpty');if(emptyLoggedOut)emptyLoggedOut.classList.add('gvgp-hidden');
+    const catalogSearch=$('gvgpPanelSearch');if(catalogSearch)catalogSearch.value='';
     $('gvgpTopUser').innerHTML='<span class="gvgp-user-chip"><span class="gvgp-user-avatar">?</span><span class="gvgp-user-meta"><strong>Não autenticado</strong><span>Entre para acessar</span></span></span>';
     const msg=$('gvgpLoginMsg'); if(msg){msg.textContent='';msg.style.color='#b42318';}
     const pass=$('gvgpLoginPass'); if(pass){pass.value='';pass.type='password';} const eye=$('gvgpPassEye'); if(eye){eye.setAttribute('aria-pressed','false');eye.setAttribute('aria-label','Mostrar senha');}
@@ -1451,7 +1743,8 @@ const FROTAS_URL = <?!= JSON.stringify(frotasUrl) ?>;
     const foto=user&&user.foto?String(user.foto):'';
     const avatar=foto?'<img src="'+safe(foto)+'" alt="">':(who.includes('higor')?'<img src="'+HIGOR_AVATAR+'" alt="">':safe(initial));
     const pending=isSuperadmin(user)?'<button type="button" class="gvgp-logout gvgp-pending-btn" id="gvgpPendingBtn" title="Gerenciar usuários e permissões"><span class="gvgp-pending-label">Usuários</span> <span class="gvgp-pending-count" id="gvgpPendingCount">0</span></button>':'';
-    return '<span class="gvgp-user-chip"><span class="gvgp-user-avatar" role="button" tabindex="0" title="Alterar foto de perfil">'+avatar+'</span><span class="gvgp-user-meta"><strong>'+safe(user?user.nome:'')+'</strong><span>'+safe(role)+(user&&user.email?' · '+safe(user.email):'')+'</span></span></span>'+
+    const meta='<span class="gvgp-user-role">'+safe(role)+'</span>'+(user&&user.email?'<span class="gvgp-user-email"> · '+safe(user.email)+'</span>':'');
+    return '<span class="gvgp-user-chip"><span class="gvgp-user-avatar" role="button" tabindex="0" title="Alterar foto de perfil">'+avatar+'</span><span class="gvgp-user-meta"><strong>'+safe(user?user.nome:'')+'</strong><span>'+meta+'</span></span></span>'+
       pending+'<button type="button" class="gvgp-logout" id="gvgpLogoutBtn">Sair</button>';
   }
   function applyMenuPermissions(){
@@ -1468,6 +1761,7 @@ const FROTAS_URL = <?!= JSON.stringify(frotasUrl) ?>;
       topic.style.display=any?'':'none';
     });
     if(state.view!=='overview'&&!canViewProject(state.user,state.view))setView('overview');
+    filterCatalogCards();
   }
   let lastUserSignature='';
   function renderUser(){
@@ -1478,20 +1772,80 @@ const FROTAS_URL = <?!= JSON.stringify(frotasUrl) ?>;
     lastUserSignature=sig;
     $('gvgpTopUser').innerHTML=userChip(u);
     const b=$('gvgpLogoutBtn'); if(b)b.onclick=logout;
+    renderCatalogGreeting();
     applyMenuPermissions();
     if(isSuperadmin(u)&&!cadastroLoaded){cadastroLoaded=true;loadCadastros(false);}
   }
   function renderDashboard(d){
-    state.data=d; state.user=d.usuario||null; $('gvgpApp').classList.remove('gvgp-locked'); applyMenuPermissions();
+    state.data=d; state.user=d.usuario||null; $('gvgpApp').classList.remove('gvgp-locked'); $('gvgpApp').classList.remove('gvgp-cat-login'); applyMenuPermissions();
     $('gvgpLoginCard').classList.add('gvgp-hidden');
     $('gvgpDashboard').classList.remove('gvgp-hidden');
-    $('gvgpEmpty').classList.toggle('gvgp-hidden',!d.vazio);
+    renderMyDay(d);
     renderUser();
     renderApps(d);
+    renderCatalogGreeting();
+    filterCatalogCards();
     renderActivities(d);
     loadPainelExternos(state.token);
     if(window.gvgpStartSign)setTimeout(window.gvgpStartSign,400);
     applyDeepLink();
+    syncCatalogMode();
+  }
+  const CATALOG_LABELS={pedidos:'Order Catalog',gastos:'Controle de Gastos',fornecedores:'Fornecedores',maquinas:'Controle de Máquinas',frotas:'Frotas'};
+  function catalogLabel(key){return CATALOG_LABELS[key]||'o aplicativo';}
+  function renderCatalogGreeting(){
+    const nameEl=$('gvgpCatGreetingName');
+    if(nameEl){
+      const raw=String((state.user&&(state.user.nome||state.user.login))||'você').trim();
+      const first=raw.split(/\s+/)[0]||'você';
+      if(nameEl.textContent!==first)nameEl.textContent=first;
+    }
+    const count=state.user&&Array.isArray(state.user.projetos)?state.user.projetos.length:Object.keys((state.data&&state.data.apps)||{}).length;
+    const countEl=$('gvgpCatConnectedCount');
+    if(countEl&&countEl.textContent!==String(count))countEl.textContent=String(count);
+    const word=$('gvgpCatConnectedWord');
+    if(word){const w=count===1?'aplicativo conectado':'aplicativos conectados';if(word.textContent!==w)word.textContent=w;}
+  }
+  function renderMyDay(d){
+    const title=$('gvgpCatDayTitle'),text=$('gvgpCatDayText'),btn=$('gvgpCatDayBtn');
+    if(!title||!text||!btn)return;
+    const p=d&&d.apps&&d.apps.pedidos;
+    const hasOrders=p&&Number(String(p.valor).replace(/[^0-9,-]/g,'').replace(',','.'))>0;
+    let key='pedidos',t='Cadastre seu primeiro pedido.',x='Comece agora a registrar solicitações no Order Catalog.',b='Começar agora';
+    if(hasOrders){
+      t='Acompanhe seus pedidos.';
+      x='O Order Catalog tem '+String(p.valor)+' '+(p.label||'pedidos registrados')+'.';
+      b='Abrir Order Catalog';
+    }
+    if(!canViewProject(state.user,'pedidos')){
+      const first=GVG_PROJECTS.find(pr=>canViewProject(state.user,pr.key));
+      if(first){key=first.key;t='Continue de onde parou.';x='Abra '+catalogLabel(key)+' para acompanhar a operação.';b='Abrir '+catalogLabel(key);}
+      else{t='Tudo pronto para começar.';x='Seu perfil ainda não tem um aplicativo liberado.';b='Aguardar liberação';}
+    }
+    title.textContent=t;text.textContent=x;btn.textContent=b;
+    btn.setAttribute('data-module',key);
+    btn.style.display=canViewProject(state.user,key)?'':'none';
+  }
+  function filterCatalogCards(){
+    const input=$('gvgpPanelSearch');
+    const norm=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+    const q=norm(input&&input.value);
+    let any=false;
+    document.querySelectorAll('.gvgp-cat-card').forEach(card=>{
+      const key=card.getAttribute('data-module');
+      const allowed=canViewProject(state.user,key);
+      const hay=norm((card.getAttribute('data-search')||'')+' '+card.textContent);
+      const show=allowed&&(!q||hay.indexOf(q)>=0);
+      card.style.display=show?'':'none';
+      if(show)any=true;
+    });
+    const no=$('gvgpCatNoResults');
+    if(no)no.classList.toggle('gvgp-hidden',!q||any);
+  }
+  function syncCatalogMode(){
+    const app=$('gvgpApp');
+    if(!app)return;
+    app.classList.toggle('gvgp-catalog-mode',state.view==='overview'&&state.layout===1&&!app.classList.contains('gvgp-locked')&&!!state.data);
   }
   function applyDeepLink(){
     if(!deepLinkPending)return;
@@ -1540,6 +1894,7 @@ const FROTAS_URL = <?!= JSON.stringify(frotasUrl) ?>;
       state.layout=next;
       setTheme(next===1?'clean':'dark');
       if(next===2&&window.gvgpStartSign)setTimeout(window.gvgpStartSign,80);
+      syncCatalogMode();
     };
     if(state.layout===next){apply();return;}
     if(animate===false){apply();return;}
@@ -1571,13 +1926,14 @@ const FROTAS_URL = <?!= JSON.stringify(frotasUrl) ?>;
   function loadDashboard(sessionToken){
     const token=sessionToken||state.token||store.get('gvgUsrToken');
     if(!token){ renderLoggedOut(); return; }
+    $('gvgpApp').classList.remove('gvgp-cat-login');
     const tokenChanged=!!state.token&&state.token!==token;
     state.token=token;
     if(tokenChanged)moduleUseOrder=['pedidos','gastos','fornecedores','maquinas'].filter(v=>state[MODULE_META[v].flag]);
     // O módulo Pedidos é carregado somente quando o usuário abre o menu.
     $('gvgpLoginCard').classList.add('gvgp-hidden');
     $('gvgpDashboard').classList.remove('gvgp-hidden');
-    $('gvgpEmpty').classList.add('gvgp-hidden');
+    const emptyLoading=$('gvgpEmpty');if(emptyLoading)emptyLoading.classList.add('gvgp-hidden');
     if(!state.user){lastUserSignature='';$('gvgpTopUser').innerHTML='<span class="gvgp-user-chip"><span class="gvgp-user-avatar">…</span><span class="gvgp-user-meta"><strong>Carregando</strong><span>Validando sessão</span></span></span>';}
     run('getPainelInicial',token).then(d=>{
       if(!d||d.ok!==true){
@@ -1735,6 +2091,7 @@ const FROTAS_URL = <?!= JSON.stringify(frotasUrl) ?>;
     }
     if(isModule)limitLoadedModules(view);
     setSidebar(false);
+    syncCatalogMode();
     window.scrollTo({top:0,behavior:'auto'});
   }
   function showFrameLoading(){
@@ -1837,6 +2194,11 @@ const FROTAS_URL = <?!= JSON.stringify(frotasUrl) ?>;
     if(!/^https:\/\/script\.google\.com$/.test(origin)&&!/^https:\/\/[^/]+\.googleusercontent\.com$/.test(origin))return;
     if(ev.data&&ev.data.type==='gvg-frotas-logout')logout();
   });
+  const catalogSearchInput=$('gvgpPanelSearch');
+  if(catalogSearchInput){
+    catalogSearchInput.addEventListener('input',filterCatalogCards);
+    catalogSearchInput.addEventListener('keydown',event=>{if(event.key==='Escape'){catalogSearchInput.value='';filterCatalogCards();catalogSearchInput.blur();}});
+  }
   document.querySelectorAll('.gvgp-nav-item').forEach(b=>b.addEventListener('click',()=>setView(b.getAttribute('data-view'))));
   document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>setView(b.getAttribute('data-go'))));
   document.querySelectorAll('[data-module]').forEach(b=>b.addEventListener('click',()=>setView(b.getAttribute('data-module'))));
