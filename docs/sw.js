@@ -1,5 +1,5 @@
 /* GVG&ARTEFAL — shell PWA. Nunca armazena dados operacionais do Apps Script. */
-const CACHE = 'gvg-shell-v1';
+const CACHE = 'gvg-shell-v2';
 const SHELL = [
   './',
   './index.html',

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>GVG&ARTEFAL — Painel Interno</title>
-<meta name="description" content="Painel interno GVG&ARTEFAL com o módulo Pedidos.">
+<meta name="description" content="Painel interno GVG&ARTEFAL com Order Catalog, Gastos, Fornecedores, Máquinas e Frotas.">
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
@@ -32,8 +32,16 @@
 </style>
 </head>
 <body>
-  <iframe id="gvgAppFrame" src="https://script.google.com/macros/s/AKfycby35-KiTddoqhEuo9zalGkVC2Wfspw5lG7i9Vt-_qJXZBa_wqeyiV51_42xh4ITtHhL/exec?v=123&ui=ordercat2" allow="storage-access; clipboard-write" loading="eager" title="Painel GVG&ARTEFAL"></iframe>
+  <iframe id="gvgAppFrame" src="about:blank" allow="storage-access; clipboard-write" loading="eager" title="Painel GVG&ARTEFAL"></iframe>
 <script>
+  (function(){
+    var frame=document.getElementById('gvgAppFrame');
+    var params=new URLSearchParams(window.location.search);
+    var qs='v=127&ui=frotas';
+    if(params.get('view'))qs+='&view='+encodeURIComponent(params.get('view'));
+    if(params.get('alerta'))qs+='&alerta='+encodeURIComponent(params.get('alerta'));
+    frame.src='https://script.google.com/macros/s/AKfycby35-KiTddoqhEuo9zalGkVC2Wfspw5lG7i9Vt-_qJXZBa_wqeyiV51_42xh4ITtHhL/exec?'+qs;
+  })();
   var deferredInstallPrompt=null;
   window.addEventListener('beforeinstallprompt',function(event){event.preventDefault();deferredInstallPrompt=event;});
   window.addEventListener('appinstalled',function(){deferredInstallPrompt=null;});

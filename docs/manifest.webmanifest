@@ -1,7 +1,7 @@
 {
   "name": "GVG&ARTEFAL — Painel Interno",
   "short_name": "GVG&ARTEFAL",
-  "description": "Painel interno GVG&ARTEFAL com o módulo Pedidos.",
+  "description": "Painel interno GVG&ARTEFAL com os módulos Order Catalog, Gastos, Fornecedores, Máquinas e Frotas.",
   "lang": "pt-BR",
   "start_url": "./",
   "scope": "./",

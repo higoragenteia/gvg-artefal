@@ -22,6 +22,7 @@ function gvgPlanilha_(){return GVG_PLANILHA_EXECUCAO_||(GVG_PLANILHA_EXECUCAO_=S
 function doGet(e){
   const modulo=String(e&&e.parameter&&e.parameter.modulo||'').toLowerCase();
   if(modulo==='pedidos')return doGetPedidos_();
+  if(modulo==='frotas')return doGetFrotas_(e);
   if(modulo==='gastos')return doGetGastos_();
   if(modulo==='fornecedores')return doGetFornecedores_(e);
   if(modulo==='maquinas')return doGetMaquinas_();
@@ -68,6 +69,15 @@ function doGetPedidos_(){
     .addMetaTag('viewport','width=device-width, initial-scale=1')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
+function doGetFrotas_(e){
+  const modelo=HtmlService.createTemplateFromFile('FrotasIndex');
+  modelo.initialAlert=String(e&&e.parameter&&e.parameter.alerta||'');
+  return modelo.evaluate()
+    .setTitle('GVG & ARTEFAL | Controle de Frotas')
+    .addMetaTag('viewport','width=device-width, initial-scale=1, viewport-fit=cover')
+    .setFaviconUrl('https://higoragenteia.github.io/gvg-frotas/icone-180.png')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
 function doGetPainel_(e){
   const modelo = HtmlService.createTemplateFromFile('Painel');
   const url=ScriptApp.getService().getUrl();
@@ -76,6 +86,9 @@ function doGetPainel_(e){
   modelo.fornecedoresUrl=url+(url.indexOf('?')>=0?'&':'?')+'modulo=fornecedores';
   modelo.maquinasUrl=url+(url.indexOf('?')>=0?'&':'?')+'modulo=maquinas';
   modelo.maquinasApiUrl=url+(url.indexOf('?')>=0?'&':'?')+'modulo=maquinas-api';
+  modelo.frotasUrl=url+(url.indexOf('?')>=0?'&':'?')+'modulo=frotas';
+  modelo.initialView=String(e&&e.parameter&&e.parameter.view||'');
+  modelo.initialAlert=String(e&&e.parameter&&e.parameter.alerta||'');
   return modelo.evaluate()
     .setTitle('GVG&ARTEFAL')
     .addMetaTag('viewport','width=device-width, initial-scale=1, viewport-fit=cover')

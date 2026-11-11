@@ -289,6 +289,29 @@ Branch `feat/permissoes-projetos`, produção v90 preservada. Detalhes em [`PERM
 | Nome do app | OK — “Order Catalog” no logo, título, painel, login, permissão e WhatsApp |
 | Frases em português | OK — “pedido/pedidos” preservados no texto comum |
 
+## Integração do Controle de Frotas — v127 (11/11/2026)
+
+Detalhes completos em [`FROTAS_INTEGRACAO.md`](FROTAS_INTEGRACAO.md).
+
+| Teste | Resultado |
+|---|---|
+| Menu e cartão Frotas | OK — ativos, sem “Em breve” |
+| Dados reais | OK — 6 veículos, 3 alertas |
+| SSO pelo painel | OK — sem segundo login no iframe |
+| Gerenciar | OK — edição, auditoria e logout |
+| Operar | OK — criação, edição e exclusão de KM de teste; limpeza confirmada |
+| Visualizar | OK — botões ocultos e escrita recusada pelo backend |
+| Sem acesso | OK — menu/cartão ocultos e backend recusou |
+| Acesso direto sem painel | OK — bloqueado, sem dados |
+| Deep link de notificação | OK — veículo SOD7H56 e aba Histórico |
+| FCM — diagnóstico | OK — 3 dispositivos aprovados |
+| FCM — envio real | OK — mensagem aceita pelo FCM |
+| FCM — token inválido | OK — dispositivo falso marcado `invalid` e removido |
+| FCM — alerta de 10 dias | OK — chave e link gerados; teste removido |
+| Exibição/toque no aparelho | Não confirmado — depende de dispositivo físico |
+| Order Catalog, Gastos, Fornecedores e Máquinas | OK — módulos continuam carregando |
+| PWA/domínio | Teste final no endereço público registrado abaixo |
+
 ## Pendências
 
 - Integrar Frotas. Controle de Gastos, Fornecedores e Controle de Máquinas já estão integrados.

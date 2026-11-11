@@ -1,6 +1,6 @@
 # GVG&ARTEFAL — Painel Interno
 
-Painel interno acessível por um único link, com o módulo **Pedidos** integrado na primeira etapa. O layout e as funções do aplicativo de Pedidos foram preservados e carregados em uma área isolada do painel.
+Painel interno acessível por um único link, com os módulos **Order Catalog**, **Controle de Gastos**, **Fornecedores**, **Controle de Máquinas** e **Controle de Frotas** integrados. Os aplicativos originais foram preservados e carregados em áreas isoladas do painel.
 
 ## Link oficial (GitHub Pages)
 
@@ -42,6 +42,10 @@ O GitHub Pages abre o painel embutido e oculta a faixa azul do Google Apps Scrip
 | Apps Script novo (vinculado à planilha) | [Editor do projeto](https://script.google.com/d/1E98hK1UhabSftMUnCR1j1Jm_XHfQZeTqv96PfqT9h26HND-Zyw1bOBfS/edit) |
 | Script ID | `1E98hK1UhabSftMUnCR1j1Jm_XHfQZeTqv96PfqT9h26HND-Zyw1bOBfS` |
 | Implantação web | `AKfycby35-KiTddoqhEuo9zalGkVC2Wfspw5lG7i9Vt-_qJXZBa_wqeyiV51_42xh4ITtHhL` |
+| Planilha do Frotas | [Controle de Frotas](https://docs.google.com/spreadsheets/d/1ck1lDtk_W9vjyQEnhV2Ze5secbayGLFfZi4Z0NuX-GY/edit) |
+| Apps Script do Frotas | `1fo2YYypS1ponMDM3llLnMWAOiKuJHvhFYPAto_k2k_fRkW1V0-BncRyh` |
+| Implantação do Frotas | `AKfycby3W5KlwLYtX7j3_lvi6Zcf6d67k2fKnsg7K0MOmIK-b2X3xY7y57Al-uEPBdzxBaLB` |
+| App de push FCM | https://gvg-controle-de-frotas.web.app/ |
 | Repositório privado | https://github.com/higoragenteia/gvg-artefal |
 | Base ativa | 297 produtos, 40 pedidos e 177 fotos oficiais copiados |
 | Manifesto das fotos | `docs/fotos-oficiais-manifest.csv` |
@@ -74,12 +78,12 @@ O Apps Script é **vinculado à planilha de teste original** e abre a planilha a
 ## Módulos do menu
 
 - **Visão geral** — indicadores calculados da base ativa: pedidos, em andamento, entregues, itens, produtos ativos, obras ativas, pedidos recentes e mais solicitados. Com base vazia, exibe estado vazio com atalho para Pedidos. A visão alterna automaticamente entre **dois layouts** (Executivo e Monitor) a cada **30 segundos**, com transição; o botão **Pausar/Retomar** fica no topo. Os dados são atualizados a cada troca.
-- **Abertura dos módulos** — Pedidos, Gastos, Fornecedores e Máquinas abrem em **tela ampliada**, ocupando toda a área útil ao lado do menu; a topbar do painel é recolhida e o retorno é pela **Visão geral**.
+- **Abertura dos módulos** — Order Catalog, Gastos, Fornecedores, Máquinas e Frotas abrem em **tela ampliada**, ocupando toda a área útil ao lado do menu; a topbar do painel é recolhida e o retorno é pela **Visão geral**.
 - **Pedidos** — aplicativo original preservado: catálogo, carrinho, obras, solicitação, histórico do usuário, Gestão, disponibilidade de produtos, relatório, conferência de entrega e foto de produto. A Gestão avisa novos pedidos por voz, inclusive com a aba em segundo plano ou minimizada (o navegador pode atrasar a verificação), e atualiza o painel e o histórico automaticamente a cada 2 minutos, sem fechar uma conferência de entrega aberta. O catálogo renderiza em lotes no celular e carrega o restante ao rolar; busca, categorias, unidades e carrinho continuam iguais. Os textos do hero foram corrigidos na própria arte; no painel, uma versão da mesma arte sem o rótulo “ESQUADRIAS” evita a sobreposição com o subtítulo, preservando layout e proporções. O Superadministrador dispõe de uma tecla discreta na Gestão para limpar o histórico de pedidos em demonstrações, preservando produtos, obras e usuários.
 - **Controle de Gastos** — app oficial integrado ao painel, com dashboard financeiro, despesas, orçamento, saldo, cadastros e usuários; usa a cópia de teste da planilha de Gastos e fica disponível somente para administradores.
 - **Fornecedores** — app oficial integrado ao painel, com fornecedores, produtos/serviços, cotações, comparação de preços, compras, relatórios, usuários e configurações; usa a cópia de teste da planilha de Fornecedores e fica disponível somente para administradores.
+- **Frotas** — app oficial integrado ao painel com a mesma planilha e o mesmo visual: visão geral, veículos, manutenções, documentos, despesas, motoristas, relatórios, configurações e auditoria. Usa a sessão do painel (SSO), valida **Visualizar/Operar/Gerenciar** no backend e preserva o app de push FCM existente (`gvg-controle-de-frotas`).
 - **Controle de Máquinas** — app oficial integrado ao painel, com equipamentos, colaboradores, categorias, movimentações, manutenções, usuários e auditoria; usa a cópia de teste da planilha de Máquinas, login próprio e fica disponível somente para administradores.
-- **Frotas** — sinalizado como **Em breve**; abre uma tela de integração futura, sem alterar Pedidos, Gastos, Fornecedores e Máquinas.
 
 ## Desempenho e PWA
 
@@ -127,11 +131,11 @@ clasp create-version "descrição"
 clasp update-deployment <deploymentId> -V <versão>
 ```
 
-O painel e o módulo Pedidos usam a mesma implantação; atualizações de código não exigem reinstalação nos aparelhos.
+O painel e os módulos usam a mesma implantação; atualizações de código não exigem reinstalação nos aparelhos.
 
 ## Pendências desta etapa
 
-1. Integrar **Frotas** (item já reservado no menu). **Controle de Gastos**, **Fornecedores** e **Controle de Máquinas** já estão integrados.
+1. Confirmar em dispositivo físico a exibição e o toque das notificações FCM; o envio e o deep link já foram validados.
 2. O aplicativo de Pedidos original não possui fluxo de anexos por pedido. Foram mantidos apenas os fluxos existentes (foto de produto e conferência de entrega). A pasta `03 - Anexos de Pedidos` está preparada para uma etapa futura.
 3. Substituir o número fictício de WhatsApp em `CONFIG!B2` antes de uso em produção.
 4. O pedido fictício de teste pode ser mantido para demonstração ou removido pela Gestão/planilha após a validação.

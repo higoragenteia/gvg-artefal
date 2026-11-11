@@ -847,7 +847,7 @@
       <button type="button" class="gvgp-nav-item" data-view="frotas">
         <span class="gvgp-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><g stroke="url(#gvgpNavSide)" stroke-width="2.5" transform="translate(.6 1.1)" opacity=".92"><path d="M3 16V8h11l4 4h3v4"/><path d="M3 16h2"/><path d="M9 16h6"/><path d="M19 16h2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></g><g stroke="url(#gvgpNavGold)" stroke-width="1.7"><path d="M3 16V8h11l4 4h3v4"/><path d="M3 16h2"/><path d="M9 16h6"/><path d="M19 16h2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></g></svg></span>
         Frotas
-        <span class="gvgp-pill gvgp-pill-soon">Em breve</span>
+        <span class="gvgp-pill">Ativo</span>
       </button>
     </nav>
     <div class="gvgp-sidebar-bottom">
@@ -1083,18 +1083,20 @@
         </div>
       </section>
 
-      <section id="gvgpViewFuture" class="gvgp-view gvgp-hidden">
-        <div class="gvgp-future-card">
-          <div class="gvgp-future-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/><path d="m5.6 5.6 2.1 2.1"/><path d="m16.3 16.3 2.1 2.1"/><path d="m18.4 5.6-2.1 2.1"/><path d="m7.7 16.3-2.1 2.1"/><circle cx="12" cy="12" r="3"/></svg></div>
-          <span class="gvgp-eyebrow" style="color:#8a5d0b;background:#fdf6df;border-color:#ead08a">Integração futura</span>
-          <h2 id="gvgpFutureTitle">Frotas</h2>
-          <p>O módulo Frotas ainda não faz parte desta etapa do painel GVG&amp;ARTEFAL. A estrutura lateral já está preparada para receber a integração sem alterar Order Catalog, Gastos, Fornecedores e Máquinas.</p>
-          <div class="gvgp-future-list">
-            <div class="gvgp-future-item"><strong>Frotas</strong><span>Veículos, documentos e manutenções.</span></div>
+      <section id="gvgpViewFrotas" class="gvgp-view gvgp-hidden">
+        <div class="gvgp-frame-head gvgp-frame-head-actions">
+          <button type="button" class="gvgp-btn gvgp-btn-ghost" style="color:#0b4a5a;border-color:#c9dce2;background:#fff" data-go="overview">← Voltar à visão geral</button>
+        </div>
+        <div class="gvgp-frame-wrap">
+          <div id="gvgpFrotasLoading" class="gvgp-frame-loading">
+            <span class="gvgp-frame-spinner" aria-hidden="true"></span>
+            <strong>Carregando Controle de Frotas…</strong>
+            <span>Conectando à planilha da frota com a sessão do painel</span>
           </div>
-          <button type="button" class="gvgp-btn gvgp-btn-gold" data-go="overview">Voltar à visão geral</button>
+          <iframe id="gvgpFrotasFrame" class="gvgp-frame" title="Módulo Controle de Frotas" src="about:blank" loading="eager"></iframe>
         </div>
       </section>
+
     </div>
   </main>
 </div>
@@ -1168,13 +1170,11 @@ const GASTOS_URL = <?!= JSON.stringify(gastosUrl) ?>;
 const FORNECEDORES_URL = <?!= JSON.stringify(fornecedoresUrl) ?>;
 const MAQUINAS_URL = <?!= JSON.stringify(maquinasUrl) ?>;
 const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
+const FROTAS_URL = <?!= JSON.stringify(frotasUrl) ?>;
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
-  const state = { token:'', adminToken:'', user:null, data:null, view:'overview', frameLoaded:false, gastosFrameLoaded:false, fornecedoresFrameLoaded:false, maquinasFrameLoaded:false, layout:1, rotation:true, rotationTimer:null, countdown:30 };
-  const FUTURE = {
-    frotas:{title:'Frotas', subtitle:'Integração futura'}
-  };
+  const state = { token:'', adminToken:'', user:null, data:null, view:'overview', frameLoaded:false, gastosFrameLoaded:false, fornecedoresFrameLoaded:false, maquinasFrameLoaded:false, frotasFrameLoaded:false, frotasAlert:'', layout:1, rotation:true, rotationTimer:null, countdown:30 };
   // Controle de ciclo de vida dos iframes. No celular, mantém no máximo dois
   // módulos carregados (Pedidos fixo quando carregado + módulo atual) para
   // reduzir memória sem recarregar tudo a cada troca.
@@ -1182,7 +1182,8 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
     pedidos:{frame:'gvgpPedidosFrame',flag:'frameLoaded',url:()=>PEDIDOS_URL},
     gastos:{frame:'gvgpGastosFrame',flag:'gastosFrameLoaded',url:()=>GASTOS_URL},
     fornecedores:{frame:'gvgpFornecedoresFrame',flag:'fornecedoresFrameLoaded',url:()=>FORNECEDORES_URL},
-    maquinas:{frame:'gvgpMaquinasFrame',flag:'maquinasFrameLoaded',url:()=>MAQUINAS_URL}
+    maquinas:{frame:'gvgpMaquinasFrame',flag:'maquinasFrameLoaded',url:()=>MAQUINAS_URL},
+    frotas:{frame:'gvgpFrotasFrame',flag:'frotasFrameLoaded',url:()=>FROTAS_URL}
   };
   let moduleUseOrder=[];
   function isMobileViewport(){return !!(window.matchMedia&&window.matchMedia('(max-width: 900px)').matches);}
@@ -1203,6 +1204,8 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
       unloadModule(loaded.splice(idx,1)[0]);
     }
   }
+  const DEEP_LINK={view:String(<?!= JSON.stringify(initialView) ?>||'').toLowerCase(),alerta:String(<?!= JSON.stringify(initialAlert) ?>||'')};
+  let deepLinkPending=(DEEP_LINK.view==='frotas'||!!DEEP_LINK.alerta);
   const safe = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const store = {
     get:k=>{try{return localStorage.getItem(k)||''}catch(e){return ''}},
@@ -1418,10 +1421,11 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
   }
   function closePending(){$('gvgpPendingModal').classList.add('gvgp-hidden');}
   function renderLoggedOut(){
-    state.token=''; state.adminToken=''; state.user=null; state.data=null; state.gastosFrameLoaded=false; state.fornecedoresFrameLoaded=false; state.maquinasFrameLoaded=false; externosLastFetch=0;externosLastToken='';lastUserSignature='';activitiesSig='';moduleUseOrder=state.frameLoaded?['pedidos']:[];
+    state.token=''; state.adminToken=''; state.user=null; state.data=null; state.gastosFrameLoaded=false; state.fornecedoresFrameLoaded=false; state.maquinasFrameLoaded=false; state.frotasFrameLoaded=false; state.frotasAlert=''; externosLastFetch=0;externosLastToken='';lastUserSignature='';activitiesSig='';moduleUseOrder=state.frameLoaded?['pedidos']:[];
     const gastosFrame=$('gvgpGastosFrame'); if(gastosFrame)gastosFrame.src='about:blank';
     const fornecedoresFrame=$('gvgpFornecedoresFrame'); if(fornecedoresFrame)fornecedoresFrame.src='about:blank';
     const maquinasFrame=$('gvgpMaquinasFrame'); if(maquinasFrame)maquinasFrame.src='about:blank';
+    const frotasFrame=$('gvgpFrotasFrame'); if(frotasFrame)frotasFrame.src='about:blank';
     $('gvgpApp').classList.add('gvgp-locked');
     cadastroLoaded=false;cadastroUsers=[];closePending();
     stopRotation();
@@ -1487,6 +1491,14 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
     renderActivities(d);
     loadPainelExternos(state.token);
     if(window.gvgpStartSign)setTimeout(window.gvgpStartSign,400);
+    applyDeepLink();
+  }
+  function applyDeepLink(){
+    if(!deepLinkPending)return;
+    if(!state.user||!canViewProject(state.user,'frotas')){deepLinkPending=false;if(DEEP_LINK.view)toast('Seu perfil não tem acesso ao Controle de Frotas.');return;}
+    deepLinkPending=false;
+    state.frotasAlert=DEEP_LINK.alerta||'';
+    setView('frotas');
   }
   function updateRotationUI(){
     const bar=$('gvgpLayoutBar');
@@ -1603,6 +1615,10 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
         const m=$('gvgpMaquinasFrame');
         if(m){showMaquinasLoading();try{m.contentWindow.location.reload()}catch(e){m.src=MAQUINAS_URL;}setTimeout(hideMaquinasLoading,18000);}
       }
+      if(tokenChanged&&state.frotasFrameLoaded){
+        const f=$('gvgpFrotasFrame');
+        if(f){showFrotasLoading();try{f.contentWindow.location.reload()}catch(e){f.src=frotasFrameUrl();}setTimeout(hideFrotasLoading,18000);}
+      }
     }).catch(err=>{
       console.warn(err);
       toast('Não foi possível carregar os indicadores agora. Tente novamente.');
@@ -1631,6 +1647,7 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
       if(state.gastosFrameLoaded){ const g=$('gvgpGastosFrame'); if(g) g.src=GASTOS_URL; }
       if(state.fornecedoresFrameLoaded){ const f=$('gvgpFornecedoresFrame'); if(f) f.src=FORNECEDORES_URL; }
       if(state.maquinasFrameLoaded){ const m=$('gvgpMaquinasFrame'); if(m) m.src=MAQUINAS_URL; }
+      if(state.frotasFrameLoaded){ const f=$('gvgpFrotasFrame'); if(f) f.src=frotasFrameUrl(); }
       toast('Bem-vindo(a), '+d.nome+'!');
     }).catch(err=>{
       msg.style.color='#b42318'; msg.textContent=String(err&&err.message||err).replace(/^Error:\s*/,'');
@@ -1648,18 +1665,19 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
     if(gastosToken){try{run('logoutUsuario',{token:gastosToken}).catch(()=>{})}catch(e){}}
     if(fornecedoresToken){try{run('fornecedoresApiCall','logoutUsuario',[],fornecedoresToken).catch(()=>{})}catch(e){}}
     revogarSessaoMaquinas_(maquinasToken);
-    store.remove('gvgGastosToken'); store.remove('gvgSessionToken'); store.remove('gvgMaqTokenV1');
+    store.remove('gvgGastosToken'); store.remove('gvgSessionToken'); store.remove('gvgMaqTokenV1'); store.remove('gvgFrotasToken');
     Promise.allSettled([
       token?run('sairFuncionario',token):Promise.resolve(),
       admin&&admin!==token?run('sairAdminGVG',admin):Promise.resolve()
     ]).finally(()=>{
       store.remove('gvgUsrToken'); store.remove('gvgAdminToken');
-      state.token=''; state.adminToken=''; state.frameLoaded=false; state.gastosFrameLoaded=false; state.fornecedoresFrameLoaded=false; state.maquinasFrameLoaded=false;
+      state.token=''; state.adminToken=''; state.frameLoaded=false; state.gastosFrameLoaded=false; state.fornecedoresFrameLoaded=false; state.maquinasFrameLoaded=false; state.frotasFrameLoaded=false; state.frotasAlert='';
       renderLoggedOut();
       const f=$('gvgpPedidosFrame'); if(f) f.src='about:blank';
       const g=$('gvgpGastosFrame'); if(g) g.src='about:blank';
       const h=$('gvgpFornecedoresFrame'); if(h) h.src='about:blank';
       const m=$('gvgpMaquinasFrame'); if(m) m.src='about:blank';
+      const fr=$('gvgpFrotasFrame'); if(fr) fr.src='about:blank';
       toast('Sessão encerrada neste aparelho.');
     });
   }
@@ -1672,9 +1690,8 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
   }
   function setView(view){
     if(!canAccessView(view))return;
-    const future=FUTURE[view];
     state.view=view;
-    const isModule=view==='pedidos'||view==='gastos'||view==='fornecedores'||view==='maquinas';
+    const isModule=view==='pedidos'||view==='gastos'||view==='fornecedores'||view==='maquinas'||view==='frotas';
     if(isModule)markModuleUsed(view);
     $('gvgpApp').classList.toggle('gvgp-module-open',isModule);
     if(view!=='overview'){
@@ -1689,11 +1706,10 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
     $('gvgpViewGastos').classList.toggle('gvgp-hidden',view!=='gastos');
     $('gvgpViewFornecedores').classList.toggle('gvgp-hidden',view!=='fornecedores');
     $('gvgpViewMaquinas').classList.toggle('gvgp-hidden',view!=='maquinas');
-    $('gvgpViewFuture').classList.toggle('gvgp-hidden',!future);
+    $('gvgpViewFrotas').classList.toggle('gvgp-hidden',view!=='frotas');
     if(view==='overview'){
       $('gvgpPageTitle').textContent='Visão geral';
       $('gvgpPageSubtitle').textContent='Order Catalog, gastos, fornecedores, máquinas e frotas';
-      $('gvgpViewFuture').classList.add('gvgp-hidden');
       if(state.data){$('gvgpLayoutBar').classList.remove('gvgp-hidden');startRotation();if(window.gvgpStartSign)setTimeout(window.gvgpStartSign,200);}
       else {$('gvgpLayoutBar').classList.add('gvgp-hidden');switchLayout(1,false);setTheme('clean');}
     } else if(view==='pedidos'){
@@ -1712,10 +1728,10 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
       $('gvgpPageTitle').textContent='Controle de Máquinas';
       $('gvgpPageSubtitle').textContent='Máquinas, equipamentos, entregas e manutenções';
       loadMaquinasFrame();
-    } else if(future){
-      $('gvgpPageTitle').textContent=future.title;
-      $('gvgpPageSubtitle').textContent=future.subtitle;
-      $('gvgpFutureTitle').textContent=future.title;
+    } else if(view==='frotas'){
+      $('gvgpPageTitle').textContent='Controle de Frotas';
+      $('gvgpPageSubtitle').textContent='Veículos, documentos, manutenções e vencimentos';
+      loadFrotasFrame();
     }
     if(isModule)limitLoadedModules(view);
     setSidebar(false);
@@ -1789,11 +1805,38 @@ const MAQUINAS_API_URL = <?!= JSON.stringify(maquinasApiUrl) ?>;
       loadMaquinasFrame._fallback=setTimeout(hideMaquinasLoading,18000);
     }
   }
+  function showFrotasLoading(){
+    const l=$('gvgpFrotasLoading');if(l)l.classList.remove('gvgp-hidden');
+  }
+  function hideFrotasLoading(){
+    const l=$('gvgpFrotasLoading');if(l)l.classList.add('gvgp-hidden');
+  }
+  function frotasFrameUrl(){
+    if(!state.frotasAlert)return FROTAS_URL;
+    return FROTAS_URL+'&alerta='+encodeURIComponent(state.frotasAlert);
+  }
+  function loadFrotasFrame(){
+    const f=$('gvgpFrotasFrame');
+    if(!f)return;
+    const wanted=frotasFrameUrl();
+    if(!state.frotasFrameLoaded||f.src==='about:blank'||!f.getAttribute('src')||f.src!==wanted){
+      showFrotasLoading();
+      f.src=wanted;
+      state.frotasFrameLoaded=true;
+      clearTimeout(loadFrotasFrame._fallback);
+      loadFrotasFrame._fallback=setTimeout(hideFrotasLoading,18000);
+    }
+  }
   function refresh(){
     if(!store.get('gvgUsrToken')){ toast('Entre no painel para atualizar os indicadores.'); return; }
     loadDashboard(); toast('Indicadores atualizados.');
   }
   // Eventos
+  window.addEventListener('message',function(ev){
+    const origin=String(ev.origin||'');
+    if(!/^https:\/\/script\.google\.com$/.test(origin)&&!/^https:\/\/[^/]+\.googleusercontent\.com$/.test(origin))return;
+    if(ev.data&&ev.data.type==='gvg-frotas-logout')logout();
+  });
   document.querySelectorAll('.gvgp-nav-item').forEach(b=>b.addEventListener('click',()=>setView(b.getAttribute('data-view'))));
   document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>setView(b.getAttribute('data-go'))));
   document.querySelectorAll('[data-module]').forEach(b=>b.addEventListener('click',()=>setView(b.getAttribute('data-module'))));
