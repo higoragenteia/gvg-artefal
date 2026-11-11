@@ -309,7 +309,7 @@ Detalhes completos em [`FROTAS_INTEGRACAO.md`](FROTAS_INTEGRACAO.md).
 | FCM — token inválido | OK — dispositivo falso marcado `invalid` e removido |
 | FCM — alerta de 10 dias | OK — chave e link gerados; teste removido |
 | Exibição/toque no aparelho | Não confirmado — depende de dispositivo físico |
-| Limpeza | OK — 4 usuários de teste, sessões e registros temporários removidos |
+| Limpeza | OK — 4 usuários de teste, sessões e registros temporários removidos; auditoria preservada |
 | Order Catalog, Gastos, Fornecedores e Máquinas | OK — módulos continuam carregando |
 | PWA/domínio | OK — wrapper v127, deep link e service worker `gvg-shell-v2` no domínio público |
 

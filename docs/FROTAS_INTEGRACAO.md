@@ -112,7 +112,7 @@ O app de registro continua usando login Google e mantém o dispositivo como `pen
 | Geração de alerta de 10 dias | OK — chave, data e link gerados; registro de teste removido |
 | Token inválido | OK — FCM recusou, dispositivo falso marcado `invalid` no Firestore e removido |
 | Recebimento/exibição no aparelho | **Não confirmado** — depende do dispositivo físico e do sistema operacional |
-| Limpeza | OK — usuários, sessões e registros de teste removidos; produção limpa |
+| Limpeza | OK — usuários, sessões e registros de teste removidos; a trilha de auditoria mantém o registro técnico das operações de teste |
 
 ### Externo/manual pendente
 
