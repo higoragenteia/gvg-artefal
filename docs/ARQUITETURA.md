@@ -42,6 +42,13 @@ Navegador
 
 A planilha ativa é a cópia de teste do app oficial (`19bO6...`), com as abas `PRODUTOS`, `CATEGORIAS`, `OBRAS`, `CONFIG`, `PEDIDOS`, `ITENS_PEDIDO`, `AUDITORIA`, `GVG_USUARIOS`, `SESSOES_GVG`, `PEDIDOS_USUARIOS`, `BACKUP_PRODUTOS_20261026` e `LEIA-ME`. Os 297 produtos e as 177 fotos oficiais foram copiados; o WhatsApp está fictício e as sessões antigas foram limpas.
 
+## Modo foco e Código referente (v133)
+
+- Em qualquer módulo, o desktop remove a topbar, recolhe a sidebar e deixa o iframe em 100% da tela. Uma aba de três pontos abre a sidebar como sobreposição.
+- No celular, o menu hambúrguer existente continua sendo usado.
+- O cadastro de produtos ganhou a coluna `Código referente` (I). O código interno (A) permanece estável para preservar pedidos, itens, vínculos e auditoria.
+- `adminListar`, `salvarProduto` e `getCatalogo` transportam o campo `referencia`; o cache do catálogo passou para `gvg_catalogo_v4`.
+
 ## Layout 4 — Catálogo digital (v130)
 
 - A visão geral tem dois layouts alternados: **A (Catálogo digital, bege/dourado)** e **B (Monitor escuro)**.

@@ -115,12 +115,12 @@ function getCatalogo(sessao){
   if(!gvguPodeVisualizar_(auth,'pedidos'))throw new Error('GVG_SEM_ACESSO_PROJETO: seu perfil não tem acesso ao Order Catalog.');
   const acesso={nivel:gvguNivelProjeto_(auth,'pedidos'),podeOperar:gvguPodeOperar_(auth,'pedidos'),podeGerenciar:gvguPodeGerenciar_(auth,'pedidos')};
   const cache=CacheService.getScriptCache();
-  const cacheKey='gvg_catalogo_v3';
+  const cacheKey='gvg_catalogo_v4';
   const cached=cache.get(cacheKey);
   if(cached){try{const out=JSON.parse(cached);out.acesso=acesso;return out;}catch(e){}}
   const ss = gvgPlanilha_();
   const values = ss.getSheetByName('PRODUTOS').getDataRange().getDisplayValues();
-  const produtos = values.slice(1).filter(r=>r[0]&&r[1]&&String(r[6]).toUpperCase()!=='NÃO'&&String(r[6]).toUpperCase()!=='NAO').map(r=>({id:r[0],nome:r[1],categoria:r[2],unidade:r[3],descricao:r[4],porCaixa:fatorEmbalagemGVG_(r),imagem:r[7]||'',ativo:String(r[6]||'SIM').toUpperCase()}));
+  const produtos = values.slice(1).filter(r=>r[0]&&r[1]&&String(r[6]).toUpperCase()!=='NÃO'&&String(r[6]).toUpperCase()!=='NAO').map(r=>({id:r[0],nome:r[1],categoria:r[2],unidade:r[3],descricao:r[4],porCaixa:fatorEmbalagemGVG_(r),imagem:r[7]||'',referencia:r[8]||'',ativo:String(r[6]||'SIM').toUpperCase()}));
   const obras = ss.getSheetByName('OBRAS').getDataRange().getDisplayValues().slice(1).filter(r=>r[0]&&String(r[1]).toUpperCase()!=='NÃO'&&String(r[1]).toUpperCase()!=='NAO').map(r=>r[0]);
   const configs = ss.getSheetByName('CONFIG').getDataRange().getDisplayValues();
   const get=(key)=>{const row=configs.find(r=>r[0]===key);return row?row[1]:''};
@@ -159,7 +159,19 @@ function admin_(credential){
 function revogarSessoesUsuario_(id,manterToken){const sh=gvguSessoes_(),v=sh.getDataRange().getValues(),keep=manterToken?gvguSHA_(String(manterToken)):'';for(let i=1;i<v.length;i++)if(String(v[i][1])===String(id)&&(!keep||String(v[i][0])!==keep))sh.getRange(i+1,4).setValue('SIM');}
 function abasGestao_(forcar){const ss=gvgPlanilha_();if(GVG_GESTAO_EXECUCAO_)return ss;const cache=CacheService.getScriptCache();if(!forcar){try{if(cache.get('gvg_estrutura_ok_v1')==='1'){GVG_GESTAO_EXECUCAO_=true;return ss;}}catch(e){}}const a=[['PEDIDOS',['Pedido_ID','Data','Solicitante','Obra','Observacoes','Canal','Situacao','Data_entrega']],['ITENS_PEDIDO',['Pedido_ID','Codigo','Produto','Quantidade','Unidade','Unidades_equivalentes','Quantidade_entregue','Unidades_entregues','Observacao_entrega']],['AUDITORIA',['Data','Acao','Codigo','Produto','Detalhes']]]; a.forEach(([name,header])=>{let sh=ss.getSheetByName(name);if(!sh)sh=ss.insertSheet(name);if(sh.getLastRow()===0)sh.appendRow(header);else if(name==='PEDIDOS' && sh.getLastColumn()<8){sh.getRange(1,8).setValue('Data_entrega');}else if(name==='ITENS_PEDIDO' && sh.getLastColumn()<9){sh.getRange(1,7,1,3).setValues([header.slice(6)]);}});try{cache.put('gvg_estrutura_ok_v1','1',300);}catch(e){}GVG_GESTAO_EXECUCAO_=true;return ss;}
 function instalarAbasGestao(){try{CacheService.getScriptCache().remove('gvg_estrutura_ok_v1');}catch(e){}abasGestao_(true);return 'Abas de gestão preparadas';}
-function adminListar(pin){admin_(pin);const ss=abasGestao_();const produtos=ss.getSheetByName('PRODUTOS').getDataRange().getDisplayValues().slice(1).filter(r=>r[0]&&r[1]).map(r=>({id:r[0],nome:r[1],categoria:r[2],unidade:r[3],descricao:r[4],porCaixa:fatorEmbalagemGVG_(r),ativo:r[6]||'SIM',imagem:r[7]||''}));return {produtos};}
+function gvgGarantirRefProduto_(sh){
+ if(sh.getMaxColumns()<9)sh.insertColumnsAfter(sh.getMaxColumns(),9-sh.getMaxColumns());
+ const h=sh.getRange(1,1,1,9).getDisplayValues()[0];
+ if(String(h[8]||'').trim()!=='Código referente'){
+   sh.getRange(1,9).setValue('Código referente').setFontWeight('bold').setBackground('#0d2440').setFontColor('white');
+ }
+ return 9;
+}
+function adminListar(pin){
+ admin_(pin);const ss=abasGestao_(),sh=ss.getSheetByName('PRODUTOS');gvgGarantirRefProduto_(sh);
+ const produtos=sh.getDataRange().getDisplayValues().slice(1).filter(r=>r[0]&&r[1]).map(r=>({id:r[0],nome:r[1],categoria:r[2],unidade:r[3],descricao:r[4],porCaixa:fatorEmbalagemGVG_(r),ativo:r[6]||'SIM',imagem:r[7]||'',referencia:r[8]||''}));
+ return {produtos};
+}
 function textoSeguro_(x,max){let t=String(x==null?'':x).slice(0,max||200);return /^[=+@\-]/.test(t)?'\''+t:t;}
 function salvarProduto(pin,d){
  admin_(pin);if(!d||!String(d.nome||'').trim()||!String(d.categoria||'').trim())throw new Error('Informe nome e categoria.');
@@ -167,18 +179,20 @@ function salvarProduto(pin,d){
  const img=String(d.imagem||'').trim();if(img&&!/^https:\/\//i.test(img))throw new Error('A foto deve usar um link HTTPS acessível.');
  const unit=String(d.unidade||'Unidade');const q=Number(d.porCaixa)||1;if(q<1||q>10000)throw new Error('Quantidade por caixa inválida.');
  const lock=LockService.getScriptLock();lock.waitLock(20000);try{
-  const ss=abasGestao_(),sh=ss.getSheetByName('PRODUTOS'),vals=sh.getDataRange().getValues();
+  const ss=abasGestao_(),sh=ss.getSheetByName('PRODUTOS');gvgGarantirRefProduto_(sh);
+  const vals=sh.getDataRange().getValues();
   const old=String(d.id||'');let row=vals.findIndex((r,i)=>i>0&&String(r[0])===old)+1;
   let id=old;
   if(!row){if(old)throw new Error('Produto não encontrado para edição.');id='GVG-'+Utilities.getUuid().slice(0,8).toUpperCase();}
-  const values=[id,textoSeguro_(String(d.nome).trim(),180),textoSeguro_(String(d.categoria).trim(),80),textoSeguro_(unit,50),textoSeguro_(d.descricao,350),q,ativo,img];
-  if(row)sh.getRange(row,1,1,8).setValues([values]);else sh.appendRow(values);
-  ss.getSheetByName('AUDITORIA').appendRow([new Date(),row?'EDITAR':'CRIAR',id,values[1],ativo]);
-  try{CacheService.getScriptCache().remove('gvg_catalogo_v3');}catch(e){}
+  const ref=textoSeguro_(String(d.referencia||'').trim(),80);
+  const values=[id,textoSeguro_(String(d.nome).trim(),180),textoSeguro_(String(d.categoria).trim(),80),textoSeguro_(unit,50),textoSeguro_(d.descricao,350),q,ativo,img,ref];
+  if(row)sh.getRange(row,1,1,9).setValues([values]);else sh.appendRow(values);
+  ss.getSheetByName('AUDITORIA').appendRow([new Date(),row?'EDITAR':'CRIAR',id,values[1],ativo+(ref?' · Ref. '+ref:'')]);
+  try{CacheService.getScriptCache().remove('gvg_catalogo_v4');}catch(e){}
    return {id};
  }finally{lock.releaseLock()}
 }
-function alterarDisponibilidade(pin,id,novo){admin_(pin);if(!['SIM','NÃO','EM FALTA'].includes(novo))throw new Error('Situação inválida.');const lock=LockService.getScriptLock();lock.waitLock(20000);try{const ss=abasGestao_(),sh=ss.getSheetByName('PRODUTOS'),v=sh.getDataRange().getValues();const idx=v.findIndex((r,i)=>i>0&&String(r[0])===String(id));if(idx<0)throw new Error('Produto não encontrado.');sh.getRange(idx+1,7).setValue(novo);try{CacheService.getScriptCache().remove('gvg_catalogo_v3');}catch(e){}ss.getSheetByName('AUDITORIA').appendRow([new Date(),'DISPONIBILIDADE',id,v[idx][1],novo]);return true}finally{lock.releaseLock()}}
+function alterarDisponibilidade(pin,id,novo){admin_(pin);if(!['SIM','NÃO','EM FALTA'].includes(novo))throw new Error('Situação inválida.');const lock=LockService.getScriptLock();lock.waitLock(20000);try{const ss=abasGestao_(),sh=ss.getSheetByName('PRODUTOS'),v=sh.getDataRange().getValues();const idx=v.findIndex((r,i)=>i>0&&String(r[0])===String(id));if(idx<0)throw new Error('Produto não encontrado.');sh.getRange(idx+1,7).setValue(novo);try{CacheService.getScriptCache().remove('gvg_catalogo_v4');}catch(e){}ss.getSheetByName('AUDITORIA').appendRow([new Date(),'DISPONIBILIDADE',id,v[idx][1],novo]);return true}finally{lock.releaseLock()}}
 function gvguPerfilFolder_(){
   try{return DriveApp.getFolderById(GVG_PERFIL_FOLDER_ID);}catch(e){}
   const base=DriveApp.getFolderById(GVG_BASE_FOLDER_ID);

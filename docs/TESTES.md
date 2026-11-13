@@ -337,6 +337,26 @@ Detalhes completos em [`LAYOUT_CATALOGO.md`](LAYOUT_CATALOGO.md).
 | PWA/domínio | OK — wrapper v130, SW `gvg-shell-v3` |
 | Desempenho | OK — dashboard ~3,1 s e dados ~6,2 s (antes ~4,5 s e ~7,4 s) |
 
+## Modo foco e Código referente — v133 (13/11/2026)
+
+Detalhes completos em [`MODO_FOCO_REFERENCIA.md`](MODO_FOCO_REFERENCIA.md).
+
+| Teste | Resultado |
+|---|---|
+| Projeto em tela cheia | OK — 1440 px, main sem margem |
+| Sidebar recolhida no projeto | OK |
+| Três pontos na borda esquerda | OK |
+| Menu sobreposto | OK — abre, fecha por backdrop/Esc e troca de módulo |
+| Retorno à Visão geral | OK — sidebar/topbar restauradas |
+| Celular | OK — menu hambúrguer preservado |
+| Coluna Código referente | OK — criada na planilha |
+| Criar referência | OK |
+| Editar referência | OK |
+| Exibir na Gestão | OK |
+| Exibir no catálogo/carrinho | OK |
+| Busca por referência | OK |
+| Produto de teste removido | OK — 304 produtos reais preservados |
+
 ## Pendências
 
 - Integrar Frotas. Controle de Gastos, Fornecedores e Controle de Máquinas já estão integrados.

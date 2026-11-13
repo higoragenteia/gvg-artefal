@@ -471,6 +471,29 @@
   #gvgpApp.gvgp-module-open .gvgp-frame-head{display:none}
   #gvgpApp.gvgp-module-open .gvgp-frame-wrap{flex:1;height:100%;border-radius:0;overflow:hidden}
   #gvgpApp.gvgp-module-open .gvgp-frame{height:100%;min-height:0;border:0;border-radius:0;box-shadow:none;background:#0a1014}
+  /* Modo foco: projeto em tela cheia e menu lateral sob demanda */
+  .gvgp-focus-menu-btn{
+    position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:55;
+    width:24px;height:74px;border-radius:0 12px 12px 0;border:1px solid #d9c9ab;border-left:0;
+    background:linear-gradient(145deg,#fbf2df,#e9d8b6);color:#7a5a10;display:none;
+    flex-direction:column;align-items:center;justify-content:center;gap:5px;
+    box-shadow:6px 4px 16px rgba(80,60,30,.18);transition:width .18s ease,background .18s ease,opacity .18s ease;
+  }
+  .gvgp-focus-menu-btn span{display:block;width:4px;height:4px;border-radius:50%;background:currentColor}
+  .gvgp-focus-menu-btn:hover,.gvgp-focus-menu-btn:focus-visible{width:28px;background:linear-gradient(145deg,#fff8e8,#f1dfb8);outline:2px solid #c99a2e;outline-offset:1px}
+  @media (min-width:981px){
+    #gvgpApp.gvgp-module-open .gvgp-sidebar{
+      transform:translateX(-104%);z-index:60;box-shadow:none;
+      transition:transform .24s ease,background .5s ease,color .35s ease,border-color .35s ease;
+    }
+    #gvgpApp.gvgp-module-open.gvgp-sidebar-open .gvgp-sidebar{
+      transform:none;box-shadow:20px 0 50px rgba(0,0,0,.28);
+    }
+    #gvgpApp.gvgp-module-open .gvgp-main{margin-left:0}
+    #gvgpApp.gvgp-module-open.gvgp-sidebar-open .gvgp-backdrop{opacity:1;pointer-events:auto}
+    #gvgpApp.gvgp-module-open .gvgp-focus-menu-btn{display:flex}
+    #gvgpApp.gvgp-module-open.gvgp-sidebar-open .gvgp-focus-menu-btn{opacity:0;pointer-events:none}
+  }
   @media (max-width:980px){
     #gvgpApp.gvgp-module-open .gvgp-topbar{display:flex}
     #gvgpApp.gvgp-module-open .gvgp-content{height:calc(100vh - 64px)}
@@ -1031,6 +1054,9 @@
 </head>
 <body>
 <div id="gvgpApp" class="gvgp-app gvgp-locked gvgp-cat-login">
+  <button type="button" id="gvgpFocusMenuBtn" class="gvgp-focus-menu-btn" aria-label="Abrir menu do painel" aria-expanded="false" aria-controls="gvgpSidebar" title="Abrir menu do painel">
+    <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+  </button>
   <svg class="gvgp-nav-defs" width="0" height="0" aria-hidden="true" focusable="false"><defs><linearGradient id="gvgpNavGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff4c8"/><stop offset=".35" stop-color="#f1d27c"/><stop offset=".72" stop-color="#c99a2e"/><stop offset="1" stop-color="#7a5a18"/></linearGradient><linearGradient id="gvgpNavSide" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8f6a1d"/><stop offset="1" stop-color="#4b3610"/></linearGradient></defs></svg>
   <div id="gvgpBackdrop" class="gvgp-backdrop"></div>
   <aside id="gvgpSidebar" class="gvgp-sidebar" aria-label="Menu principal">
@@ -1507,10 +1533,10 @@ const FROTAS_URL = <?!= JSON.stringify(frotasUrl) ?>;
     });
   }
   function setSidebar(open){
-    const app=$('gvgpApp'), btn=$('gvgpMenuBtn');
+    const app=$('gvgpApp'), btn=$('gvgpMenuBtn'), focus=$('gvgpFocusMenuBtn');
     app.classList.toggle('gvgp-sidebar-open',!!open);
-    btn.setAttribute('aria-expanded',String(!!open));
-    btn.setAttribute('aria-label',open?'Fechar menu':'Abrir menu');
+    if(btn){btn.setAttribute('aria-expanded',String(!!open));btn.setAttribute('aria-label',open?'Fechar menu':'Abrir menu');}
+    if(focus){focus.setAttribute('aria-expanded',String(!!open));focus.setAttribute('aria-label',open?'Fechar menu do painel':'Abrir menu do painel');focus.title=open?'Fechar menu do painel':'Abrir menu do painel';}
   }
   function setTheme(theme){
     const app=$('gvgpApp');
@@ -2204,6 +2230,11 @@ const FROTAS_URL = <?!= JSON.stringify(frotasUrl) ?>;
   document.querySelectorAll('[data-module]').forEach(b=>b.addEventListener('click',()=>setView(b.getAttribute('data-module'))));
   $('gvgpMenuBtn').addEventListener('click',()=>setSidebar(!$('gvgpApp').classList.contains('gvgp-sidebar-open')));
   $('gvgpBackdrop').addEventListener('click',()=>setSidebar(false));
+  const focusMenuBtn=$('gvgpFocusMenuBtn');
+  if(focusMenuBtn)focusMenuBtn.addEventListener('click',()=>setSidebar(!$('gvgpApp').classList.contains('gvgp-sidebar-open')));
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape'&&$('gvgpApp').classList.contains('gvgp-sidebar-open'))setSidebar(false);
+  });
   const signupScenes=[
     {tag:'JANELA DE CORRER',name:'Linha Prime 3D',desc:'Alumínio champagne · vidro cristal'},
     {tag:'PORTA PIVOTANTE',name:'Linha Concept 3D',desc:'Folha única · puxador slim'},
