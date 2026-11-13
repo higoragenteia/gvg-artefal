@@ -2,7 +2,7 @@
 
 Branch de trabalho: `feat/permissoes-projetos`  
 Ponto de restauração: tag `pre-permissoes-20261108`  
-Produção: **v133, publicada em 13/11/2026**  
+Produção: **v134, publicada em 13/11/2026**  
 Status: **publicado**.
 
 ## 1. Modelo de acesso

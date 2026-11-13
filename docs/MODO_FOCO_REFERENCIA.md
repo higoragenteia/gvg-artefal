@@ -1,4 +1,4 @@
-# Modo foco dos projetos + Código referente — v133 (13/11/2026)
+# Modo foco dos projetos + Código referente + cotações — v134 (13/11/2026)
 
 ## 1. Modo foco ao abrir um projeto
 
@@ -43,9 +43,9 @@ Alterar a coluna A de um produto existente quebraria pedidos antigos, itens, ví
 | `src/Painel.html` | modo foco, aba de três pontos, sidebar sobreposta, CSS e eventos |
 | `src/Code.gs` | coluna I, `gvgGarantirRefProduto_`, `adminListar`, `salvarProduto`, `getCatalogo`, cache v4 |
 | `src/index.html` | campo `editReferencia`, carga/gravação, exibição na Gestão, catálogo e carrinho, busca |
-| `docs/index.html` | wrapper `v=133&ui=foco-ref` |
-| `docs/sw.js` | cache `gvg-shell-v4` |
-| `deploy.json` | versão 133 |
+| `docs/index.html` | wrapper `v=134&ui=foco-ref` |
+| `docs/sw.js` | cache `gvg-shell-v5` |
+| `deploy.json` | versão 134 |
 | `docs/PERMISSOES.md`, `docs/OTIMIZACOES.md`, `docs/DEPLOY.md`, `docs/TESTES.md` | versão e evidências |
 
 ## 4. Testes executados
@@ -92,21 +92,29 @@ Alterar a coluna A de um produto existente quebraria pedidos antigos, itens, ví
 | Limpeza | OK — produto de teste removido; 304 produtos reais preservados |
 | Código interno dos 304 produtos | OK — coluna A não foi alterada |
 
+### Cotações do Fornecedores — v134
+
+| Teste | Resultado |
+|---|---|
+| Cotações carregadas | OK — 12 registros |
+| Miniaturas renderizadas | OK — 12 elementos `.thumb` e 12 imagens |
+| Imagens carregadas na amostra | OK — 9 de 12; as demais seguem carregando de forma lazy |
+| Exibição visual na tela | OK — miniaturas visíveis na lista de cotações |
+
 ## 5. Ponto de recuperação
 
 - Tag: `pre-focus-refcode-v130`
 - Backup: `/home/pcnovo/backups-focus-refcode-2026-11-13/`
 - Versão anterior: **130**
-- Versão publicada: **133**
+- Versão publicada: **134** (versão 139 do script)
 - Para voltar: publicar a versão 130 na implantação `AKfycby35-KiTddoqhEuo9zalGkVC2Wfspw5lG7i9Vt-_qJXZBa_wqeyiV51_42xh4ITtHhL` e restaurar o wrapper para `v=130`.
 
 ## 6. Publicação e integração com o repositório remoto
 
-- A **v133** está publicada e contém o modo foco e o campo Código referente.
-- O repositório remoto recebeu, em paralelo, a atualização de **miniaturas nas cotações do Fornecedores** (commit `91958be`). Ela foi integrada ao código local/repositório, mas **não está na v133 publicada**.
-- A versão **v134** integrada (modo foco + código referente + miniaturas das cotações) está pronta em `src/` e o script de publicação em `/tmp/opencode/push-panel-v134.js`, mas a publicação está bloqueada porque o token OAuth do clasp expirou em 13/11/2026.
-- Depois de reautenticar a conta `higorjose.gvgesquadrias@gmail.com` com o clasp, publicar a v134 e atualizar o wrapper/`deploy.json` para 134.
-- Enquanto a v134 não for publicada, a produção permanece na v133 e as miniaturas das cotações ficam ausentes.
+- A **v134** está publicada e reúne o modo foco, o Código referente e as **miniaturas nas cotações do Fornecedores** (commit `91958be`).
+- A implantação principal `AKfycby35-KiTddoqhEuo9zalGkVC2Wfspw5lG7i9Vt-_qJXZBa_wqeyiV51_42xh4ITtHhL` aponta para a **versão 139 do script**, com o mesmo conteúdo do repositório.
+- O wrapper do domínio foi atualizado para `v=134&ui=foco-ref` e o service worker para `gvg-shell-v5`.
+- A publicação temporária usada na limpeza foi excluída; o usuário de teste `teste.ajuste@example.com` e suas 10 sessões foram removidos.
 
 ## 7. Pendências e limites
 

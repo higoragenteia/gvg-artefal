@@ -337,7 +337,7 @@ Detalhes completos em [`LAYOUT_CATALOGO.md`](LAYOUT_CATALOGO.md).
 | PWA/domínio | OK — wrapper v130, SW `gvg-shell-v3` |
 | Desempenho | OK — dashboard ~3,1 s e dados ~6,2 s (antes ~4,5 s e ~7,4 s) |
 
-## Modo foco e Código referente — v133 (13/11/2026)
+## Modo foco, Código referente e cotações — v134 (13/11/2026)
 
 Detalhes completos em [`MODO_FOCO_REFERENCIA.md`](MODO_FOCO_REFERENCIA.md).
 
@@ -356,8 +356,11 @@ Detalhes completos em [`MODO_FOCO_REFERENCIA.md`](MODO_FOCO_REFERENCIA.md).
 | Exibir no catálogo/carrinho | OK |
 | Busca por referência | OK |
 | Produto de teste removido | OK — 304 produtos reais preservados |
+| Cotações do Fornecedores | OK — 12 registros e 12 miniaturas |
+| Imagens das cotações na tela | OK — 9 carregadas na amostra; lazy loading nas demais |
+| Usuário temporário de teste | OK — removido com 10 sessões; nenhum restante |
 
-> **Publicação:** a v133 está no ar com modo foco e Código referente. A v134 integrada, que também recupera as miniaturas das cotações do remoto, aguarda reautenticação do clasp (token expirado em 13/11/2026).
+> **Publicação:** a v134 está no ar (versão 139 do script), com modo foco, Código referente e miniaturas nas cotações do Fornecedores. Usuário temporário de teste removido.
 
 ## Pendências
 
