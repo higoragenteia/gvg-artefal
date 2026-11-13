@@ -100,7 +100,15 @@ Alterar a coluna A de um produto existente quebraria pedidos antigos, itens, ví
 - Versão publicada: **133**
 - Para voltar: publicar a versão 130 na implantação `AKfycby35-KiTddoqhEuo9zalGkVC2Wfspw5lG7i9Vt-_qJXZBa_wqeyiV51_42xh4ITtHhL` e restaurar o wrapper para `v=130`.
 
-## 6. Pendências e limites
+## 6. Publicação e integração com o repositório remoto
+
+- A **v133** está publicada e contém o modo foco e o campo Código referente.
+- O repositório remoto recebeu, em paralelo, a atualização de **miniaturas nas cotações do Fornecedores** (commit `91958be`). Ela foi integrada ao código local/repositório, mas **não está na v133 publicada**.
+- A versão **v134** integrada (modo foco + código referente + miniaturas das cotações) está pronta em `src/` e o script de publicação em `/tmp/opencode/push-panel-v134.js`, mas a publicação está bloqueada porque o token OAuth do clasp expirou em 13/11/2026.
+- Depois de reautenticar a conta `higorjose.gvgesquadrias@gmail.com` com o clasp, publicar a v134 e atualizar o wrapper/`deploy.json` para 134.
+- Enquanto a v134 não for publicada, a produção permanece na v133 e as miniaturas das cotações ficam ausentes.
+
+## 7. Pendências e limites
 
 - O código interno (coluna A) continua protegido contra edição para não quebrar pedidos. O campo novo atende à criação/edição de códigos referenciais.
 - Se for necessário renomear o código interno de um produto já usado, será preciso um procedimento de migração que atualize também `ITENS_PEDIDO`, vínculos e auditoria.

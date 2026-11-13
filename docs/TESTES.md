@@ -357,6 +357,8 @@ Detalhes completos em [`MODO_FOCO_REFERENCIA.md`](MODO_FOCO_REFERENCIA.md).
 | Busca por referência | OK |
 | Produto de teste removido | OK — 304 produtos reais preservados |
 
+> **Publicação:** a v133 está no ar com modo foco e Código referente. A v134 integrada, que também recupera as miniaturas das cotações do remoto, aguarda reautenticação do clasp (token expirado em 13/11/2026).
+
 ## Pendências
 
 - Integrar Frotas. Controle de Gastos, Fornecedores e Controle de Máquinas já estão integrados.
