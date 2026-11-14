@@ -21,7 +21,7 @@ function gvgPlanilha_(){return GVG_PLANILHA_EXECUCAO_||(GVG_PLANILHA_EXECUCAO_=S
  */
 function doGet(e){
   const modulo=String(e&&e.parameter&&e.parameter.modulo||'').toLowerCase();
-  if(modulo==='pedidos')return doGetPedidos_();
+  if(modulo==='pedidos')return doGetPedidos_(e);
   if(modulo==='frotas')return doGetFrotas_(e);
   if(modulo==='gastos')return doGetGastos_();
   if(modulo==='fornecedores')return doGetFornecedores_(e);
@@ -60,10 +60,12 @@ function doGetFornecedores_(e){
     .setFaviconUrl('https://higoragenteia.github.io/gvg-fornecedores/icons/apple-touch-icon-v3.png')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
-function doGetPedidos_(){
+function doGetPedidos_(e){
   const modelo = HtmlService.createTemplateFromFile('index');
   // O catálogo só é carregado depois do login, com sessão válida.
   modelo.initialData = 'null';
+  modelo.conferenciaPedido = String(e&&e.parameter&&e.parameter.conferir||'');
+  modelo.conferenciaToken = String(e&&e.parameter&&e.parameter.token||'');
   return modelo.evaluate()
     .setTitle('Order Catalog')
     .addMetaTag('viewport','width=device-width, initial-scale=1')
@@ -225,7 +227,7 @@ function registrarSolicitacao(d){
  const lock=LockService.getScriptLock();lock.waitLock(20000);try{
   const ss=abasGestao_(),sh=ss.getSheetByName('PRODUTOS');const vals=sh.getDataRange().getValues();const mapa=new Map(vals.slice(1).filter(r=>r[0]&&String(r[6]).toUpperCase()==='SIM').map(r=>[String(r[0]),r]));
   let linhas=[];for(const x of d.itens){const r=mapa.get(String(x.id));if(!r)throw new Error('Produto indisponível ou retirado: '+x.id+'. Atualize o catálogo.');const q=Number(x.quantidade);if(!Number.isInteger(q)||q<1||q>10000)throw new Error('Quantidade inválida.');const u=['Unidade','Caixa','Pacote','Litro','Quilo'].includes(x.unidade)?x.unidade:'Unidade';const f=fatorEmbalagemGVG_(r);if(['Caixa','Pacote'].includes(u)&&f<=1)throw new Error('Embalagem indisponível para '+r[1]);if(u==='Pacote'&&String(r[2]||'').trim().toLowerCase()!=='parafusos'&&!/papel\s*toalha/i.test(String(r[1]||'')))throw new Error('Pacote indisponível para '+r[1]);const base=String(r[3]||'').toLowerCase();if(u==='Litro'&&!(/litro/.test(base)||/litro/.test(String(r[1]))))throw new Error('Litro indisponível para '+r[1]);if(u==='Quilo'&&!(/quilo/.test(base)||/estopa/.test(String(r[1]))))throw new Error('Quilo indisponível para '+r[1]);linhas.push([String(x.id),String(r[1]),q,u,q*(['Caixa','Pacote'].includes(u)?f:1)])}
-  const pedido='PED-'+Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'yyyyMMdd')+'-'+Utilities.getUuid().slice(0,6).toUpperCase();const agora=new Date();const p=ss.getSheetByName('PEDIDOS');p.appendRow([pedido,agora,textoSeguro_(d.nome,120),textoSeguro_(d.obra,120),textoSeguro_(d.observacao,500),String(d.canal||'WhatsApp'),'REGISTRADO — ENVIO NÃO VERIFICADO']);const itens=ss.getSheetByName('ITENS_PEDIDO');itens.getRange(itens.getLastRow()+1,1,linhas.length,6).setValues(linhas.map(x=>[pedido,...x]));gvguVincularPedido_(ss,pedido,d.usuarioId);try{const cache=CacheService.getScriptCache();cache.remove('gvg_painel_v4_'+auth.id);cache.remove('gvg_painel_pedidos_v1');}catch(e){}return {pedido};
+  const pedido='PED-'+Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'yyyyMMdd')+'-'+Utilities.getUuid().slice(0,6).toUpperCase();const agora=new Date();const p=ss.getSheetByName('PEDIDOS');p.appendRow([pedido,agora,textoSeguro_(d.nome,120),textoSeguro_(d.obra,120),textoSeguro_(d.observacao,500),String(d.canal||'WhatsApp'),'REGISTRADO — ENVIO NÃO VERIFICADO']);const itens=ss.getSheetByName('ITENS_PEDIDO');itens.getRange(itens.getLastRow()+1,1,linhas.length,6).setValues(linhas.map(x=>[pedido,...x]));gvguVincularPedido_(ss,pedido,d.usuarioId);const link=gvguGarantirLinkPedido_(pedido,auth.id);try{const cache=CacheService.getScriptCache();cache.remove('gvg_painel_v4_'+auth.id);cache.remove('gvg_painel_pedidos_v1');}catch(e){}return {pedido,link};
  }finally{lock.releaseLock()}
 }
 function relatorioAdmin(pin){admin_(pin);const ss=abasGestao_();const p=ss.getSheetByName('PEDIDOS').getDataRange().getValues().slice(1),i=ss.getSheetByName('ITENS_PEDIDO').getDataRange().getValues().slice(1);const pedidos=p.map(r=>({id:String(r[0]),data:r[1] instanceof Date?r[1].toISOString():String(r[1]),solicitante:String(r[2]),obra:String(r[3]),canal:String(r[5]),situacao:String(r[6]),dataEntrega:r[7] instanceof Date?r[7].toISOString():''}));const itens=i.map(r=>({id:String(r[0]),codigo:String(r[1]),nome:String(r[2]),qtd:Number(r[3])||0,unidade:String(r[4]),equiv:Number(r[5])||0,entregue:r[6]===''?null:Number(r[6])||0,entregueEquiv:r[7]===''?0:Number(r[7])||0,nota:String(r[8]||'')}));return {pedidos,itens};}
@@ -259,6 +261,102 @@ function limparPedidosDemo(credencial,confirmacao){
   return {ok:true,pedidos:res.pedidos,itens:res.itens,vinculos:res.vinculos,auditoria:res.auditoria};
  }finally{lock.releaseLock()}
 }
+
+// ===== CONFERÊNCIA POR LINK =====
+// O link contém um token estável por pedido. A identificação do solicitante
+// vem sempre de PEDIDOS/PEDIDOS_USUARIOS, nunca do usuário que confere.
+function gvguLinksPedidos_(){return gvguSheet_('PEDIDOS_LINKS',['Pedido_ID','Token','Criado_Em','Criado_Por']);}
+function gvguRevisoesPedidos_(){return gvguSheet_('PEDIDOS_REVISOES',['Revisao_ID','Pedido_ID','Revisao','Editor_ID','Editor_Nome','Data_Hora','Alteracoes_JSON','Mensagem','Link','Chave_Idempotencia','Compartilhamento_Iniciado_Em','Resultado_JSON']);}
+function gvguUrlConferencia_(pedido,token){const base=ScriptApp.getService().getUrl(),sep=base.indexOf('?')>=0?'&':'?';return base+sep+'modulo=pedidos&conferir='+encodeURIComponent(String(pedido))+ '&token='+encodeURIComponent(String(token));}
+function gvguGarantirLinkPedido_(pedido,criadoPor){
+ const id=String(pedido||'').trim(),sh=gvguLinksPedidos_(),v=sh.getDataRange().getValues();
+ for(let i=1;i<v.length;i++)if(String(v[i][0])===id&&String(v[i][1]).trim())return gvguUrlConferencia_(id,String(v[i][1]).trim());
+ const token=Utilities.getUuid()+Utilities.getUuid();sh.appendRow([id,token,new Date(),String(criadoPor||'')]);return gvguUrlConferencia_(id,token);
+}
+function gvguTokenLinkValido_(pedido,token){const id=String(pedido||'').trim(),tk=String(token||'').trim();if(!id||!tk)return false;const v=gvguLinksPedidos_().getDataRange().getValues();for(let i=1;i<v.length;i++)if(String(v[i][0])===id&&String(v[i][1]).trim()===tk)return true;return false;}
+function gvguConferenciaAuth_(credencial){
+ const c=String(credencial||'');
+ try{const u=gvguVerificarSessao_(c);if(gvguPodeGerenciar_(u,'pedidos'))return u;}catch(e){}
+ const a=admin_(c);
+ return {id:String(a.id||a.email||a.login||''),nome:String(a.nome||'Superadministrador'),email:String(a.email||a.login||''),perfil:String(a.perfil||'SUPERADMIN'),superadmin:true};
+}
+function gvguDataHoraMensagem_(v){
+ const d=v instanceof Date?v:new Date(v);if(!d||isNaN(d.getTime()))return String(v||'');
+ return Utilities.formatDate(d,Session.getScriptTimeZone(),"dd/MM/yyyy 'às' HH'h'mm");
+}
+function gvguUnidadeMensagem_(u){const x=String(u||'').trim().toLowerCase();if(x==='unidade')return 'un';if(x==='caixa')return 'cx';if(x==='pacote')return 'pct';if(x==='litro')return 'L';if(x==='quilo')return 'kg';return String(u||'');}
+function gvguMensagemConferencia_(pedido,pRow,itemRows,link){
+ const linhas=(itemRows||[]).map(function(r){
+  const req=Number(r[3])||0,conf=r[6]===''?0:(Number(r[6])||0),pend=Math.max(0,req-conf),unit=gvguUnidadeMensagem_(r[4]);
+  return '• '+String(r[2])+': solicitado '+req+' '+unit+' | confirmado '+conf+' | pendente '+pend+' '+unit;
+ }).join('\n');
+ return 'PEDIDO '+String(pedido)+' — ATUALIZADO\nSolicitante: '+String(pRow[2]||'')+'\nObra: '+String(pRow[3]||'')+'\nSolicitado em: '+gvguDataHoraMensagem_(pRow[1])+'\n\n'+linhas+'\n\nConferir pedido: '+String(link);
+}
+function gvguSolicitanteId_(pedido){const v=gvguVinculos_().getDataRange().getValues();for(let i=1;i<v.length;i++)if(String(v[i][0])===String(pedido))return String(v[i][1]||'');return '';}
+function gvguItensParaResposta_(rows){return (rows||[]).map(function(r){const req=Number(r[3])||0,conf=r[6]===''?0:(Number(r[6])||0);return {codigo:String(r[1]),nome:String(r[2]),solicitado:req,unidade:String(r[4]),confirmado:conf,pendente:Math.max(0,req-conf),nota:String(r[8]||'')};});}
+function getConferenciaLink(credencial,pedido,linkToken){
+ const u=gvguConferenciaAuth_(credencial),id=String(pedido||'').trim(),tk=String(linkToken||'').trim();
+ if(!id||!tk||!gvguTokenLinkValido_(id,tk))throw new Error('Link de conferência inválido ou expirado.');
+ const ss=abasGestao_(),p=ss.getSheetByName('PEDIDOS').getDataRange().getValues(),row=p.findIndex((r,i)=>i>0&&String(r[0])===id);
+ if(row<0)throw new Error('Pedido não encontrado.');
+ const itemRows=ss.getSheetByName('ITENS_PEDIDO').getDataRange().getValues().slice(1).filter(r=>String(r[0])===id);
+ const revs=gvguRevisoesPedidos_().getDataRange().getValues(),revisao=revs.slice(1).filter(r=>String(r[1])===id).reduce((m,r)=>Math.max(m,Number(r[2])||0),0);
+ const pRow=p[row],link=gvguUrlConferencia_(id,tk);
+ return {ok:true,pedido:{id:id,solicitante:String(pRow[2]||''),solicitanteId:gvguSolicitanteId_(id),obra:String(pRow[3]||''),situacao:String(pRow[6]||''),solicitadoEm:gvguDataHoraMensagem_(pRow[1]),dataISO:pRow[1] instanceof Date?pRow[1].toISOString():String(pRow[1]||''),revisao:revisao},itens:gvguItensParaResposta_(itemRows),link:link,revisao:revisao};
+}
+function salvarConferenciaLink(credencial,pedido,linkToken,linhas,chaveIdempotencia){
+ const u=gvguConferenciaAuth_(credencial),id=String(pedido||'').trim(),tk=String(linkToken||'').trim(),chave=String(chaveIdempotencia||'').trim();
+ if(!id||!tk||!gvguTokenLinkValido_(id,tk))throw new Error('Link de conferência inválido ou expirado.');
+ if(!Array.isArray(linhas)||!linhas.length)throw new Error('Informe a conferência de cada item.');
+ if(!chave||chave.length>120)throw new Error('Chave de proteção da conferência inválida.');
+ const lock=LockService.getScriptLock();lock.waitLock(20000);
+ try{
+  const ss=abasGestao_(),ps=ss.getSheetByName('PEDIDOS'),its=ss.getSheetByName('ITENS_PEDIDO'),revs=gvguRevisoesPedidos_();
+  const p=ps.getDataRange().getValues(),pIdx=p.findIndex((r,i)=>i>0&&String(r[0])===id);
+  if(pIdx<0)throw new Error('Pedido não encontrado.');
+  const revRows=revs.getDataRange().getValues();
+  for(let i=1;i<revRows.length;i++)if(String(revRows[i][1])===id&&String(revRows[i][9])===chave){try{return Object.assign({ok:true,repeticao:true},JSON.parse(String(revRows[i][11]||'{}')));}catch(e){throw new Error('Atualização já registrada; reabra o link para conferir.');}}
+  const itemRows=its.getDataRange().getValues().slice(1).filter(r=>String(r[0])===id);
+  if(!itemRows.length||itemRows.length!==linhas.length)throw new Error('Itens divergentes. Reabra o link para atualizar a conferência.');
+  const seen=new Set(),changes=[],updates=[];
+  itemRows.forEach(function(r){
+   const key=String(r[1])+'|'+String(r[4]),inp=linhas.find(function(x){return String(x.codigo)===String(r[1])&&String(x.unidade)===String(r[4]);});
+   if(!inp||seen.has(key))throw new Error('Conferência incompleta ou duplicada: '+key);seen.add(key);
+   const req=Number(r[3])||0,qty=Number(inp.qtd),nota=String(inp.nota||'').slice(0,200);
+   if(!Number.isInteger(qty)||qty<0||qty>req)throw new Error('Quantidade confirmada inválida para '+String(r[2])+'.');
+   const perUnit=req>0?(Number(r[5])||0)/req:1,equiv=qty*perUnit;
+   const before=r[6]===''?0:(Number(r[6])||0);
+   changes.push({codigo:String(r[1]),nome:String(r[2]),unidade:String(r[4]),solicitado:req,antes:before,depois:qty,pendente:Math.max(0,req-qty),nota:nota});
+  });
+  itemRows.forEach(function(r,i){const c=changes[i];const itsRow=its.getDataRange().getValues().findIndex(function(x,n){return n>0&&String(x[0])===id&&String(x[1])===c.codigo&&String(x[4])===c.unidade;});if(itsRow<0)throw new Error('Item não localizado: '+c.codigo);updates.push({row:itsRow+1,qty:c.depois,equiv:c.depois*(c.solicitado>0?((Number(r[5])||0)/c.solicitado):1),nota:c.nota});});
+  updates.forEach(function(x){its.getRange(x.row,7,1,3).setValues([[x.qty,x.equiv,x.nota]]);});
+  const revisao=revRows.slice(1).filter(function(r){return String(r[1])===id;}).reduce(function(m,r){return Math.max(m,Number(r[2])||0);},0)+1;
+  const situacao='ATUALIZADO — REVISÃO '+revisao;
+  ps.getRange(pIdx+1,7).setValue(situacao);
+  const link=gvguGarantirLinkPedido_(id,u.id||u.email||'sistema');
+  SpreadsheetApp.flush();
+  const pAfter=ps.getDataRange().getValues(),pRow=pAfter[pIdx],itemAfter=its.getDataRange().getValues().slice(1).filter(r=>String(r[0])===id);
+  const mensagem=gvguMensagemConferencia_(id,pRow,itemAfter,link);
+  const result={pedido:id,revisao:revisao,mensagem:mensagem,link:link,itens:gvguItensParaResposta_(itemAfter),situacao:situacao,editorId:String(u.id||u.email||u.login||'superadmin')};
+  revs.appendRow([Utilities.getUuid(),id,revisao,String(u.id||u.email||u.login||'superadmin'),String(u.nome||'Superadministrador'),new Date(),JSON.stringify(changes),mensagem,link,chave,'',JSON.stringify(result)]);
+  try{gvguAuditar_('CONFERENCIA_LINK',id,JSON.stringify({revisao:revisao,editor:String(u.id||u.email||u.login||'superadmin'),itens:changes.length}));}catch(e){}
+  try{const cache=CacheService.getScriptCache();cache.remove('gvg_painel_pedidos_v1');cache.remove('gvg_painel_v4_'+(u.id||''));}catch(e){}
+  return Object.assign({ok:true},result);
+ }finally{lock.releaseLock();}
+}
+function registrarCompartilhamentoLink(credencial,pedido,linkToken,revisao,chaveIdempotencia){
+ const u=gvguConferenciaAuth_(credencial),id=String(pedido||'').trim(),tk=String(linkToken||'').trim(),rev=Number(revisao)||0,chave=String(chaveIdempotencia||'').trim();
+ if(!id||!tk||!gvguTokenLinkValido_(id,tk))throw new Error('Link de conferência inválido ou expirado.');
+ const lock=LockService.getScriptLock();lock.waitLock(20000);
+ try{
+  const sh=gvguRevisoesPedidos_(),v=sh.getDataRange().getValues();let idx=-1;
+  for(let i=1;i<v.length;i++)if(String(v[i][1])===id&&Number(v[i][2])===rev&&(!chave||String(v[i][9])===chave)){idx=i;break;}
+  if(idx<0)throw new Error('Revisão não encontrada.');
+  const now=new Date();if(!String(v[idx][10]||'').trim())sh.getRange(idx+1,11).setValue(now);
+  return {ok:true,pedido:id,revisao:rev,compartilhamentoIniciadoEm:now.toISOString()};
+ }finally{lock.releaseLock();}
+}
+
 // Grava quantidade REAL ENTREGUE por item. Não altera quantidade solicitada.
 function confirmarEntrega(pin,id,linhas){
  admin_(pin);
