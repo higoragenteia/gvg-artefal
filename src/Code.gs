@@ -267,7 +267,8 @@ function limparPedidosDemo(credencial,confirmacao){
 // vem sempre de PEDIDOS/PEDIDOS_USUARIOS, nunca do usuário que confere.
 function gvguLinksPedidos_(){return gvguSheet_('PEDIDOS_LINKS',['Pedido_ID','Token','Criado_Em','Criado_Por']);}
 function gvguRevisoesPedidos_(){return gvguSheet_('PEDIDOS_REVISOES',['Revisao_ID','Pedido_ID','Revisao','Editor_ID','Editor_Nome','Data_Hora','Alteracoes_JSON','Mensagem','Link','Chave_Idempotencia','Compartilhamento_Iniciado_Em','Resultado_JSON']);}
-function gvguUrlConferencia_(pedido,token){const base=ScriptApp.getService().getUrl(),sep=base.indexOf('?')>=0?'&':'?';return base+sep+'modulo=pedidos&conferir='+encodeURIComponent(String(pedido))+ '&token='+encodeURIComponent(String(token));}
+const GVGU_URL_PUBLICA='https://gvgartefalesquadrias.com.br/';
+function gvguUrlConferencia_(pedido,token){const base=GVGU_URL_PUBLICA,sep=base.indexOf('?')>=0?'&':'?';return base+sep+'modulo=pedidos&conferir='+encodeURIComponent(String(pedido))+'&token='+encodeURIComponent(String(token));}
 function gvguGarantirLinkPedido_(pedido,criadoPor){
  const id=String(pedido||'').trim(),sh=gvguLinksPedidos_(),v=sh.getDataRange().getValues();
  for(let i=1;i<v.length;i++)if(String(v[i][0])===id&&String(v[i][1]).trim())return gvguUrlConferencia_(id,String(v[i][1]).trim());
