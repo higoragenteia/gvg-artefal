@@ -294,6 +294,14 @@ function gvguMensagemConferencia_(pedido,pRow,itemRows,link){
 }
 function gvguSolicitanteId_(pedido){const v=gvguVinculos_().getDataRange().getValues();for(let i=1;i<v.length;i++)if(String(v[i][0])===String(pedido))return String(v[i][1]||'');return '';}
 function gvguItensParaResposta_(rows){return (rows||[]).map(function(r){const req=Number(r[3])||0,conf=r[6]===''?0:(Number(r[6])||0);return {codigo:String(r[1]),nome:String(r[2]),solicitado:req,unidade:String(r[4]),confirmado:conf,pendente:Math.max(0,req-conf),nota:String(r[8]||'')};});}
+function obterLinkConferencia(credencial,pedido){
+ const u=gvguConferenciaAuth_(credencial),id=String(pedido||'').trim();
+ if(!id)throw new Error('Pedido não informado.');
+ const p=abasGestao_().getSheetByName('PEDIDOS').getDataRange().getValues(),row=p.findIndex((r,i)=>i>0&&String(r[0])===id);
+ if(row<0)throw new Error('Pedido não encontrado.');
+ const link=gvguGarantirLinkPedido_(id,u.id||u.email||'sistema');
+ return {ok:true,pedido:id,link:link};
+}
 function getConferenciaLink(credencial,pedido,linkToken){
  const u=gvguConferenciaAuth_(credencial),id=String(pedido||'').trim(),tk=String(linkToken||'').trim();
  if(!id||!tk||!gvguTokenLinkValido_(id,tk))throw new Error('Link de conferência inválido ou expirado.');
