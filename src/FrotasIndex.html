@@ -165,26 +165,215 @@ body:not(.isManager) .managerOnly{display:none!important}
 .deep-alert{outline:3px solid #f7c948!important;box-shadow:0 0 24px #f7c94866!important}
 </style>
 <link rel="apple-touch-icon" sizes="180x180" href="https://higoragenteia.github.io/gvg-frotas/icone-180.png">
+<style id="frotas-carbon-amber">
+:root{--bg:#0a0a0a;--side:#101010;--panel:#151515;--panel2:#1b1b1b;--border:#3a3a3a;--text:#f4f4f4;--muted:#a0a0a0;--blue:#f0a81e;--bright:#ffc247;--green:#3bdd9b;--red:#ff6363;--yellow:#ffc247;--violet:#c3a0ff;--amber:#f0a81e;color-scheme:dark}
+html,body{background:#0a0a0a!important;color:var(--text)}
+body{background:radial-gradient(ellipse 1000px 500px at 50% -20%,#201807 0%,transparent 65%),linear-gradient(180deg,#0d0d0d,#070707)!important;font-family:Inter,system-ui,-apple-system,'Segoe UI',Arial,sans-serif}
+.app{display:block!important;min-height:100vh}
+.topbar{display:grid;grid-template-columns:minmax(215px,255px) minmax(0,1fr);gap:22px;align-items:center;padding:18px 30px;background:#131313;border-bottom:1px solid #333;position:relative;z-index:20}
+.brand{display:flex;align-items:center;gap:13px;text-align:left;padding:0 20px 0 0;border-right:1px solid #3a3a3a;min-height:54px}
+.brand .mark{width:48px;height:42px;display:grid;place-items:center;color:var(--amber);font-size:0;filter:none;flex:0 0 48px}
+.brand .mark svg{width:46px;height:34px}
+.brand-text strong{display:block;color:#fff;font-size:18px;letter-spacing:-.7px;line-height:1.1;white-space:nowrap}
+.brand-text strong span{color:var(--amber)}
+.brand-text small{display:block;color:#c9c9c9;font-size:8px;letter-spacing:2.2px;margin-top:4px;font-weight:700}
+.head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;margin:0;padding:0}
+.titleBlock .eyebrow{display:none}
+.head h1{font-size:clamp(24px,2.6vw,34px);line-height:1.1;letter-spacing:-1.2px;margin:0 0 3px;color:#fff}
+.head p{font-size:12px;color:#b8b8b8;margin:0}
+.righttools{display:flex;align-items:center;gap:10px;min-width:0}
+.sessionBox{display:flex;align-items:center;gap:7px;flex-wrap:nowrap;color:#e4e4e4;font-size:12px;max-width:none;white-space:nowrap}
+.user-ico{display:inline-flex;width:18px;height:18px;color:#d8d8d8;flex:0 0 18px}
+.user-ico svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#sessionUser{font-weight:600;color:#eee;max-width:180px;overflow:hidden;text-overflow:ellipsis}
+#sessionUser .role{color:#a8a8a8;font-weight:400;font-size:10px}
+#sessionUser:after{content:'⌄';display:inline-block;margin-left:5px;color:#bcbcbc;font-size:14px;vertical-align:-2px}
+.sessionBox button{border:1px solid #3b3b3b;background:#1a1a1a;color:#d0d0d0;border-radius:7px;padding:6px 8px;font-size:9px;font-weight:700}
+.sessionBox button:hover{border-color:#8c6515;color:#ffd06a}
+.notif-top-btn{height:38px;min-width:38px;padding:0 9px;border:1px solid #3b3b3b;background:#1a1a1a;color:#d8d8d8;border-radius:8px;box-shadow:none;position:relative}
+.notif-top-btn:hover,.notif-top-btn:focus-visible{border-color:#9c7117;outline:2px solid #f0a81e44;outline-offset:1px}
+.notif-top-btn svg{width:20px;height:20px}
+.notif-bell{stroke:#e6e6e6}
+.notif-count{background:#f0a81e;color:#111;box-shadow:none;font-size:9px;right:-5px;top:-6px}
+.sync{display:inline-flex;align-items:center;gap:8px;border:1px solid #3b3b3b;background:#1a1a1a;border-radius:8px;padding:7px 11px;color:#d4d4d4;font-size:10px;font-weight:600;white-space:nowrap;max-width:260px}
+.sync-ico{display:inline-flex;color:var(--amber);width:16px;height:16px;flex:0 0 16px}
+.sync-ico svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#syncLabel{overflow:hidden;text-overflow:ellipsis}
+.refresh{height:38px;width:38px;border:1px solid #3b3b3b;background:#1a1a1a;border-radius:8px;color:#f0a81e;font-size:18px}
+.refresh:hover{border-color:#9c7117}
+.nav{display:flex;gap:0;padding:0 30px;background:#111;border-bottom:1px solid #333;box-shadow:none;overflow-x:auto;scrollbar-width:none;position:relative;z-index:15}
+.nav::-webkit-scrollbar{display:none}
+.navbtn{flex:1 1 0;min-width:108px;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:8px;padding:13px 10px 12px;border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;color:#aaa;text-align:center;box-shadow:none;white-space:nowrap}
+.navbtn:hover{background:#191919;color:#eee}
+.navbtn .ico{width:20px;height:20px;font-size:0;line-height:1;display:inline-flex;align-items:center;justify-content:center;flex:0 0 20px}
+.navbtn .ico svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.navbtn b{font-size:11.5px;font-weight:600;letter-spacing:.1px}
+.navbtn.active{background:linear-gradient(180deg,#2a210f,#17130a);border-bottom-color:#f0a81e;color:#ffc247;box-shadow:inset 0 1px #f0a81e}
+.navbtn.active .ico{color:#ffc247}
+.sidefoot{display:none!important}
+.main{max-width:1600px;width:100%;margin:0 auto;padding:22px 30px 55px}
+.head .righttools{justify-self:end}
+.layout2{grid-template-columns:minmax(0,2.05fr) minmax(330px,.9fr);gap:18px}
+.stack{gap:16px}
+.panel{background:#151515;border:1px solid #3a3a3a;border-radius:10px;box-shadow:none;padding:18px}
+.sectiontitle{margin-bottom:14px;align-items:center}
+.sectiontitle h2{font-size:19px;letter-spacing:-.2px;color:#f5f5f5}
+.sectiontitle small{color:#999;font-size:11px}
+.panel-ico{display:inline-flex;vertical-align:-2px;margin-right:7px;color:var(--amber);font-size:16px}
+.stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.stat{display:flex;align-items:center;gap:14px;min-height:84px;padding:14px 18px;border:1px solid #3b3b3b;border-radius:9px;background:#151515;text-align:left;box-shadow:none}
+.stat i{font-style:normal;display:grid;place-items:center;width:34px;height:34px;flex:0 0 34px;font-size:0;color:#dedede}
+.stat i svg{width:32px;height:32px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.stat b{display:block;font-size:32px;line-height:1;color:#f2f2f2;letter-spacing:-.5px}
+.stat small{display:block;color:#bcbcbc;font-size:11px;margin-top:5px}
+.stat.primary{background:linear-gradient(135deg,#7b510a,#5c3d07);border-color:#9b6a12;color:#fff}
+.stat.primary i{color:#ffe0a1}
+.stat.primary b{color:#fff}
+.stat.primary small{color:#f4dfb5}
+.stat.red,.stat.yellow,.stat.green{background:#151515;border-color:#3b3b3b}
+.stat.red b{color:#ff7474}.stat.yellow b{color:#ffc247}.stat.green b{color:#4be0a7}
+.fleet-panel{padding-bottom:14px}
+.fleet-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.fleet-head h2{white-space:nowrap}
+.fleet-tools{display:flex;align-items:center;gap:9px;margin-left:auto;flex:1 1 420px;justify-content:flex-end}
+.fleet-search{display:flex;align-items:center;gap:8px;height:38px;min-width:220px;max-width:430px;flex:1;padding:0 11px;border:1px solid #3a3a3a;border-radius:8px;background:#0f0f0f;color:#aaa}
+.fleet-search svg{width:16px;height:16px;flex:0 0 16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.fleet-search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#eee;font-size:12px;padding:0}
+.fleet-search input::placeholder{color:#8f8f8f}
+.btn{border:1px solid #f0a81e;background:#f0a81e;color:#111;border-radius:7px;padding:9px 13px;font-size:11px;font-weight:800;box-shadow:none;min-height:38px}
+.btn:hover{background:#ffc247;border-color:#ffc247}
+.btn.subtle{border-color:#3f3f3f;background:#1b1b1b;color:#d4d4d4}
+.btn.subtle:hover{border-color:#7d5b16;color:#ffd06a}
+.btn.green{border-color:#2fbf8c;background:#1a5b48;color:#c9ffed}
+.btn.negative{border-color:#a13f48;background:#5b2027;color:#ffd6d9}
+.btn.xs{padding:7px 11px;min-height:34px;font-size:10px}
+.fleet-table{display:block;min-width:0}
+.fleet-table-head,.fleet-row{display:grid;grid-template-columns:minmax(185px,1.35fr) minmax(165px,1.25fr) minmax(88px,.65fr) minmax(105px,.72fr) minmax(105px,.7fr) minmax(125px,.78fr) 18px;gap:10px;align-items:center}
+.fleet-table-head{padding:11px 10px;background:#1b1b1b;border:1px solid #333;border-radius:7px 7px 0 0;color:#b9b9b9;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.45px}
+.fleet-row{width:100%;padding:7px 10px;border:0;border-bottom:1px solid #2b2b2b;background:transparent;color:#eee;text-align:left;font:inherit;cursor:pointer;transition:background .15s,border-color .15s}
+.fleet-row:hover,.fleet-row:focus-visible{background:#1d1d1d;outline:none;border-bottom-color:#7d5a16}
+.veh-cell{display:flex;align-items:center;gap:11px;min-width:0}
+.veh-cell img{width:68px;height:44px;object-fit:contain;flex:0 0 68px;background:#0d0d0d;border:1px solid #343434;border-radius:5px;padding:2px}
+.veh-cell .plate{font-size:16px;font-weight:800;color:#f4f4f4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fleet-row .model{font-size:12px;color:#c9c9c9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fleet-row .year,.fleet-row .type{font-size:12px;color:#c9c9c9}
+.fleet-row .maint{display:flex;align-items:center;gap:6px;color:#d1d1d1;font-size:12px}
+.fleet-row .maint svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.fleet-row .status{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;white-space:nowrap}
+.fleet-row .status .dot{font-size:13px;line-height:1}
+.fleet-row .status.ok{color:#3bdd9b}.fleet-row .status.warn{color:#ffc247}.fleet-row .status.bad{color:#ff6b6b}
+.fleet-row .chev{font-size:21px;color:#aaa;text-align:right;line-height:1}
+.fleet-table .outline{margin-top:12px}
+.alert-empty{border:1px solid #343434;background:#111;border-radius:8px;padding:22px 14px;text-align:center;color:#ededed;font-size:13px;font-weight:600}
+.alert-empty svg{display:block;width:38px;height:38px;margin:0 auto 10px;fill:none;stroke:#3bdd9b;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.alertCard{border:1px solid #3a3a3a;border-left:3px solid #f0a81e;background:#111;border-radius:7px;padding:11px 12px;margin-bottom:8px;color:#e9e9e9}
+.alertCard .arow{font-size:11px}
+.alertCard .muted{color:#aaa}
+.alertCard.ok{border-color:#2d6f58;border-left-color:#3bdd9b;background:#0e1b16}
+.alertCard.soon{border-color:#6d531b;border-left-color:#ffc247;background:#1d1a10}
+.alertCard strong{font-size:11px}
+.minirow{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid #303030;font-size:12px;color:#d0d0d0}
+.minirow:last-child{border-bottom:0}
+.minirow span{color:#bdbdbd}
+.minirow strong{color:#f1f1f1;font-size:12px;text-align:right}
+.muted{color:#9c9c9c}
+.outline{border:1px dashed #444;border-radius:8px;padding:14px;color:#aaa;font-size:12px;background:#111}
+.recordCard{background:#171717;border:1px solid #383838;border-radius:8px;padding:12px}
+.recordCard .rhead strong{color:#f2f2f2}
+.recordCard p{color:#b8b8b8}
+.tabs{gap:6px;padding:8px 0 12px}
+.tab{background:#191919;border:1px solid #3b3b3b;color:#c6c6c6;border-radius:7px;font-size:11px}
+.tab.active{background:#f0a81e;color:#111;border-color:#f0a81e;box-shadow:none}
+.filterBar input,.formControl,.modalBox input,.modalBox select,.modalBox textarea{background:#0f0f0f;border:1px solid #3b3b3b;color:#eee}
+.formControl:focus{border-color:#f0a81e;box-shadow:0 0 0 2px #f0a81e33}
+.field{color:#b8b8b8}
+.detail-hero{border-color:#4a3a18;background:radial-gradient(ellipse at 60% 72%,#241d10,#0d0d0d 66%);box-shadow:none}
+.detail-hero:after{border-color:#f0a81e;box-shadow:0 0 22px #f0a81e55}
+.herotag{background:#153327;border-color:#2a9e75;color:#9dffd4}
+.metric{background:#171717;border-color:#3a3a3a;border-radius:8px}
+.metric.red{border-color:#6d3036;background:#1d1315}.metric.green{border-color:#2d6f58;background:#101b16}.metric.yellow{border-color:#6d531b;background:#1c190f}
+.quick .bubble{border-color:#8a641a;background:#2b210e;color:#ffd06a;box-shadow:none}
+.quick .bubble.purple{border-color:#72539b;background:#241a32;color:#d4b6ff}
+.quick .bubble.green{border-color:#2a9e75;background:#10281f;color:#9dffd4}
+.quick .bubble.gold{border-color:#b18018;background:#2b210e;color:#ffd88a}
+.modalBox{background:#151515;border-color:#4a3a18;box-shadow:0 20px 90px #000c}
+.modalTop{background:#151515}
+.x{background:#222;color:#ffd06a;border-color:#4a3a18}
+.notif-panel{background:#151515;border-color:#4a3a18;box-shadow:0 16px 55px #000c;color:#eee}
+.notif-action{border-color:#4a3a18;background:#201b10;color:#ffd06a}
+.notif-action.enabled{border-color:#2a9e75;background:#10281f;color:#9dffd4}
+.notif-action.secondary{background:#1b1b1b;color:#ccc;border-color:#3b3b3b}
+.notif-item{background:#111;border-color:#3b3b3b}
+.notif-item.urgent{border-left-color:#ff6b6b}.notif-item.soon{border-left-color:#ffc247}
+.auth-screen{background:radial-gradient(circle at 50% 0,#30250d,#0a0a0a 62%,#050505)}
+.auth-card{background:#151515;border-color:#5c4518;box-shadow:0 30px 90px #000c}
+.auth-logo{color:#f0a81e}.auth-logo span{color:#fff}
+.auth-sub{color:#c3a35b}.auth-desc{color:#b0b0b0}
+.auth-card input{background:#0f0f0f;border-color:#3b3b3b;color:#fff}
+.auth-card input:focus{border-color:#f0a81e;box-shadow:0 0 0 2px #f0a81e33}
+.auth-btn{border-color:#f0a81e;background:#f0a81e;color:#111}
+.auth-switch{color:#b0b0b0}.auth-switch a{color:#f0a81e}
+.auth-msg.info{background:#201b10;color:#ffd98a;border-color:#5c4518}
+.auth-msg.success{background:#10281f;color:#9dffd4;border-color:#2a9e75}
+.auth-msg.error{background:#2a1417;color:#ffc3ca;border-color:#7a3039}
+.footerNote{display:none}
+#connectionError{background:#2a1417;border-color:#7a3039;color:#ffd6d9}
+#connectionError button{border-color:#a34c57;background:#5b2027;color:#fff}
+.users-empty,.userCard{background:#151515;border-color:#3b3b3b;color:#ddd}
+.userCard small{color:#aaa}
+.userCard select{background:#0f0f0f;border-color:#3b3b3b;color:#eee}
+@media(max-width:1180px){.topbar{grid-template-columns:minmax(190px,220px) minmax(0,1fr);padding:16px 20px;gap:16px}.brand{padding-right:14px}.head h1{font-size:27px}.righttools{gap:7px}.sync{max-width:190px}.nav{padding:0 20px}.main{padding:20px}.layout2{grid-template-columns:1fr}.stack{grid-template-columns:1fr 1fr;display:grid}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){.fleet-table-head,.fleet-row{grid-template-columns:minmax(160px,1.3fr) minmax(150px,1.2fr) minmax(80px,.65fr) minmax(95px,.7fr) minmax(100px,.7fr) 18px}.fleet-row .maint,.fleet-table-head span:nth-child(5){display:none}.fleet-tools{flex-basis:100%;max-width:none;justify-content:flex-start}.fleet-search{max-width:none}}
+@media(max-width:730px){.topbar{display:block;padding:12px 12px 8px}.brand{border-right:0;border-bottom:1px solid #333;padding:0 0 10px;margin-bottom:10px;min-height:0}.brand .mark{width:40px;height:34px;flex-basis:40px}.brand .mark svg{width:38px;height:29px}.brand-text strong{font-size:17px}.brand-text small{font-size:7px}.head{display:block}.head h1{font-size:25px}.head p{font-size:11px}.righttools{justify-content:flex-start;flex-wrap:wrap;margin-top:9px}.sync{max-width:190px;font-size:9px}.sessionBox{max-width:100%;font-size:10px}.sessionBox button{padding:5px 6px;font-size:8px}.nav{padding:0 8px;display:flex;overflow-x:auto}.navbtn{flex:0 0 auto;min-width:92px;padding:10px 8px;gap:6px}.navbtn b{font-size:10px}.navbtn .ico,.navbtn .ico svg{width:18px;height:18px;flex-basis:18px}.main{padding:13px 10px 40px}.layout2{grid-template-columns:1fr;gap:12px}.stack{display:grid;grid-template-columns:1fr;gap:12px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{min-height:74px;padding:10px 11px;gap:9px}.stat i{width:27px;height:27px;flex-basis:27px}.stat i svg{width:25px;height:25px}.stat b{font-size:25px}.stat small{font-size:9px}.panel{padding:13px;border-radius:9px}.fleet-head{gap:9px}.fleet-tools{flex-basis:100%;display:flex}.fleet-search{min-width:0;height:36px}.fleet-table-head{display:none}.fleet-row{grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:8px 4px}.fleet-row .model,.fleet-row .year,.fleet-row .type,.fleet-row .maint,.fleet-row .chev{display:none}.veh-cell img{width:58px;height:38px;flex-basis:58px}.veh-cell .plate{font-size:14px}.fleet-row .status{font-size:10px;justify-content:flex-end}.fleet-row .status .dot{font-size:11px}.sectiontitle h2{font-size:17px}.minirow{font-size:11px}.minirow strong{font-size:11px}}
+@media(max-width:420px){.stats{grid-template-columns:1fr 1fr}.stat b{font-size:22px}.stat small{font-size:8px}.head h1{font-size:23px}.sync{max-width:160px}.fleet-search{flex:1}.fleet-tools .btn{white-space:nowrap;padding:7px 8px}}
+
+#sessionUser .role{display:none}
+@media(max-width:730px){
+ .mobileActions{display:block;position:relative;margin:0 12px 8px;padding:6px;border:1px solid #3b3b3b;border-radius:8px;background:#151515;box-shadow:none}
+ .mobileActions .righttools{width:100%;justify-content:space-between;gap:6px;flex-wrap:nowrap}
+ .mobileActions .sessionBox{flex:1;max-width:none;min-width:0;flex-wrap:nowrap;font-size:10px}
+ .mobileActions .sessionBox #sessionUser{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
+ .mobileActions .sessionAction{width:auto;height:32px;padding:0 7px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;font-size:9px;border-radius:7px;white-space:nowrap;border-color:#3b3b3b;background:#1a1a1a;color:#d0d0d0}
+ .mobileActions .notif-top-btn{height:32px;min-width:32px;padding:0;border-radius:7px;flex:0 0 32px;border-color:#3b3b3b;background:#1a1a1a}
+ .mobileActions .notif-top-btn svg{width:18px;height:18px}
+ .mobileActions .refresh{height:32px;width:32px;flex:0 0 32px;font-size:17px;padding:0;border-radius:7px;border-color:#3b3b3b;background:#1a1a1a}
+ .navbtn{width:auto;min-height:0;border-radius:0;border:0;border-bottom:2px solid transparent;background:transparent;padding:10px 8px;flex-direction:row}
+ .navbtn.active{background:linear-gradient(180deg,#2a210f,#17130a);border-bottom-color:#f0a81e;box-shadow:inset 0 1px #f0a81e}
+}
+
+.vehicleCard{background:#151515;border:1px solid #3a3a3a;color:#eee;box-shadow:none}
+.vehicleCard:hover,.vehicleCard:focus-visible{border-color:#8a641a;box-shadow:0 0 0 1px #f0a81e44;outline:none}
+.vehicleCard img{background:#0d0d0d;border:1px solid #343434;filter:none}
+.vehicleCard h3{color:#fff}
+.vehicleCard .info p{color:#bdbdbd}
+.vehicleCard .arrow{color:#f0a81e}
+.smalltag.ok{color:#3bdd9b}.smalltag.bad{color:#ff6b6b}.smalltag.warn{color:#ffc247}
+.filterBar{background:transparent}
+</style>
+
 </head>
 <body class="authing">
 <div id="authScreen" class="auth-screen"><div class="auth-card"><div class="auth-logo">GVG <span>&amp;</span> ARTEFAL</div><div class="auth-sub">CONTROLE DE FROTAS</div><div id="authBody"></div></div></div>
 <div class="app">
-<aside class="sidebar"><div class="brand"><div class="mark">◢🚘◣</div><strong>GVG & ARTEFAL</strong><small>CONTROLE DE FROTA</small></div>
+<header class="topbar">
+ <div class="brand"><div class="mark"><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M4 23h40M8 23l4-10h22l5 10M12 23v5m24-5v5M15 23a4 4 0 1 0 8 0m10 0a4 4 0 1 0 8 0M13 13l3-5h16l3 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="brand-text"><strong>GVG <span>&amp;</span> ARTEFAL</strong><small>CONTROLE DE FROTA</small></div></div>
+ <div class="head"><div class="titleBlock"><div class="eyebrow">GVG &amp; ARTEFAL</div><h1 id="pageTitle">Controle de Frota</h1><p id="pageSubtitle">Gestão de veículos, manutenções, documentos e custos da frota.</p></div><div class="righttools"><div id="sessionBox" class="sessionBox hide"><span class="user-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c.6-4 3.1-6.2 7-6.2s6.4 2.2 7 6.2"/></svg></span><span id="sessionUser"></span><button type="button" class="sessionAction" onclick="changeMyPassword()" title="Minha senha" aria-label="Minha senha"><span class="sessionText">Senha</span><span class="sessionShort">Senha</span></button><button type="button" class="sessionAction" onclick="logout()" title="Sair" aria-label="Sair"><span class="sessionText">Sair</span><span class="sessionShort">Sair</span></button></div><button type="button" class="notif-top-btn" id="notifBell" aria-label="Abrir notificações da frota" aria-expanded="false" aria-controls="notifPanel" title="Notificações de vencimentos"><svg class="notif-bell" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"/><path d="M10 21h4"/></svg><span class="notif-count is-zero" id="notifCount" aria-live="polite">0</span></button><span class="sync"><span class="sync-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><span id="syncLabel">Conectando...</span></span><button class="refresh" id="refreshBtn" title="Atualizar do Google Sheets">↻</button></div></div>
+</header>
 <div id="mobileActions" class="mobileActions"></div>
 <nav class="nav" id="nav">
-<button class="navbtn active" data-go="home"><span class="ico">⌂</span><b>Visão Geral</b></button>
-<button class="navbtn" data-go="fleet"><span class="ico">🚙</span><b>Veículos</b></button>
-<button class="navbtn" data-go="maintenance"><span class="ico">🛠</span><b>Manutenções</b></button>
-<button class="navbtn" data-go="documents"><span class="ico">▤</span><b>Documentos</b></button>
-<button class="navbtn" data-go="expenses"><span class="ico">▥</span><b>Despesas</b></button>
-<button class="navbtn" data-go="drivers"><span class="ico">♙</span><b>Motoristas</b></button>
-<button class="navbtn" data-go="reports"><span class="ico">▣</span><b>Relatórios</b></button>
-<button class="navbtn adminOnly" data-go="admin"><span class="ico">⚙</span><b>Configurações</b></button>
-<button class="navbtn adminOnly managerOnly" data-go="users"><span class="ico">👥</span><b>Usuários</b></button>
-</nav><div class="sidefoot"><span class="dot"></span>Google Sheets • sincronizado ao salvar<div style="margin-top:6px" id="smallSync">Aguardando conexão</div></div></aside>
+<button class="navbtn active" data-go="home"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 3l9 8"/><path d="M5 10v10h14V10"/></svg></span><b>Visão geral</b></button>
+<button class="navbtn" data-go="fleet"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16V9h10l3 3h5v4"/><path d="M5 16h14"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg></span><b>Veículos</b></button>
+<button class="navbtn" data-go="maintenance"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 7a4 4 0 1 0-5 5l-6 6 3 3 6-6a4 4 0 0 0 5-5l-2 2-2-1-1-2 2-2Z"/></svg></span><b>Manutenções</b></button>
+<button class="navbtn" data-go="documents"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v5h5"/><path d="M9 12h6M9 16h6"/></svg></span><b>Documentos</b></button>
+<button class="navbtn" data-go="expenses"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v5c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 11v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"/></svg></span><b>Despesas</b></button>
+<button class="navbtn" data-go="drivers"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5 21c.6-4.4 3.1-6.8 7-6.8s6.4 2.4 7 6.8"/></svg></span><b>Motoristas</b></button>
+<button class="navbtn" data-go="reports"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg></span><b>Relatórios</b></button>
+<button class="navbtn adminOnly" data-go="admin"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 0 0-1.7-1L14.5 3h-5l-.3 2.5a7 7 0 0 0-1.7 1L5 5.5 3 9l2 1.5a7 7 0 0 0 0 2L3 14l2 3.5 2.5-1a7 7 0 0 0 1.7 1l.3 2.5h5l.3-2.5a7 7 0 0 0 1.7-1l2.5 1 2-3.5-2-1.5c.1-.3.1-.7.1-1Z"/></svg></span><b>Configurações</b></button>
+<button class="navbtn adminOnly managerOnly" data-go="users"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c.5-4 2.7-6 6-6s5.5 2 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M15 20c.3-3 1.7-4.8 4-4.8 1.3 0 2.4.5 3.2 1.5"/></svg></span><b>Usuários</b></button>
+</nav>
+<div class="sidefoot" aria-hidden="true"><div id="smallSync">Aguardando conexão</div></div>
 <div class="main">
 <div id="connectionError" role="alert" aria-live="assertive"></div>
-<header class="head"><div><div class="eyebrow">GVG & ARTEFAL</div><h1 id="pageTitle">Controle de Frota</h1><p id="pageSubtitle">Controle de veículos, manutenção e vencimentos</p></div><div class="righttools"><div id="sessionBox" class="sessionBox hide"><span id="sessionUser"></span><button type="button" class="sessionAction" onclick="changeMyPassword()" title="Minha senha" aria-label="Minha senha"><span class="sessionText">Minha senha</span><span class="sessionShort">Senha</span></button><button type="button" class="sessionAction" onclick="logout()" title="Sair" aria-label="Sair"><span class="sessionText">Sair</span><span class="sessionShort">Sair</span></button></div><button type="button" class="notif-top-btn" id="notifBell" aria-label="Abrir notificações da frota" aria-expanded="false" aria-controls="notifPanel" title="Notificações de vencimentos"><svg class="notif-bell" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"/><path d="M10 21h4"/></svg><span class="notif-count is-zero" id="notifCount" aria-live="polite">0</span></button><span class="sync" id="syncLabel">Conectando...</span><button class="refresh" id="refreshBtn" title="Atualizar do Google Sheets">↻</button></div></header>
 <div id="notifPanel" class="notif-panel" role="region" aria-label="Central de notificações da frota" aria-hidden="true">
  <div class="notif-panel-head"><h2>🔔 Notificações da frota</h2><button type="button" class="notif-close" id="notifClose" aria-label="Fechar notificações">×</button></div>
  <p class="notif-sub">Avisos de 10 e 5 dias • dados da planilha</p>
@@ -201,7 +390,19 @@ body:not(.isManager) .managerOnly{display:none!important}
  <p class="notif-helper">O som e a voz funcionam enquanto o aplicativo estiver aberto. Após atualizar a página, o navegador do celular pode exigir um toque para liberar o áudio. Com o app fechado, os alertas continuam chegando pelo Gmail.</p>
 </div>
 
-<section id="page-home" class="screen on"><div id="stats" class="stats"></div><div class="layout2"><div class="panel"><div class="sectiontitle"><h2>Veículos da frota</h2><button class="btn xs" data-add="Base de Dados">＋ Adicionar</button></div><div id="fleetList" class="list"><div class="outline">Carregando veículos...</div></div></div><div class="stack"><div class="panel"><div class="sectiontitle"><h2>Vencimentos e alertas</h2><small>10 e 5 dias</small></div><div id="alertsHome" class="list"></div></div><div class="panel"><div class="sectiontitle"><h2>Visão operacional</h2></div><div id="operationSummary"></div></div></div></div></section>
+<section id="page-home" class="screen on">
+<div id="stats" class="stats"></div>
+<div class="layout2">
+ <div class="panel fleet-panel">
+  <div class="sectiontitle fleet-head"><h2>Veículos da frota <span id="homeFleetCount"></span></h2><div class="fleet-tools"><label class="fleet-search" for="homeFleetSearch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.2"/><path d="m15.2 15.2 5 5"/></svg><input id="homeFleetSearch" autocomplete="off" placeholder="Buscar veículo..." oninput="renderHomeFleet()"></label><button class="btn xs" data-add="Base de Dados">＋ Adicionar veículo</button></div></div>
+  <div id="fleetList" class="fleet-table"><div class="outline">Carregando veículos...</div></div>
+ </div>
+ <div class="stack">
+  <div class="panel"><div class="sectiontitle"><h2><span class="panel-ico">🔔</span>Vencimentos e alertas</h2></div><div id="alertsHome" class="list"></div></div>
+  <div class="panel"><div class="sectiontitle"><h2><span class="panel-ico">📊</span>Visão operacional</h2></div><div id="operationSummary"></div></div>
+ </div>
+</div>
+</section>
 <section id="page-vehicle" class="screen"><button class="btn subtle xs" data-go="fleet" style="margin-bottom:14px">‹ Voltar à frota</button><div id="vehicleDetail"></div></section>
 <section id="page-fleet" class="screen"><div class="panel"><div class="sectiontitle"><h2>Todos os veículos</h2><button class="btn xs" data-add="Base de Dados">＋ Adicionar veículo</button></div><div class="filterBar"><input class="formControl" id="fleetSearch" placeholder="Buscar por placa, modelo ou condutor"></div><div id="fleetAll" class="list"></div></div></section>
 <section id="page-maintenance" class="screen"><div id="maintenancePage"></div></section>
@@ -241,7 +442,8 @@ let USER=null,IS_ADMIN=false,IS_MANAGER=false,MEMORY_TOKEN='';
 const TOKEN_KEY='gvgFrotasToken';
 const DEEP_ALERT=String(<?!= JSON.stringify(initialAlert) ?>||'');
 let deepAlertApplied=false;
-const sections={'home':['Controle de Frota','Controle de veículos, manutenção e vencimentos'],'vehicle':['Detalhes do veículo','Ficha, documentos e histórico completo'],'fleet':['Veículos da frota','Selecione um veículo para abrir a ficha'],'maintenance':['Manutenções','Revisões, quilometragem e controle preventivo'],'documents':['Documentos','Seguros, IPVA, licenciamento e arquivos'],'expenses':['Despesas','Abastecimentos, pagamentos e custos'],'drivers':['Motoristas','Condutores e responsáveis pela frota'],'reports':['Relatórios','Indicadores calculados a partir dos registros'],'admin':['Configurações','Gestão, edição e auditoria da planilha'],'users':['Usuários','Aprovação e permissões de acesso']};
+const FROTA_UI_ICONS={car:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16V9h10l3 3h5v4"/><path d="M5 16h14"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg>',alert:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.5 20h19L12 3Z"/><path d="M12 9v5"/><path d="M12 17h.01"/></svg>',calendar:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>',doc:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v5h5"/><path d="M9 12h6M9 16h6"/></svg>',wrench:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 7a4 4 0 1 0-5 5l-6 6 3 3 6-6a4 4 0 0 0 5-5l-2 2-2-1-1-2 2-2Z"/></svg>',check:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="m8.5 12 2.3 2.3 4.7-5"/></svg>'};
+const sections={'home':['Controle de Frota','Gestão de veículos, manutenções, documentos e custos da frota'],'vehicle':['Detalhes do veículo','Ficha, documentos e histórico completo'],'fleet':['Veículos da frota','Selecione um veículo para abrir a ficha'],'maintenance':['Manutenções','Revisões, quilometragem e controle preventivo'],'documents':['Documentos','Seguros, IPVA, licenciamento e arquivos'],'expenses':['Despesas','Abastecimentos, pagamentos e custos'],'drivers':['Motoristas','Condutores e responsáveis pela frota'],'reports':['Relatórios','Indicadores calculados a partir dos registros'],'admin':['Configurações','Gestão, edição e auditoria da planilha'],'users':['Usuários','Aprovação e permissões de acesso']};
 function showToast(msg,error=false){const t=$('toast');t.textContent=msg;t.className='toast show'+(error?' error':'');clearTimeout(window.__tt);window.__tt=setTimeout(()=>t.classList.remove('show'),5000);}
 function getPanelToken(){try{return localStorage.getItem('gvgUsrToken')||'';}catch(e){return '';}}
 function server(fn,...args){return new Promise((resolve,reject)=>{if(!(window.google&&google.script&&google.script.run))return reject(new Error('Abra o aplicativo pela implantação do Google Apps Script.'));google.script.run.withSuccessHandler(resolve).withFailureHandler(e=>reject(new Error(e&&e.message?e.message:String(e)))).frotasApiCall(fn,args,getToken(),getPanelToken());});}
@@ -253,13 +455,15 @@ function isCustomPhoto(v){return (data.photos||[]).some(x=>String(x.plate).toUpp
 function setScreen(id){if(id==='admin'&&!IS_ADMIN)id='home';if(id==='users'&&!IS_MANAGER)id='home';screen=id;if(!sections[id])return;document.querySelectorAll('.screen').forEach(e=>e.classList.toggle('on',e.id==='page-'+id));document.querySelectorAll('.navbtn').forEach(e=>e.classList.toggle('active',e.dataset.go===id));$('pageTitle').textContent=sections[id][0];$('pageSubtitle').textContent=sections[id][1];if(id==='vehicle')renderDetail();if(id==='fleet')renderFleetAll();if(id==='maintenance')renderMaintenance();if(id==='documents')renderDocuments();if(id==='expenses')renderExpenses();if(id==='drivers')renderDrivers();if(id==='reports')renderReports();if(id==='admin')renderAdmin();if(id==='users')loadUsers();window.scrollTo({top:0,behavior:'smooth'});}
 function selectVehicle(id){selected=(data.vehicles||[]).find(v=>String(v.id)===String(id))||data.vehicles[0]||null;detailTab='Cadastro';setScreen('vehicle');}
 function renderStats(){const a=(data.alerts||[]).filter(x=>!x.paid),expired=a.filter(x=>x.days<=0).length,soon=a.filter(x=>x.days>0&&x.days<=10).length;
- $('stats').innerHTML=`<div class="stat"><i>🚘</i><div><b>${data.vehicles.length}</b><small>Veículos na frota</small></div></div><div class="stat red"><i>⚠️</i><div><b>${expired}</b><small>Vencimentos pendentes</small></div></div><div class="stat yellow"><i class="stat-bell"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"/><path d="M10 21h4"/></svg></i><div><b>${soon}</b><small>Vencimentos próximos</small></div></div><div class="stat green"><i>▤</i><div><b>${data.documents.length}</b><small>Documentos cadastrados</small></div></div>`;
+ $('stats').innerHTML=`<div class="stat primary"><i>${FROTA_UI_ICONS.car}</i><div><b>${data.vehicles.length}</b><small>Veículos na frota</small></div></div><div class="stat"><i>${FROTA_UI_ICONS.alert}</i><div><b>${expired}</b><small>Vencimentos pendentes</small></div></div><div class="stat"><i>${FROTA_UI_ICONS.calendar}</i><div><b>${soon}</b><small>Próximos vencimentos</small></div></div><div class="stat"><i>${FROTA_UI_ICONS.doc}</i><div><b>${data.documents.length}</b><small>Documentos</small></div></div>`;
  $('operationSummary').innerHTML=`<div class="minirow"><span>Quilometragens registradas</span><strong>${data.km.length}</strong></div><div class="minirow"><span>Abastecimentos registrados</span><strong>${data.fuel.length}</strong></div><div class="minirow"><span>Manutenções cadastradas</span><strong>${data.maintenance.length}</strong></div><div class="minirow"><span>Pagamentos cadastrados</span><strong>${data.payments.length}</strong></div><div class="minirow"><span>Atualização do painel</span><strong>${esc(data.updatedAt||'—')}</strong></div>`;
 }
 function vehicleCard(v){const s=stat(v);return `<button class="vehicleCard" data-vehicle="${esc(v.id)}"><img src="${esc(photo(v))}" alt="Imagem ${esc(v.model)}" loading="lazy"><div class="info"><h3>${esc(v.plate)}</h3><p>${esc(v.model)}</p><p>${esc(v.year)} · ${esc(v.type)}</p><span class="smalltag ${s.cls}">${s.icon} ${esc(s.text)}</span></div><span class="arrow">›</span></button>`;}
 function renderFleetAll(){const q=String($('fleetSearch').value||'').toLowerCase();const vs=data.vehicles.filter(v=>[v.plate,v.model,v.driver,v.type].join(' ').toLowerCase().includes(q));$('fleetAll').innerHTML=vs.length?vs.map(vehicleCard).join(''):'<div class="outline">Nenhum veículo encontrado.</div>';}
 function alertCard(a){let cls=a.paid?'ok':a.days<=5?'':a.days<=10?'soon':'ok';let label=a.paid?'Regularizado':a.days<=0?(a.days===0?'Vencido hoje':'Vencido há '+Math.abs(a.days)+' dias'):'Faltam '+a.days+' dias';return `<div class="alertCard ${cls}"><div class="arow"><div><strong>${esc(a.plate)} · ${esc(a.type)}</strong><div class="muted">${esc(a.vehicle)} · ${fdate(a.date)}</div></div><strong class="${a.paid?'good':a.days<=0?'danger':a.days<=10?'warning':'muted'}">${esc(label)}</strong></div></div>`;}
-function renderHome(){renderStats();$('fleetList').innerHTML=data.vehicles.length?data.vehicles.map(vehicleCard).join(''):'<div class="outline">Nenhum veículo cadastrado na aba Base de Dados.</div>';const alerts=(data.alerts||[]).filter(a=>!a.paid&&a.days<=10).slice(0,7);$('alertsHome').innerHTML=alerts.length?alerts.map(alertCard).join(''):'<div class="outline">Nenhum vencimento crítico ou próximo registrado.</div>';}
+function homeVehicleRow(v){const s=stat(v),maint=byPlate('maintenance',v.plate).length,label=s.cls==='ok'?'Sem alertas':s.text;return `<button type="button" class="fleet-row" data-vehicle="${esc(v.id)}"><span class="veh-cell"><img src="${esc(photo(v))}" alt="Imagem ${esc(v.model)}" loading="lazy"><span class="plate">${esc(v.plate)}</span></span><span class="model">${esc(v.model)}</span><span class="year">${esc(v.year)}</span><span class="type">${esc(v.type)}</span><span class="maint">${FROTA_UI_ICONS.wrench}${maint}</span><span class="status ${s.cls}"><span class="dot">${s.icon}</span>${esc(label)}</span><span class="chev">›</span></button>`;}
+function renderHomeFleet(){if(!$('fleetList'))return;const q=String(($('homeFleetSearch')&&$('homeFleetSearch').value)||'').toLowerCase();const vs=data.vehicles.filter(v=>[v.plate,v.model,v.type,v.driver].join(' ').toLowerCase().includes(q));const count=$('homeFleetCount');if(count)count.textContent='('+data.vehicles.length+')';if(!vs.length){$('fleetList').innerHTML='<div class="outline">Nenhum veículo encontrado.</div>';return;}$('fleetList').innerHTML='<div class="fleet-table-head"><span>Veículo</span><span>Modelo</span><span>Ano/Modelo</span><span>Tipo</span><span>Manutenções</span><span>Status</span><span></span></div>'+vs.map(homeVehicleRow).join('');}
+function renderHome(){renderStats();renderHomeFleet();const alerts=(data.alerts||[]).filter(a=>!a.paid&&a.days<=10).slice(0,7);$('alertsHome').innerHTML=alerts.length?alerts.map(alertCard).join(''):`<div class="alert-empty">${FROTA_UI_ICONS.check}Nenhum vencimento próximo.</div>`;}
 function byPlate(name,plate){return (data[name]||[]).filter(x=>String(x.plate||'').toUpperCase()===String(plate||'').toUpperCase());} function latestInsurance(plate){const list=byPlate('insurance',plate);const apolices=list.filter(x=>String(x.documentType||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().includes('apolice')&&x.to).sort((a,b)=>String(b.to).localeCompare(String(a.to)));return apolices[0]||list.slice().sort((a,b)=>String(b.to||'').localeCompare(String(a.to||'')))[0]||null;}
 function latestKm(plate){return byPlate('km',plate).slice().sort((a,b)=>(Number(b.odometer)||0)-(Number(a.odometer)||0))[0];}
 function latestFuel(plate){return byPlate('fuel',plate).slice().sort((a,b)=>String(b.date).localeCompare(String(a.date)))[0];}
@@ -542,7 +746,7 @@ async function deleteUser(btn){
  catch(e){showToast(e.message||String(e),true);}
 }
 
-async function reload(quiet=false){if(!USER){showAuth();return;}if(loading)return;loading=true;try{const d=await server('getData');data=d;if(!selected||!d.vehicles.some(v=>v.id===selected.id))selected=d.vehicles[0]||null;const label='Atualizado '+(d.updatedAt||'');$('syncLabel').textContent=label;$('smallSync').textContent=label;renderHome();notifRender();notifAutomatic();if(screen==='vehicle')renderDetail();else if(screen==='fleet')renderFleetAll();else if(screen==='maintenance')renderMaintenance();else if(screen==='documents')renderDocuments();else if(screen==='expenses')renderExpenses();else if(screen==='drivers')renderDrivers();else if(screen==='reports')renderReports();$('connectionError').classList.remove('show');$('connectionError').textContent='';applyAlertDeepLink();}catch(err){
+async function reload(quiet=false){if(!USER){showAuth();return;}if(loading)return;loading=true;try{const d=await server('getData');data=d;if(!selected||!d.vehicles.some(v=>v.id===selected.id))selected=d.vehicles[0]||null;const label='Atualizado em '+(d.updatedAt||'');$('syncLabel').textContent=label;$('smallSync').textContent=label;renderHome();notifRender();notifAutomatic();if(screen==='vehicle')renderDetail();else if(screen==='fleet')renderFleetAll();else if(screen==='maintenance')renderMaintenance();else if(screen==='documents')renderDocuments();else if(screen==='expenses')renderExpenses();else if(screen==='drivers')renderDrivers();else if(screen==='reports')renderReports();$('connectionError').classList.remove('show');$('connectionError').textContent='';applyAlertDeepLink();}catch(err){
  const message=err&&err.message?err.message:String(err);
  if(message==='AUTH_REQUIRED'){setToken('');USER=null;IS_ADMIN=false;showAuth();return;}
  $('syncLabel').textContent='Falha ao carregar';
