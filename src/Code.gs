@@ -275,7 +275,7 @@ function gvguLinksPedidos_(){
 }
 function gvguRevisoesPedidos_(){return gvguSheet_('PEDIDOS_REVISOES',['Revisao_ID','Pedido_ID','Revisao','Editor_ID','Editor_Nome','Data_Hora','Alteracoes_JSON','Mensagem','Link','Chave_Idempotencia','Compartilhamento_Iniciado_Em','Resultado_JSON']);}
 const GVGU_URL_PUBLICA='https://gvgartefalesquadrias.com.br/';
-const GVGU_URL_VERSAO='146';
+const GVGU_URL_VERSAO='147';
 const GVGU_CODIGO_CHARS='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
 function gvguUrlConferencia_(pedido,token){const base=GVGU_URL_PUBLICA,sep=base.indexOf('?')>=0?'&':'?';return base+sep+'conferir='+encodeURIComponent(String(pedido))+'&token='+encodeURIComponent(String(token))+'&v='+GVGU_URL_VERSAO;}
 function gvguUrlConferenciaCurta_(codigo){return GVGU_URL_PUBLICA+'?k='+encodeURIComponent(String(codigo));}

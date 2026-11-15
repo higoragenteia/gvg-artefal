@@ -14,7 +14,7 @@
 function gvgProductArtwork(p){
  const url=String(p.imagem||'').trim();
  const fallback=gvgIllustrationSvg(p);
- if(/^https:\/\//i.test(url)){
+ if(url.slice(0,6).toLowerCase()==='https:'){
    // Browser loads the URL only. Fallback replaces broken images while retaining the product ID.
    return `<img loading="lazy" decoding="async" alt="Foto de ${safe(p.nome)}" src="${safe(url)}" onerror="this.onerror=null;this.src='${fallback}'">`;
  }
@@ -22,7 +22,7 @@ function gvgProductArtwork(p){
 }
 function gvgVisualBg(p){
  const url=String(p&&p.imagem||'').trim();
- return /^https:\/\//i.test(url)?`<div class="visual-bg" aria-hidden="true" style="background-image:url('${safe(url)}')"></div>`:'';
+ return url.slice(0,6).toLowerCase()==='https:'?`<div class="visual-bg" aria-hidden="true" style="background-image:url('${safe(url)}')"></div>`:'';
 }
 function gvgIllustrationSvg(p){
  const code=String(p.id||'').toUpperCase(),name=String(p.nome||'').toUpperCase(),category=String(p.categoria||'').toUpperCase();
@@ -39,7 +39,7 @@ function gvgIllustrationSvg(p){
  else if(/GUARNIÇÃO|GUARNICAO|PERFIL|MONTANTE/.test(s)){pict='▥';kind='ALUMÍNIO / PERFIL';}
  else if(/ROLDANA|FECHO|DOBRADIÇA|FECHADURA/.test(s)){pict='⬡';kind='FERRAGEM';}
  let short=name.length>34?name.slice(0,32)+'…':name;
- const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="420" height="250" viewBox="0 0 420 250"><defs><radialGradient id="gl" cx=".45" cy=".25" r=".9"><stop stop-color="#5b3d10"/><stop offset=".47" stop-color="#202127"/><stop offset="1" stop-color="#08090c"/></radialGradient><linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff0a3"/><stop offset=".45" stop-color="#ffc52b"/><stop offset="1" stop-color="#956609"/></linearGradient><filter id="shadow"><feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#000" flood-opacity=".7"/></filter></defs><rect width="420" height="250" rx="23" fill="url(#gl)"/><g opacity=".3"><path d="M22 208H399 M30 218H390" stroke="#e7a512" stroke-width="1"/><path d="M10 56L145 0 M310 250L416 195" stroke="#ffcb43" stroke-width="3"/></g><text x="210" y="140" text-anchor="middle" font-family="Arial,sans-serif" font-size="112" font-weight="bold" fill="url(#gold)" filter="url(#shadow)">${esc(pict)}</text><rect x="13" y="13" width="394" height="224" rx="18" fill="none" stroke="#aa852b" opacity=".65"/><text x="210" y="182" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" letter-spacing="3" fill="#f1c758">${esc(kind)}</text><text x="210" y="204" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" font-weight="bold" fill="#e9ecf2">${esc(short)}</text><text x="210" y="223" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#a5a5ae">ILUSTRAÇÃO · ${esc(code)}</text></svg>`;
+ const svg=`<svg xmlns="http:\/\/www.w3.org/2000/svg" width="420" height="250" viewBox="0 0 420 250"><defs><radialGradient id="gl" cx=".45" cy=".25" r=".9"><stop stop-color="#5b3d10"/><stop offset=".47" stop-color="#202127"/><stop offset="1" stop-color="#08090c"/></radialGradient><linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff0a3"/><stop offset=".45" stop-color="#ffc52b"/><stop offset="1" stop-color="#956609"/></linearGradient><filter id="shadow"><feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#000" flood-opacity=".7"/></filter></defs><rect width="420" height="250" rx="23" fill="url(#gl)"/><g opacity=".3"><path d="M22 208H399 M30 218H390" stroke="#e7a512" stroke-width="1"/><path d="M10 56L145 0 M310 250L416 195" stroke="#ffcb43" stroke-width="3"/></g><text x="210" y="140" text-anchor="middle" font-family="Arial,sans-serif" font-size="112" font-weight="bold" fill="url(#gold)" filter="url(#shadow)">${esc(pict)}</text><rect x="13" y="13" width="394" height="224" rx="18" fill="none" stroke="#aa852b" opacity=".65"/><text x="210" y="182" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" letter-spacing="3" fill="#f1c758">${esc(kind)}</text><text x="210" y="204" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" font-weight="bold" fill="#e9ecf2">${esc(short)}</text><text x="210" y="223" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#a5a5ae">ILUSTRAÇÃO · ${esc(code)}</text></svg>`;
  return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
 }
 </script>
@@ -501,7 +501,7 @@ body{background:linear-gradient(150deg,#e6eef6,#f4f8fb)!important}
         $('gvgPhotoInfo').textContent='Otimizando e enviando a foto ao Google Drive…';
         const foto=await compressPhoto(pendingPhoto);
         const res=await gsCall('enviarFotoProduto',$('adminPin').value,foto);
-        if(!res||!/^https:\/\//.test(res.url||''))throw new Error('O servidor não retornou a foto.');
+        if(!res||String(res.url||'').slice(0,6).toLowerCase()!=='https:')throw new Error('O servidor não retornou a foto.');
         $('editFoto').value=res.url;pendingPhoto=null;
       }
       await originalSave.apply(this,arguments);
