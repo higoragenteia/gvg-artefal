@@ -20,6 +20,10 @@ function gvgProductArtwork(p){
  }
  return `<img loading="lazy" decoding="async" alt="Ilustração de referência: ${safe(p.nome)}" src="${fallback}">`;
 }
+function gvgVisualBg(p){
+ const url=String(p&&p.imagem||'').trim();
+ return /^https:\/\//i.test(url)?`<div class="visual-bg" aria-hidden="true" style="background-image:url('${safe(url)}')"></div>`:'';
+}
 function gvgIllustrationSvg(p){
  const code=String(p.id||'').toUpperCase(),name=String(p.nome||'').toUpperCase(),category=String(p.categoria||'').toUpperCase();
  const s=(name+' '+category);
@@ -127,7 +131,7 @@ function show(page){
  if(page==='history'&&typeof window.gvgLoadEmployeeHistory==='function')window.gvgLoadEmployeeHistory();
  window.scrollTo(0,0);
 }
-function draw(){const cats=['Todos',...new Set(DATA.produtos.map(p=>p.categoria))];el('categories').innerHTML=cats.map(c=>`<button class="${c===cat?'active':''}" data-cat="${safe(c)}">${safe(c)}</button>`).join('');const categoriasBusca=gvgCategoriasBusca(text,DATA.produtos);const list=DATA.produtos.filter(p=>(cat==='Todos'||normalizarBusca(p.categoria)===normalizarBusca(cat))&&gvgProdutoCombinaBusca(p,text,categoriasBusca));el('results').textContent=`${list.length} de ${DATA.produtos.length} produtos`;el('products').innerHTML=list.slice(0,500).map(p=>`<article class="product"><button type="button" class="gvg-fav-toggle" data-gvg-fav="${safe(p.id)}" aria-label="Adicionar aos favoritos" title="Adicionar aos favoritos">☆</button><div class="visual">${gvgProductArtwork(p)}</div><h3>${safe(p.nome)}</h3><div class="desc">${safe(p.id)}${p.referencia?' · Ref. '+safe(p.referencia):''} · ${safe(p.descricao)}</div><div class="foot"><span class="category">${safe(p.categoria)}</span><button class="add" data-add="${safe(p.id)}">＋</button></div></article>`).join('')||'<div class="empty">Nenhum produto encontrado.</div>';count()}
+function draw(){const cats=['Todos',...new Set(DATA.produtos.map(p=>p.categoria))];el('categories').innerHTML=cats.map(c=>`<button class="${c===cat?'active':''}" data-cat="${safe(c)}">${safe(c)}</button>`).join('');const categoriasBusca=gvgCategoriasBusca(text,DATA.produtos);const list=DATA.produtos.filter(p=>(cat==='Todos'||normalizarBusca(p.categoria)===normalizarBusca(cat))&&gvgProdutoCombinaBusca(p,text,categoriasBusca));el('results').textContent=`${list.length} de ${DATA.produtos.length} produtos`;el('products').innerHTML=list.slice(0,500).map(p=>`<article class="product"><button type="button" class="gvg-fav-toggle" data-gvg-fav="${safe(p.id)}" aria-label="Adicionar aos favoritos" title="Adicionar aos favoritos">☆</button><div class="visual">${gvgVisualBg(p)}${gvgProductArtwork(p)}</div><h3>${safe(p.nome)}</h3><div class="desc">${safe(p.id)}${p.referencia?' · Ref. '+safe(p.referencia):''} · ${safe(p.descricao)}</div><div class="foot"><span class="category">${safe(p.categoria)}</span><button class="add" data-add="${safe(p.id)}">＋</button></div></article>`).join('')||'<div class="empty">Nenhum produto encontrado.</div>';count()}
 function key(id,unit){return id+'|'+unit}function add(id,unit='Unidade'){const p=DATA.produtos.find(x=>x.id===id);if(!p)return;const k=key(id,unit);cart[k]=(cart[k]||0)+1;save();count()}function save(){localStorage.setItem('gvgCart',JSON.stringify(cart))}function count(){el('cartCount').textContent=`Carrinho (${Object.values(cart).reduce((a,b)=>a+b,0)})`}
 
 // A embalagem vem do cadastro (categoria + unidade) e de regras acordadas; nunca de palavras incidentais no nome.
@@ -614,7 +618,7 @@ body{background:linear-gradient(150deg,#e6eef6,#f4f8fb)!important}
   const q=Number(state.qty);const valid=Number.isInteger(q)&&q>=1&&q<=10000;
   return `<article class="product" data-gvg-product="${id}">
    <button type="button" class="gvg-fav-toggle${fav?' is-fav':''}" data-gvg-fav="${id}" aria-label="${fav?'Remover dos favoritos':'Adicionar aos favoritos'}" title="${fav?'Remover dos favoritos':'Adicionar aos favoritos'}">${fav?'★':'☆'}</button>
-   <div class="visual">${gvgProductArtwork(p)}</div>
+   <div class="visual">${gvgVisualBg(p)}${gvgProductArtwork(p)}</div>
    <h3>${safe(p.nome)}</h3><div class="desc">${id}${p.referencia?' · Ref. '+safe(p.referencia):''} · ${safe(p.descricao)}</div>
    ${options}
    <div class="gvg-inline-label">Quantidade</div>
@@ -734,8 +738,9 @@ html,body{background:
 .top-motto{font-size:9px!important;color:#f8c340!important}
 .top .brand .top-motto{display:none!important}
 #searchWrap .search{margin-top:15px!important}
-#products .visual{height:clamp(115px,24vw,175px)!important;background:#15161a!important;overflow:hidden!important}
-#products .visual img{padding:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;background:transparent!important;filter:none!important;border-radius:0!important}
+#products .visual{height:clamp(115px,24vw,175px)!important;background:#15161a!important;overflow:hidden!important;position:relative!important}
+#products .visual .visual-bg{position:absolute;inset:-10%;background-size:cover;background-position:center;filter:blur(16px) brightness(.45) saturate(.95);transform:scale(1.12);opacity:.96;pointer-events:none}
+#products .visual img{position:relative;z-index:1;padding:0!important;width:100%!important;height:100%!important;object-fit:contain!important;object-position:center!important;background:transparent!important;filter:none!important;border-radius:0!important}
 #products .product{border-radius:18px!important;box-shadow:0 4px 18px #000a,0 0 0 1px #574114!important}
 #products .product h3{font-size:12px!important;line-height:1.3!important}
 @media(max-width:520px){#gvgModernManagement .gvg-hero{padding:8px 14px}#gvgModernManagement .gvg-hero b{font-size:16px;line-height:1.15;margin-bottom:2px}#gvgModernManagement .gvg-hero span{font-size:10px;line-height:1.2}}
@@ -782,8 +787,9 @@ body.gvg-access-locked{overflow:hidden}
 #products .product .gvg-fav-toggle.is-fav{background:#f4c542;color:#17191d;border-color:#f4c542}
 #gvgFavoritesView .gvg-fav-list{display:grid;gap:10px;margin-top:10px}
 #gvgFavoritesView .gvg-fav-item{display:flex;align-items:center;gap:11px;background:#181b21;border:1px solid #5c4a24;border-radius:14px;padding:10px;color:#f4f5f7;min-width:0}
-#gvgFavoritesView .gvg-fav-thumb{width:62px;height:62px;flex:0 0 62px;border-radius:10px;overflow:hidden;background:#0f1115;border:1px solid #4c4125;display:grid;place-items:center}
-#gvgFavoritesView .gvg-fav-thumb img{width:100%;height:100%;object-fit:contain;display:block}
+#gvgFavoritesView .gvg-fav-thumb{position:relative;width:62px;height:62px;flex:0 0 62px;border-radius:10px;overflow:hidden;background:#0f1115;border:1px solid #4c4125;display:grid;place-items:center}
+#gvgFavoritesView .gvg-fav-thumb .visual-bg{position:absolute;inset:-12%;background-size:cover;background-position:center;filter:blur(10px) brightness(.45);transform:scale(1.12);pointer-events:none}
+#gvgFavoritesView .gvg-fav-thumb img{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;display:block}
 #gvgFavoritesView .gvg-fav-thumb .gvg-visual-fallback,#gvgFavoritesView .gvg-fav-thumb .gvg-illustration{width:100%;height:100%;max-width:100%;max-height:100%}
 #gvgFavoritesView .gvg-fav-info{min-width:0;flex:1 1 auto}
 #gvgFavoritesView .gvg-fav-info b{display:block;font-size:13px;line-height:1.25;color:#fff;overflow-wrap:anywhere}
@@ -947,7 +953,7 @@ body.gvg-access-locked{overflow:hidden}
   if(!lista.length){box.innerHTML='<div class="empty">Nenhum item favorito ainda.<br>No catálogo, toque na estrela ☆ de um produto.</div>';return;}
   box.innerHTML='<div class="gvg-fav-list">'+lista.map(function(p){
    const id=escape(p.id);
-   return '<article class="gvg-fav-item"><div class="gvg-fav-thumb">'+gvgProductArtwork(p)+'</div><div class="gvg-fav-info"><b>'+escape(p.nome)+'</b><small>'+id+' · '+escape(p.categoria)+'</small></div><div class="gvg-fav-actions"><button type="button" class="gvg-fav-add" data-fav-add="'+id+'">＋ Adicionar</button><button type="button" class="gvg-fav-remove" data-fav-remove="'+id+'">Remover</button></div></article>';
+   return '<article class="gvg-fav-item"><div class="gvg-fav-thumb">'+gvgVisualBg(p)+gvgProductArtwork(p)+'</div><div class="gvg-fav-info"><b>'+escape(p.nome)+'</b><small>'+id+' · '+escape(p.categoria)+'</small></div><div class="gvg-fav-actions"><button type="button" class="gvg-fav-add" data-fav-add="'+id+'">＋ Adicionar</button><button type="button" class="gvg-fav-remove" data-fav-remove="'+id+'">Remover</button></div></article>';
   }).join('')+'</div>';
  }
  async function loadFavorites(){
