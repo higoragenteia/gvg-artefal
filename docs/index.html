@@ -53,12 +53,13 @@
   (function(){
     var frame=document.getElementById('gvgAppFrame');
     var params=new URLSearchParams(window.location.search);
-    var qs='v=144&ui=conferencia-link';
+    var qs='v=145&ui=conferencia-link';
     var modulo=params.get('modulo');
-    if(params.get('conferir'))modulo='pedidos';
+    if(params.get('conferir')||params.get('k'))modulo='pedidos';
     if(modulo)qs+='&modulo='+encodeURIComponent(modulo);
     if(params.get('view'))qs+='&view='+encodeURIComponent(params.get('view'));
     if(params.get('alerta'))qs+='&alerta='+encodeURIComponent(params.get('alerta'));
+    if(params.get('k'))qs+='&k='+encodeURIComponent(params.get('k'));
     if(params.get('conferir'))qs+='&conferir='+encodeURIComponent(params.get('conferir'));
     if(params.get('token'))qs+='&token='+encodeURIComponent(params.get('token'));
     frame.src='https://script.google.com/macros/s/AKfycby35-KiTddoqhEuo9zalGkVC2Wfspw5lG7i9Vt-_qJXZBa_wqeyiV51_42xh4ITtHhL/exec?'+qs;

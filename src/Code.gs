@@ -64,8 +64,10 @@ function doGetPedidos_(e){
   const modelo = HtmlService.createTemplateFromFile('index');
   // O catálogo só é carregado depois do login, com sessão válida.
   modelo.initialData = 'null';
-  modelo.conferenciaPedido = String(e&&e.parameter&&e.parameter.conferir||'');
-  modelo.conferenciaToken = String(e&&e.parameter&&e.parameter.token||'');
+  const codigoCurto=String(e&&e.parameter&&e.parameter.k||'').trim();
+  const curto=codigoCurto?gvguResolverLinkCurto_(codigoCurto):null;
+  modelo.conferenciaPedido = curto?curto.pedido:String(e&&e.parameter&&e.parameter.conferir||'');
+  modelo.conferenciaToken = curto?curto.token:String(e&&e.parameter&&e.parameter.token||'');
   return modelo.evaluate()
     .setTitle('Order Catalog')
     .addMetaTag('viewport','width=device-width, initial-scale=1')
@@ -265,15 +267,46 @@ function limparPedidosDemo(credencial,confirmacao){
 // ===== CONFERÊNCIA POR LINK =====
 // O link contém um token estável por pedido. A identificação do solicitante
 // vem sempre de PEDIDOS/PEDIDOS_USUARIOS, nunca do usuário que confere.
-function gvguLinksPedidos_(){return gvguSheet_('PEDIDOS_LINKS',['Pedido_ID','Token','Criado_Em','Criado_Por']);}
+function gvguLinksPedidos_(){
+ const sh=gvguSheet_('PEDIDOS_LINKS',['Pedido_ID','Token','Criado_Em','Criado_Por','Codigo_Curto']);
+ if(sh.getMaxColumns()<5)sh.insertColumnsAfter(sh.getMaxColumns(),5-sh.getMaxColumns());
+ if(String(sh.getRange(1,5).getDisplayValue()).trim()!=='Codigo_Curto')sh.getRange(1,5).setValue('Codigo_Curto');
+ return sh;
+}
 function gvguRevisoesPedidos_(){return gvguSheet_('PEDIDOS_REVISOES',['Revisao_ID','Pedido_ID','Revisao','Editor_ID','Editor_Nome','Data_Hora','Alteracoes_JSON','Mensagem','Link','Chave_Idempotencia','Compartilhamento_Iniciado_Em','Resultado_JSON']);}
 const GVGU_URL_PUBLICA='https://gvgartefalesquadrias.com.br/';
-const GVGU_URL_VERSAO='144';
+const GVGU_URL_VERSAO='145';
+const GVGU_CODIGO_CHARS='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
 function gvguUrlConferencia_(pedido,token){const base=GVGU_URL_PUBLICA,sep=base.indexOf('?')>=0?'&':'?';return base+sep+'conferir='+encodeURIComponent(String(pedido))+'&token='+encodeURIComponent(String(token))+'&v='+GVGU_URL_VERSAO;}
+function gvguUrlConferenciaCurta_(codigo){return GVGU_URL_PUBLICA+'?k='+encodeURIComponent(String(codigo));}
+function gvguNovoCodigoCurto_(rows){
+ const usados={};(rows||[]).forEach(function(r){const c=String(r[4]||'').trim();if(c)usados[c]=true;});
+ for(let tentativa=0;tentativa<25;tentativa++){
+  const digest=Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256,Utilities.getUuid());
+  let codigo='';
+  for(let i=0;i<10;i++)codigo+=GVGU_CODIGO_CHARS.charAt((digest[i]&0xff)%GVGU_CODIGO_CHARS.length);
+  if(!usados[codigo])return codigo;
+ }
+ throw new Error('Não foi possível gerar o código do link.');
+}
 function gvguGarantirLinkPedido_(pedido,criadoPor){
  const id=String(pedido||'').trim(),sh=gvguLinksPedidos_(),v=sh.getDataRange().getValues();
- for(let i=1;i<v.length;i++)if(String(v[i][0])===id&&String(v[i][1]).trim())return gvguUrlConferencia_(id,String(v[i][1]).trim());
- const token=Utilities.getUuid()+Utilities.getUuid();sh.appendRow([id,token,new Date(),String(criadoPor||'')]);return gvguUrlConferencia_(id,token);
+ for(let i=1;i<v.length;i++){
+  if(String(v[i][0])===id&&String(v[i][1]).trim()){
+   let codigo=String(v[i][4]||'').trim();
+   if(!codigo){codigo=gvguNovoCodigoCurto_(v);sh.getRange(i+1,5).setValue(codigo);}
+   return gvguUrlConferenciaCurta_(codigo);
+  }
+ }
+ const token=Utilities.getUuid()+Utilities.getUuid(),codigo=gvguNovoCodigoCurto_(v);
+ sh.appendRow([id,token,new Date(),String(criadoPor||''),codigo]);
+ return gvguUrlConferenciaCurta_(codigo);
+}
+function gvguResolverLinkCurto_(codigo){
+ const c=String(codigo||'').trim();if(!c)return null;
+ const v=gvguLinksPedidos_().getDataRange().getValues();
+ for(let i=1;i<v.length;i++)if(String(v[i][4]||'').trim()===c)return {pedido:String(v[i][0]||'').trim(),token:String(v[i][1]||'').trim()};
+ return null;
 }
 function gvguTokenLinkValido_(pedido,token){const id=String(pedido||'').trim(),tk=String(token||'').trim();if(!id||!tk)return false;const v=gvguLinksPedidos_().getDataRange().getValues();for(let i=1;i<v.length;i++)if(String(v[i][0])===id&&String(v[i][1]).trim()===tk)return true;return false;}
 function gvguConferenciaAuth_(credencial){
@@ -311,7 +344,7 @@ function getConferenciaLink(credencial,pedido,linkToken){
  if(row<0)throw new Error('Pedido não encontrado.');
  const itemRows=ss.getSheetByName('ITENS_PEDIDO').getDataRange().getValues().slice(1).filter(r=>String(r[0])===id);
  const revs=gvguRevisoesPedidos_().getDataRange().getValues(),revisao=revs.slice(1).filter(r=>String(r[1])===id).reduce((m,r)=>Math.max(m,Number(r[2])||0),0);
- const pRow=p[row],link=gvguUrlConferencia_(id,tk);
+ const pRow=p[row],link=gvguGarantirLinkPedido_(id,'conferencia');
  return {ok:true,pedido:{id:id,solicitante:String(pRow[2]||''),solicitanteId:gvguSolicitanteId_(id),obra:String(pRow[3]||''),situacao:String(pRow[6]||''),solicitadoEm:gvguDataHoraMensagem_(pRow[1]),dataISO:pRow[1] instanceof Date?pRow[1].toISOString():String(pRow[1]||''),revisao:revisao},itens:gvguItensParaResposta_(itemRows),link:link,revisao:revisao};
 }
 function salvarConferenciaLink(credencial,pedido,linkToken,linhas,chaveIdempotencia){
@@ -580,6 +613,33 @@ function meusPedidos(token){
  const ss=abasGestao_(),linked=gvguVinculos_().getDataRange().getValues();const ids=new Set(linked.slice(1).filter(r=>String(r[1])===u.id).map(r=>String(r[0])));
  const pedidos=ss.getSheetByName('PEDIDOS').getDataRange().getValues().slice(1).filter(r=>ids.has(String(r[0]))).map(r=>({id:String(r[0]),data:r[1] instanceof Date?r[1].toISOString():'',obra:r[3],status:r[6]}));
  const itens=ss.getSheetByName('ITENS_PEDIDO').getDataRange().getValues().slice(1).filter(r=>ids.has(String(r[0]))).map(r=>({id:String(r[0]),nome:r[2],solicitado:Number(r[3])||0,unidade:String(r[4]),entregue:r[6]===''?null:Number(r[6]),nota:String(r[8]||'')}));return {pedidos,itens};
+}
+function gvguFavoritos_(){return gvguSheet_('PEDIDOS_FAVORITOS',['Usuario_ID','Produto_ID','Criado_Em']);}
+function gvguFavoritosIds_(userId){
+ const v=gvguFavoritos_().getDataRange().getValues(),ids=[],vistos={};
+ for(let i=1;i<v.length;i++){if(String(v[i][0])===String(userId)){const id=String(v[i][1]||'').trim();if(id&&!vistos[id]){vistos[id]=true;ids.push(id);}}}
+ return ids;
+}
+function listarFavoritos(sessao){
+ const u=gvguVerificarSessao_(sessao);
+ if(!gvguPodeVisualizar_(u,'pedidos'))throw new Error('GVG_SEM_ACESSO_PROJETO: seu perfil não tem acesso ao Order Catalog.');
+ return {ok:true,ids:gvguFavoritosIds_(u.id)};
+}
+function alternarFavorito(sessao,produtoId){
+ const u=gvguVerificarSessao_(sessao);
+ if(!gvguPodeVisualizar_(u,'pedidos'))throw new Error('GVG_SEM_ACESSO_PROJETO: seu perfil não tem acesso ao Order Catalog.');
+ const id=String(produtoId||'').trim();if(!id)throw new Error('Produto não informado.');
+ const produtos=abasGestao_().getSheetByName('PRODUTOS').getDataRange().getValues();
+ if(!produtos.some(function(r,i){return i>0&&String(r[0])===id;}))throw new Error('Produto não encontrado.');
+ const lock=LockService.getScriptLock();lock.waitLock(20000);
+ try{
+  const sh=gvguFavoritos_(),v=sh.getDataRange().getValues();let row=-1;
+  for(let i=1;i<v.length;i++)if(String(v[i][0])===String(u.id)&&String(v[i][1])===id){row=i+1;break;}
+  let favorito;
+  if(row>0){sh.deleteRow(row);favorito=false;}else{sh.appendRow([String(u.id),id,new Date()]);favorito=true;}
+  SpreadsheetApp.flush();
+  return {ok:true,favorito:favorito,ids:gvguFavoritosIds_(u.id)};
+ }finally{lock.releaseLock();}
 }
 function gvguAuditar_(acao,id,det){abasGestao_().getSheetByName('AUDITORIA').appendRow([new Date(),acao,id,'USUARIOS_GVG',String(det||'').slice(0,500)])}
 function gvguHistoricoPermissoes_(){return gvguSheet_('GVG_PERMISSOES',['Data','Responsavel','Usuario_ID','Login','Perfil','Status','Projetos','Detalhes'])}
