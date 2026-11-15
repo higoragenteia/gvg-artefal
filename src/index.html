@@ -622,7 +622,7 @@ body{background:linear-gradient(150deg,#e6eef6,#f4f8fb)!important}
    <div class="visual">${gvgVisualBg(p)}${gvgProductArtwork(p)}</div>
    <div class="gvg-card-body">
     <h3>${safe(p.nome)}</h3>
-    <div class="desc">${ref}${p.descricao?' · '+safe(p.descricao):''}</div>
+    <div class="desc" title="${ref}${p.descricao?' · '+safe(p.descricao):''}">${ref}</div>
     <div class="foot"><span class="category">${safe(p.categoria)}</span></div>
     ${options}
     <div class="gvg-inline-qty"><span class="gvg-inline-label">Quantidade</span><div class="gvg-inline-row"><button type="button" data-gvg-step="-1">−</button><input type="number" inputmode="numeric" min="1" max="10000" step="1" data-gvg-qty value="${safe(state.qty)}" aria-label="Quantidade de ${safe(p.nome)}"><button type="button" data-gvg-step="1">+</button></div></div>
@@ -809,7 +809,7 @@ body.gvg-access-locked{overflow:hidden}
 @media(max-width:420px){#gvgFavoritesView .gvg-fav-item{gap:8px;padding:8px}#gvgFavoritesView .gvg-fav-thumb{width:54px;height:54px;flex-basis:54px}#gvgFavoritesView .gvg-fav-actions button{padding:7px 8px;font-size:9px}}
 #products .product{padding:0!important;min-height:0!important;gap:0!important;border-radius:18px!important;background:linear-gradient(160deg,#17191e,#0d0e11)!important;border:1px solid #6a5218!important;box-shadow:0 6px 18px #000a!important;overflow:hidden!important;position:relative!important}
 #products .gvg-card-body{padding:9px 10px 10px!important;display:flex!important;flex-direction:column!important;gap:5px!important;flex:1 1 auto!important;min-width:0!important}
-#products .product h3{font-size:12px!important;line-height:1.22!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.1px!important;margin:0!important;min-height:30px!important;color:#fff!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important}
+#products .product h3{font-size:12px!important;line-height:1.22!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.1px!important;margin:0!important;min-height:30px!important;color:#fff!important;display:-webkit-box!important;-webkit-line-clamp:3!important;-webkit-box-orient:vertical!important;overflow:hidden!important}
 #products .product .desc{font-size:9.5px!important;line-height:1.35!important;color:#aeb3bd!important;margin:0!important;min-height:0!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
 #products .product .foot{display:flex!important;justify-content:flex-start!important;margin:2px 0 0!important}
 #products .product .category{background:transparent!important;border:1px solid #8a6b2c!important;color:#f4c542!important;border-radius:7px!important;font-size:8.5px!important;line-height:1!important;padding:4px 7px!important;font-weight:850!important;text-transform:none!important}
