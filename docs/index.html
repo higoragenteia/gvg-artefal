@@ -4,7 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>GVG&ARTEFAL — Painel Interno</title>
-<meta name="description" content="Painel interno GVG&ARTEFAL com Order Catalog, Gastos, Fornecedores, Máquinas e Frotas.">
+<meta name="description" content="Conferência e acompanhamento de pedidos de materiais.">
+<meta property="og:title" content="GVG&ARTEFAL — Conferência de pedido">
+<meta property="og:description" content="Confira as quantidades e acompanhe seu pedido de materiais.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gvgartefalesquadrias.com.br/">
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
@@ -49,7 +53,7 @@
   (function(){
     var frame=document.getElementById('gvgAppFrame');
     var params=new URLSearchParams(window.location.search);
-    var qs='v=143&ui=conferencia-link';
+    var qs='v=144&ui=conferencia-link';
     var modulo=params.get('modulo');
     if(params.get('conferir'))modulo='pedidos';
     if(modulo)qs+='&modulo='+encodeURIComponent(modulo);

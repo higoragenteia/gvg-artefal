@@ -268,7 +268,8 @@ function limparPedidosDemo(credencial,confirmacao){
 function gvguLinksPedidos_(){return gvguSheet_('PEDIDOS_LINKS',['Pedido_ID','Token','Criado_Em','Criado_Por']);}
 function gvguRevisoesPedidos_(){return gvguSheet_('PEDIDOS_REVISOES',['Revisao_ID','Pedido_ID','Revisao','Editor_ID','Editor_Nome','Data_Hora','Alteracoes_JSON','Mensagem','Link','Chave_Idempotencia','Compartilhamento_Iniciado_Em','Resultado_JSON']);}
 const GVGU_URL_PUBLICA='https://gvgartefalesquadrias.com.br/';
-function gvguUrlConferencia_(pedido,token){const base=GVGU_URL_PUBLICA,sep=base.indexOf('?')>=0?'&':'?';return base+sep+'modulo=pedidos&conferir='+encodeURIComponent(String(pedido))+'&token='+encodeURIComponent(String(token));}
+const GVGU_URL_VERSAO='144';
+function gvguUrlConferencia_(pedido,token){const base=GVGU_URL_PUBLICA,sep=base.indexOf('?')>=0?'&':'?';return base+sep+'conferir='+encodeURIComponent(String(pedido))+'&token='+encodeURIComponent(String(token))+'&v='+GVGU_URL_VERSAO;}
 function gvguGarantirLinkPedido_(pedido,criadoPor){
  const id=String(pedido||'').trim(),sh=gvguLinksPedidos_(),v=sh.getDataRange().getValues();
  for(let i=1;i<v.length;i++)if(String(v[i][0])===id&&String(v[i][1]).trim())return gvguUrlConferencia_(id,String(v[i][1]).trim());
@@ -289,9 +290,9 @@ function gvguUnidadeMensagem_(u){const x=String(u||'').trim().toLowerCase();if(x
 function gvguMensagemConferencia_(pedido,pRow,itemRows,link){
  const linhas=(itemRows||[]).map(function(r){
   const req=Number(r[3])||0,conf=r[6]===''?0:(Number(r[6])||0),pend=Math.max(0,req-conf),unit=gvguUnidadeMensagem_(r[4]);
-  return '• '+String(r[2])+': solicitado '+req+' '+unit+' | confirmado '+conf+' | pendente '+pend+' '+unit;
- }).join('\n');
- return 'PEDIDO '+String(pedido)+' — ATUALIZADO\nSolicitante: '+String(pRow[2]||'')+'\nObra: '+String(pRow[3]||'')+'\nSolicitado em: '+gvguDataHoraMensagem_(pRow[1])+'\n\n'+linhas+'\n\nConferir pedido: '+String(link);
+  return '• *'+String(r[2]||'')+'*\n  Solicitado: '+req+' '+unit+'\n  Confirmado: '+conf+' '+unit+'\n  Pendente: '+pend+' '+unit;
+ }).join('\n\n');
+ return '*PEDIDO '+String(pedido)+' — ATUALIZADO*\nSolicitante: '+String(pRow[2]||'')+'\nObra: '+String(pRow[3]||'')+'\nSolicitado em: '+gvguDataHoraMensagem_(pRow[1])+'\n\n*Itens conferidos*\n\n'+linhas+'\n\n*Conferir pedido*\n'+String(link);
 }
 function gvguSolicitanteId_(pedido){const v=gvguVinculos_().getDataRange().getValues();for(let i=1;i<v.length;i++)if(String(v[i][0])===String(pedido))return String(v[i][1]||'');return '';}
 function gvguItensParaResposta_(rows){return (rows||[]).map(function(r){const req=Number(r[3])||0,conf=r[6]===''?0:(Number(r[6])||0);return {codigo:String(r[1]),nome:String(r[2]),solicitado:req,unidade:String(r[4]),confirmado:conf,pendente:Math.max(0,req-conf),nota:String(r[8]||'')};});}
