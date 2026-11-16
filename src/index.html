@@ -953,6 +953,15 @@ body.gvg-access-locked{overflow:hidden}
 
  // ===== FAVORITOS =====
  let favToastTimer=null;
+ const favoritePending=new Map();
+ let favoritesSaveQueue=Promise.resolve();
+ function applyFavoriteIds(ids){
+  favoriteIds.clear();ids.forEach(function(id){favoriteIds.add(String(id));});
+  favoritePending.forEach(function(change,id){
+   if(change.token!==token)return;
+   if(change.favorite)favoriteIds.add(id);else favoriteIds.delete(id);
+  });
+ }
  function favNotice(message){
   let toast=$('gvgFavToast');
   if(!toast){toast=document.createElement('div');toast.id='gvgFavToast';toast.setAttribute('role','status');toast.setAttribute('aria-live','polite');document.body.appendChild(toast);}
@@ -990,7 +999,7 @@ body.gvg-access-locked{overflow:hidden}
    const r=await gsCall('listarFavoritos',requestToken);
    if(request!==favoritesRequest||requestToken!==token)return;
    const ids=(r&&Array.isArray(r.ids))?r.ids:[];
-   favoriteIds.clear();ids.forEach(function(id){favoriteIds.add(String(id));});
+   applyFavoriteIds(ids);
    favoritesLoadedFor=requestToken;syncFavoriteButtons();renderFavorites();
   }catch(e){
    if(request===favoritesRequest&&requestToken===token){
@@ -1009,15 +1018,33 @@ body.gvg-access-locked{overflow:hidden}
   if(!token){favNotice('Entre na sua conta para favoritar itens.');return;}
   if(!id)return;
   const requestToken=token;
+  const current=favoritePending.get(id);if(current&&current.token===requestToken)return;
+  const change={token:requestToken,previous:favoriteIds.has(id),favorite:!favoriteIds.has(id)};
+  favoritePending.set(id,change);favoritesRequest++;
+  if(change.favorite)favoriteIds.add(id);else favoriteIds.delete(id);
+  syncFavoriteButtons();renderFavorites();
   try{
-   const r=await gsCall('alternarFavorito',requestToken,id);
+   const save=favoritesSaveQueue.catch(function(){}).then(function(){
+    if(requestToken!==token)return null;
+    return gsCall('alternarFavorito',requestToken,id);
+   });
+   favoritesSaveQueue=save;
+   const r=await save;
    if(requestToken!==token)return;
    if(!r||!Array.isArray(r.ids))throw new Error('Resposta inválida.');
-   favoriteIds.clear();r.ids.forEach(function(x){favoriteIds.add(String(x));});
+   favoritesRequest++;favoritesLoadingFor='';
+   if(favoritePending.get(id)===change)favoritePending.delete(id);
+   applyFavoriteIds(r.ids);
    favoritesLoadedFor=requestToken;syncFavoriteButtons();renderFavorites();
    const p=(DATA.produtos||[]).find(function(x){return String(x.id)===id;});
    favNotice((r.favorito?'♥ ':'♡ ')+(p?p.nome:id)+(r.favorito?' adicionado aos favoritos.':' removido dos favoritos.'));
-  }catch(e){favNotice('Não foi possível salvar o favorito: '+(e.message||String(e)));}
+  }catch(e){
+   if(requestToken!==token)return;
+   favoritesRequest++;favoritesLoadingFor='';
+   if(change.previous)favoriteIds.add(id);else favoriteIds.delete(id);
+   syncFavoriteButtons();renderFavorites();
+   favNotice('Não foi possível salvar o favorito: '+(e.message||String(e)));
+  }finally{if(favoritePending.get(id)===change)favoritePending.delete(id);}
  }
  window.gvgLoadFavorites=function(){if(favoritesLoadedFor===token){renderFavorites();return;}ensureFavoritesLoaded();};
  window.gvgRenderFavorites=renderFavorites;
