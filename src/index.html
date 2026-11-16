@@ -1023,6 +1023,8 @@ body.gvg-access-locked{overflow:hidden}
   favoritePending.set(id,change);favoritesRequest++;
   if(change.favorite)favoriteIds.add(id);else favoriteIds.delete(id);
   syncFavoriteButtons();renderFavorites();
+  const p=(DATA.produtos||[]).find(function(x){return String(x.id)===id;});
+  favNotice((change.favorite?'♥ ':'♡ ')+(p?p.nome:id)+(change.favorite?' adicionado aos favoritos.':' removido dos favoritos.'));
   try{
    const save=favoritesSaveQueue.catch(function(){}).then(function(){
     if(requestToken!==token)return null;
@@ -1036,8 +1038,6 @@ body.gvg-access-locked{overflow:hidden}
    if(favoritePending.get(id)===change)favoritePending.delete(id);
    applyFavoriteIds(r.ids);
    favoritesLoadedFor=requestToken;syncFavoriteButtons();renderFavorites();
-   const p=(DATA.produtos||[]).find(function(x){return String(x.id)===id;});
-   favNotice((r.favorito?'♥ ':'♡ ')+(p?p.nome:id)+(r.favorito?' adicionado aos favoritos.':' removido dos favoritos.'));
   }catch(e){
    if(requestToken!==token)return;
    favoritesRequest++;favoritesLoadingFor='';
