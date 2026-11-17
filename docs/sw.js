@@ -1,9 +1,9 @@
 /* GVG&ARTEFAL — shell PWA. Nunca armazena dados operacionais do Apps Script. */
-const CACHE = 'gvg-shell-v27';
+const CACHE = 'gvg-shell-v28';
 const SHELL = [
   './',
   './index.html',
-  './manifest.webmanifest?v=icone-maquinas-20261117',
+  './manifest.webmanifest',
   './favicon-maquinas-32.png',
   './favicon-maquinas-48.png',
   './favicon-maquinas-180.png',
