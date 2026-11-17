@@ -1,14 +1,14 @@
 /* GVG&ARTEFAL — shell PWA. Nunca armazena dados operacionais do Apps Script. */
-const CACHE = 'gvg-shell-v25';
+const CACHE = 'gvg-shell-v26';
 const SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './favicon-32.png',
-  './favicon-48.png',
-  './favicon-180.png',
-  './icon-192.png',
-  './icon-512.png'
+  './favicon-maquinas-32.png',
+  './favicon-maquinas-48.png',
+  './favicon-maquinas-180.png',
+  './icon-maquinas-192.png',
+  './icon-maquinas-512.png'
 ];
 
 self.addEventListener('install', function(event){

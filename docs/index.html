@@ -10,9 +10,9 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://gvgartefalesquadrias.com.br/">
 <meta name="robots" content="noindex">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
-<link rel="apple-touch-icon" href="favicon-180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-maquinas-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="favicon-maquinas-48.png">
+<link rel="apple-touch-icon" href="favicon-maquinas-180.png">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://script.google.com">
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
@@ -48,12 +48,12 @@
 </head>
 <body>
   <iframe id="gvgAppFrame" src="about:blank" allow="storage-access; clipboard-write" loading="eager" title="Painel GVG&ARTEFAL"></iframe>
-  <div id="gvgBoot" role="status" aria-live="polite"><div class="gvg-boot-card"><img src="icon-192.png" alt=""><strong>Carregando o painel…</strong><div class="gvg-boot-spinner" aria-hidden="true"></div><span id="gvgBootMsg">Conectando ao ambiente seguro.</span><button type="button" id="gvgBootRetry" hidden>Tentar novamente</button></div></div>
+  <div id="gvgBoot" role="status" aria-live="polite"><div class="gvg-boot-card"><img src="icon-maquinas-192.png" alt=""><strong>Carregando o painel…</strong><div class="gvg-boot-spinner" aria-hidden="true"></div><span id="gvgBootMsg">Conectando ao ambiente seguro.</span><button type="button" id="gvgBootRetry" hidden>Tentar novamente</button></div></div>
 <script>
   (function(){
     var frame=document.getElementById('gvgAppFrame');
     var params=new URLSearchParams(window.location.search);
-    var qs='v=192&ui=conferencia-link-login-maquinas-20261117';
+    var qs='v=192&ui=conferencia-link-login-maquinas-icone-20261117';
     var modulo=params.get('modulo');
     if(params.get('conferir')||params.get('k'))modulo='pedidos';
     if(modulo)qs+='&modulo='+encodeURIComponent(modulo);
@@ -77,7 +77,7 @@
     if(document.getElementById('gvgInstallHelp'))return;
     var wrap=document.createElement('div');
     wrap.id='gvgInstallHelp';wrap.className='gvgInstallHelp';
-    wrap.innerHTML='<div class="box"><img src="icon-192.png" alt=""><h2>Instalar o GVG&ARTEFAL</h2><p><b>Android / Chrome:</b> abra o menu ⋮ e toque em <b>Instalar app</b>.</p><p><b>iPhone / Safari:</b> toque em <b>Compartilhar</b> e depois em <b>Adicionar à Tela de Início</b>.</p><button type="button" id="gvgInstallClose">Entendi</button></div>';
+    wrap.innerHTML='<div class="box"><img src="icon-maquinas-192.png" alt=""><h2>Instalar o GVG&ARTEFAL</h2><p><b>Android / Chrome:</b> abra o menu ⋮ e toque em <b>Instalar app</b>.</p><p><b>iPhone / Safari:</b> toque em <b>Compartilhar</b> e depois em <b>Adicionar à Tela de Início</b>.</p><button type="button" id="gvgInstallClose">Entendi</button></div>';
     document.body.appendChild(wrap);
     document.getElementById('gvgInstallClose').onclick=function(){wrap.remove();};
   }
