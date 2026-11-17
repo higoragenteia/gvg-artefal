@@ -6,7 +6,7 @@
 - Planilha de teste anterior (backup): `1i_P-BGv3GROHrVCUh8ifHxOk6gpi5rucLADvAOzgOrA`
 - Apps Script (vinculado): `1E98hK1UhabSftMUnCR1j1Jm_XHfQZeTqv96PfqT9h26HND-Zyw1bOBfS`
 - Implantação web: `AKfycby35-KiTddoqhEuo9zalGkVC2Wfspw5lG7i9Vt-_qJXZBa_wqeyiV51_42xh4ITtHhL`
-- Versão publicada do painel: **195** (17/11/2026; carrossel do cadastro com imagem inicial e cinco aplicativos, a cada 3 segundos)
+- Versão publicada do painel: **196** (17/11/2026; novo ícone digital do Order Catalog nos dois layouts e no cadastro)
 - Planilha do Frotas: `1ck1lDtk_W9vjyQEnhV2Ze5secbayGLFfZi4Z0NuX-GY`
 - Apps Script do Frotas: `1fo2YYypS1ponMDM3llLnMWAOiKuJHvhFYPAto_k2k_fRkW1V0-BncRyh`
 - Implantação do Frotas: `AKfycby3W5KlwLYtX7j3_lvi6Zcf6d67k2fKnsg7K0MOmIK-b2X3xY7y57Al-uEPBdzxBaLB`
@@ -53,3 +53,9 @@ próprio e pelas verificações de sessão/perfil no servidor.
 - Ao abrir o cadastro, a apresentação começa pela arte original e segue por Order Catalog, Gastos, Fornecedores, Máquinas e Frotas em ciclos de 3 segundos.
 - Imagens exibidas inteiras, com transição suave, seleção manual e pausa. Ao fechar o cadastro ou ocultar a página, o temporizador para; a reabertura reinicia na imagem original.
 - Conferidos em desktop e celular 390 × 844: seis imagens carregadas, enquadramento sem corte, troca automática, pausa, retomada e preservação do preenchimento.
+
+## Ícone Order Catalog — versão 196
+
+- Arte digital aprovada com tablet, materiais e selo dourado aplicada nos layouts claro e escuro e no carrossel do cadastro.
+- WebP responsivo em 256, 384, 768 e 1254 pixels; URLs novas para evitar o ícone antigo em cache.
+- Cadastro mantém imagem inicial, intervalo de 3 segundos e enquadramento completo.
