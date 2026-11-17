@@ -2606,7 +2606,7 @@ const FROTAS_URL = <?!= JSON.stringify(frotasUrl) ?>;
     if(!ready||!visible()){stop();return;}
     raf=requestAnimationFrame(frame);
     if(lastDraw&&stamp-lastDraw<16)return;
-    if(previous)elapsed+=Math.min(stamp-previous,64)/1000;
+    if(previous)elapsed+=Math.min(stamp-previous,64)*1.4/1000;
     previous=stamp;lastDraw=stamp;
     const viewRatio=stageWidth/stageHeight,imageRatio=textureWidth/textureHeight;
     gl.uniform2f(coverLocation,Math.min(1,viewRatio/imageRatio),Math.min(1,imageRatio/viewRatio));

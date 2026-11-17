@@ -6,7 +6,7 @@
 - Planilha de teste anterior (backup): `1i_P-BGv3GROHrVCUh8ifHxOk6gpi5rucLADvAOzgOrA`
 - Apps Script (vinculado): `1E98hK1UhabSftMUnCR1j1Jm_XHfQZeTqv96PfqT9h26HND-Zyw1bOBfS`
 - Implantação web: `AKfycby35-KiTddoqhEuo9zalGkVC2Wfspw5lG7i9Vt-_qJXZBa_wqeyiV51_42xh4ITtHhL`
-- Versão publicada do painel: **197** (17/11/2026; efeito de bandeira ao vento na imagem do login)
+- Versão publicada do painel: **198** (17/11/2026; movimento de vento do login 40% mais rápido)
 - Planilha do Frotas: `1ck1lDtk_W9vjyQEnhV2Ze5secbayGLFfZi4Z0NuX-GY`
 - Apps Script do Frotas: `1fo2YYypS1ponMDM3llLnMWAOiKuJHvhFYPAto_k2k_fRkW1V0-BncRyh`
 - Implantação do Frotas: `AKfycby3W5KlwLYtX7j3_lvi6Zcf6d67k2fKnsg7K0MOmIK-b2X3xY7y57Al-uEPBdzxBaLB`
@@ -67,3 +67,8 @@ próprio e pelas verificações de sessão/perfil no servidor.
 - Animação pausada com a página oculta, login fora da tela, cadastro aberto ou usuário conectado. Respeita a preferência de movimento reduzido.
 - A imagem original permanece como reserva se WebGL ou a textura não estiverem disponíveis. Renderização limitada a 60 quadros por segundo e densidade de pixels 1,5.
 - Conferidos: sintaxe, animação na prévia, pausa ao abrir cadastro e layout móvel 390 × 844 sem rolagem lateral.
+
+## Velocidade do vento — versão 198
+
+- Relógio da animação multiplicado por 1,4: ondas e elevação 40% mais rápidas, com o mesmo enquadramento e amplitude.
+- Sintaxe da animação validada; fluxo de login e proteções de pausa mantidos.
