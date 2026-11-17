@@ -6,7 +6,7 @@
 - Planilha de teste anterior (backup): `1i_P-BGv3GROHrVCUh8ifHxOk6gpi5rucLADvAOzgOrA`
 - Apps Script (vinculado): `1E98hK1UhabSftMUnCR1j1Jm_XHfQZeTqv96PfqT9h26HND-Zyw1bOBfS`
 - Implantação web: `AKfycby35-KiTddoqhEuo9zalGkVC2Wfspw5lG7i9Vt-_qJXZBa_wqeyiV51_42xh4ITtHhL`
-- Versão publicada do painel: **196** (17/11/2026; novo ícone digital do Order Catalog nos dois layouts e no cadastro)
+- Versão publicada do painel: **197** (17/11/2026; efeito de bandeira ao vento na imagem do login)
 - Planilha do Frotas: `1ck1lDtk_W9vjyQEnhV2Ze5secbayGLFfZi4Z0NuX-GY`
 - Apps Script do Frotas: `1fo2YYypS1ponMDM3llLnMWAOiKuJHvhFYPAto_k2k_fRkW1V0-BncRyh`
 - Implantação do Frotas: `AKfycby3W5KlwLYtX7j3_lvi6Zcf6d67k2fKnsg7K0MOmIK-b2X3xY7y57Al-uEPBdzxBaLB`
@@ -59,3 +59,11 @@ próprio e pelas verificações de sessão/perfil no servidor.
 - Arte digital aprovada com tablet, materiais e selo dourado aplicada nos layouts claro e escuro e no carrossel do cadastro.
 - WebP responsivo em 256, 384, 768 e 1254 pixels; URLs novas para evitar o ícone antigo em cache.
 - Cadastro mantém imagem inicial, intervalo de 3 segundos e enquadramento completo.
+
+## Imagem do login ao vento — versão 197
+
+- A arte do login ondula como tecido ao vento, com a borda esquerda fixa, elevação suave da borda direita e iluminação acompanhando as dobras.
+- Renderização WebGL sem dependências; formulário e cadastro mantêm seu posicionamento e comportamento.
+- Animação pausada com a página oculta, login fora da tela, cadastro aberto ou usuário conectado. Respeita a preferência de movimento reduzido.
+- A imagem original permanece como reserva se WebGL ou a textura não estiverem disponíveis. Renderização limitada a 60 quadros por segundo e densidade de pixels 1,5.
+- Conferidos: sintaxe, animação na prévia, pausa ao abrir cadastro e layout móvel 390 × 844 sem rolagem lateral.
