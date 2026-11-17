@@ -6,7 +6,7 @@
 - Planilha de teste anterior (backup): `1i_P-BGv3GROHrVCUh8ifHxOk6gpi5rucLADvAOzgOrA`
 - Apps Script (vinculado): `1E98hK1UhabSftMUnCR1j1Jm_XHfQZeTqv96PfqT9h26HND-Zyw1bOBfS`
 - Implantação web: `AKfycby35-KiTddoqhEuo9zalGkVC2Wfspw5lG7i9Vt-_qJXZBa_wqeyiV51_42xh4ITtHhL`
-- Versão publicada do painel: **198** (17/11/2026; movimento de vento do login 40% mais rápido)
+- Versão publicada do painel: **199** (17/11/2026; número da apólice no card Seguro da ficha do veículo)
 - Planilha do Frotas: `1ck1lDtk_W9vjyQEnhV2Ze5secbayGLFfZi4Z0NuX-GY`
 - Apps Script do Frotas: `1fo2YYypS1ponMDM3llLnMWAOiKuJHvhFYPAto_k2k_fRkW1V0-BncRyh`
 - Implantação do Frotas: `AKfycby3W5KlwLYtX7j3_lvi6Zcf6d67k2fKnsg7K0MOmIK-b2X3xY7y57Al-uEPBdzxBaLB`
@@ -72,3 +72,9 @@ próprio e pelas verificações de sessão/perfil no servidor.
 
 - Relógio da animação multiplicado por 1,4: ondas e elevação 40% mais rápidas, com o mesmo enquadramento e amplitude.
 - Sintaxe da animação validada; fluxo de login e proteções de pausa mantidos.
+
+## Card Seguro do Frotas — versão 199
+
+- Card da ficha do veículo exibe o número cadastrado da apólice/proposta, preservando zeros e formatação.
+- Quando não há número, mantém a identificação anterior; quando não há seguro, mantém a ação de cadastro.
+- Botão Ver registro mantém a navegação para Seguro e apólice. Dados da planilha e regras de seleção da apólice não foram alterados.
