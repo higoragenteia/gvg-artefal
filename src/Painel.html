@@ -266,8 +266,24 @@
   .gvgp-sg-brandbar{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:25px 30px 0}
   .gvgp-sg-brandbar img{display:block;width:min(64%,255px);height:auto}
   .gvgp-sg-brandbar span{padding:7px 10px;border:1px solid #b48b4259;border-radius:999px;color:#7e612f;font-size:8px;line-height:1.4;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;white-space:nowrap;background:#fff3}
-  .gvgp-sg-art{position:relative;min-height:0;margin:0;display:grid;place-items:center;overflow:hidden}
-  .gvgp-sg-art img{display:block;width:100%;height:100%;min-height:0;object-fit:contain;object-position:center;mask-image:linear-gradient(180deg,transparent,#000 8%,#000 90%,transparent)}
+  .gvgp-sg-art{position:relative;min-height:0;margin:0;overflow:hidden}
+  .gvgp-sg-slides{position:absolute;inset:0 8px 33px}
+  .gvgp-sg-slide{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transform:scale(.98);transition:opacity .38s ease,transform .38s ease;pointer-events:none}
+  .gvgp-sg-slide.is-active{opacity:1;transform:none}
+  .gvgp-sg-art .gvgp-sg-slide img{display:block;width:100%;height:100%;min-height:0;object-fit:contain;object-position:center;mask-image:none}
+  .gvgp-sg-art .gvgp-sg-slide.is-intro img{mask-image:linear-gradient(180deg,transparent,#000 8%,#000 90%,transparent)}
+  .gvgp-sg-carousel-bar{position:absolute;left:26px;right:26px;bottom:3px;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:28px;color:#80643d}
+  .gvgp-sg-carousel-label{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:10px;font-weight:750;line-height:1.5}
+  .gvgp-sg-carousel-actions{display:flex;align-items:center;gap:7px;flex:0 0 auto}
+  .gvgp-sg-carousel-dots{display:flex;align-items:center;gap:1px}
+  .gvgp-sg-carousel-dots button{display:grid;place-items:center;width:19px;height:28px;padding:0;border:0;border-radius:6px;background:transparent;cursor:pointer}
+  .gvgp-sg-carousel-dots i{display:block;width:5px;height:5px;border-radius:999px;background:#ac927075;transition:width .2s,background .2s}
+  .gvgp-sg-carousel-dots button[aria-current="true"] i{width:16px;background:#9c752f}
+  .gvgp-sg-carousel-pause{display:grid;place-items:center;width:28px;height:28px;padding:0;border:1px solid #b28e514d;border-radius:50%;background:#fff6;color:#846328;font-size:11px;font-weight:800;cursor:pointer}
+  .gvgp-sg-carousel-pause:hover{background:#fff9}
+  .gvgp-sg-carousel-dots button:focus-visible,.gvgp-sg-carousel-pause:focus-visible{outline:2px solid #a47a31;outline-offset:2px}
+  .gvgp-sg-hero-copy h3{min-height:2.32em}
+  .gvgp-sg-hero-copy p{min-height:3.4em}
   .gvgp-sg-hero-copy{position:relative;padding:0 34px 30px;color:#382c20}
   .gvgp-sg-hero-copy>span{display:block;margin-bottom:9px;color:#846329;font-size:9px;font-weight:850;letter-spacing:2.1px;text-transform:uppercase}
   .gvgp-sg-hero-copy h3{margin:0;font-size:clamp(25px,2.5vw,33px);font-weight:750;line-height:1.16;letter-spacing:-1px}
@@ -323,7 +339,10 @@
     .gvgp-sg-brandbar{padding:16px 22px 0}
     .gvgp-sg-brandbar img{width:190px}
     .gvgp-sg-brandbar span{display:none}
-    .gvgp-sg-art img{width:min(100%,340px);object-fit:contain}
+    .gvgp-sg-art .gvgp-sg-slide img{width:100%;object-fit:contain}
+    .gvgp-sg-slides{inset:0 12px 31px}
+    .gvgp-sg-carousel-bar{left:22px;right:22px;bottom:0}
+    .gvgp-sg-carousel-label{font-size:9px}
     .gvgp-sg-hero-copy{display:none}
     .gvgp-sg-panel{overflow:visible;padding:28px 24px max(30px,env(safe-area-inset-bottom))}
     .gvgp-sg-panel-inner{max-width:440px;min-height:0;justify-content:flex-start}
@@ -335,7 +354,7 @@
     .gvgp-sg-back{font-size:12px}
   }
   @media(max-width:820px) and (max-height:700px){.gvgp-sg-hero{height:210px}.gvgp-sg-brandbar img{width:160px}.gvgp-sg-brandbar{padding-top:12px}}
-  @media(prefers-reduced-motion:reduce){.gvgp-sg-dialog{animation:none}.gvgp-sg-submit{transition:none}}
+  @media(prefers-reduced-motion:reduce){.gvgp-sg-dialog{animation:none}.gvgp-sg-submit,.gvgp-sg-slide,.gvgp-sg-carousel-dots i{transition:none}}
   .gvgp-login-visual{position:relative;min-width:0;min-height:100vh;overflow:hidden;background:#e4d2bf}
   .gvgp-login-visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block}
   #gvgpLoginCard .gvgp-login-panel{position:relative;min-width:0;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-start;gap:clamp(16px,1.5vw,26px);padding:clamp(70px,13vh,140px) clamp(28px,3.6vw,64px) clamp(26px,4vh,46px);background:radial-gradient(80% 55% at 20% 0%,rgba(255,250,242,.25),transparent 60%),linear-gradient(170deg,#dfcbb8 0%,#ead9c8 35%,#d2bdaa 75%,#c2ae9e 100%);border-left:1px solid #b99254;overflow-y:auto}
@@ -1384,8 +1403,25 @@
     <button type="button" class="gvgp-sg-close" id="gvgpSignupClose" aria-label="Fechar cadastro">×</button>
     <section class="gvgp-sg-hero" aria-label="Painel integrado GVG e Artefal">
       <div class="gvgp-sg-brandbar"><img src="https://gvgartefalesquadrias.com.br/assets/login-logo-gvg-transparent.webp" width="560" height="180" alt="GVG&amp;ARTEFAL"><span>Painel integrado</span></div>
-      <figure class="gvgp-sg-art" aria-hidden="true"><img src="https://gvgartefalesquadrias.com.br/assets/login-visual-maquinas-1080.webp" srcset="https://gvgartefalesquadrias.com.br/assets/login-visual-maquinas-720.webp 720w, https://gvgartefalesquadrias.com.br/assets/login-visual-maquinas-1080.webp 1080w" sizes="(max-width:820px) 340px, 600px" width="1080" height="810" alt="" loading="lazy" decoding="async"></figure>
-      <div class="gvgp-sg-hero-copy"><span>GVG&amp;ARTEFAL · Esquadrias</span><h3>Gestão integrada.<br><b>Do pedido à entrega.</b></h3><p>Pedidos, gastos, fornecedores, máquinas e frotas.<br>Um único acesso para a sua rotina.</p></div>
+      <figure class="gvgp-sg-art" aria-roledescription="carrossel" aria-label="Imagens dos aplicativos GVG e Artefal">
+        <div class="gvgp-sg-slides" id="gvgpSignupSlides" aria-live="off">
+          <div class="gvgp-sg-slide is-intro is-active" data-signup-image="intro" role="group" aria-roledescription="imagem" aria-label="1 de 6: Visão geral" aria-hidden="false"><img src="https://gvgartefalesquadrias.com.br/assets/login-visual-maquinas-1080.webp" srcset="https://gvgartefalesquadrias.com.br/assets/login-visual-maquinas-720.webp 720w, https://gvgartefalesquadrias.com.br/assets/login-visual-maquinas-1080.webp 1080w" sizes="(max-width:820px) 340px, 600px" width="1080" height="810" alt="Visão geral" loading="lazy" decoding="async"></div>
+          <div class="gvgp-sg-slide" data-signup-image="pedidos" role="group" aria-roledescription="imagem" aria-label="2 de 6: Order Catalog" aria-hidden="true"><img src="https://gvgartefalesquadrias.com.br/assets/icone-order-catalog-catalogo-384.webp" width="384" height="384" alt="Order Catalog" loading="lazy" decoding="async"></div>
+          <div class="gvgp-sg-slide" data-signup-image="gastos" role="group" aria-roledescription="imagem" aria-label="3 de 6: Controle de Gastos" aria-hidden="true"><img src="https://gvgartefalesquadrias.com.br/assets/icone-gastos-layout8.webp" width="600" height="540" alt="Controle de Gastos" loading="lazy" decoding="async"></div>
+          <div class="gvgp-sg-slide" data-signup-image="fornecedores" role="group" aria-roledescription="imagem" aria-label="4 de 6: Fornecedores" aria-hidden="true"><img src="https://gvgartefalesquadrias.com.br/assets/icone-fornecedores-layout8.webp" width="600" height="530" alt="Fornecedores" loading="lazy" decoding="async"></div>
+          <div class="gvgp-sg-slide" data-signup-image="maquinas" role="group" aria-roledescription="imagem" aria-label="5 de 6: Controle de Máquinas" aria-hidden="true"><img src="https://gvgartefalesquadrias.com.br/assets/icone-maquinas-layout8.webp" width="600" height="600" alt="Controle de Máquinas" loading="lazy" decoding="async"></div>
+          <div class="gvgp-sg-slide" data-signup-image="frotas" role="group" aria-roledescription="imagem" aria-label="6 de 6: Frotas" aria-hidden="true"><img src="https://gvgartefalesquadrias.com.br/assets/icone-frotas-layout8.webp" width="600" height="528" alt="Frotas" loading="lazy" decoding="async"></div>
+        </div>
+        <figcaption class="gvgp-sg-carousel-bar"><span class="gvgp-sg-carousel-label" id="gvgpSignupSlideLabel">Visão geral</span><div class="gvgp-sg-carousel-actions"><div class="gvgp-sg-carousel-dots" id="gvgpSignupSlideDots" role="group" aria-label="Escolher imagem">
+          <button type="button" data-signup-slide="0" aria-label="Mostrar Visão geral" aria-current="true"><i aria-hidden="true"></i></button>
+          <button type="button" data-signup-slide="1" aria-label="Mostrar Order Catalog" aria-current="false"><i aria-hidden="true"></i></button>
+          <button type="button" data-signup-slide="2" aria-label="Mostrar Controle de Gastos" aria-current="false"><i aria-hidden="true"></i></button>
+          <button type="button" data-signup-slide="3" aria-label="Mostrar Fornecedores" aria-current="false"><i aria-hidden="true"></i></button>
+          <button type="button" data-signup-slide="4" aria-label="Mostrar Controle de Máquinas" aria-current="false"><i aria-hidden="true"></i></button>
+          <button type="button" data-signup-slide="5" aria-label="Mostrar Frotas" aria-current="false"><i aria-hidden="true"></i></button>
+        </div><button type="button" id="gvgpSignupSlidePause" class="gvgp-sg-carousel-pause" aria-label="Pausar imagens" aria-pressed="false">Ⅱ</button></div></figcaption>
+      </figure>
+      <div class="gvgp-sg-hero-copy"><span>GVG&amp;ARTEFAL · Esquadrias</span><h3><span id="gvgpSignupSlideTitle">Gestão integrada.</span><br><b id="gvgpSignupSlideSubtitle">Do pedido à entrega.</b></h3><p id="gvgpSignupSlideDescription">Pedidos, gastos, fornecedores, máquinas e frotas.<br>Um único acesso para a sua rotina.</p></div>
     </section>
     <div class="gvgp-sg-panel">
       <div class="gvgp-sg-panel-inner">
@@ -2190,6 +2226,37 @@ const FROTAS_URL = <?!= JSON.stringify(frotasUrl) ?>;
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape'&&$('gvgpApp').classList.contains('gvgp-sidebar-open'))setSidebar(false);
   });
+  const signupSlideContent=[{"name":"Visão geral","title":"Gestão integrada.","subtitle":"Do pedido à entrega.","description":"Pedidos, gastos, fornecedores, máquinas e frotas. Um único acesso para a sua rotina."},{"name":"Order Catalog","title":"Order Catalog.","subtitle":"Materiais para a sua obra.","description":"Solicite materiais e acompanhe os seus pedidos, do catálogo à conferência de entrega."},{"name":"Controle de Gastos","title":"Controle de Gastos.","subtitle":"Sua gestão financeira.","description":"Despesas, orçamento e relatórios para acompanhar os gastos da operação."},{"name":"Fornecedores","title":"Fornecedores.","subtitle":"Compras bem organizadas.","description":"Fornecedores, produtos e cotações reunidos para comparar e acompanhar suas compras."},{"name":"Controle de Máquinas","title":"Controle de Máquinas.","subtitle":"Cada equipamento em dia.","description":"Equipamentos, colaboradores, movimentações e manutenções em um só lugar."},{"name":"Frotas","title":"Controle de Frotas.","subtitle":"Sua operação em movimento.","description":"Veículos, motoristas, quilometragem, documentos e manutenções da frota."}];
+  let signupSlideIndex=0,signupSlideTimer=null,signupSlidePaused=false;
+  function setSignupSlide(index){
+    const slides=Array.from($('gvgpSignupSlides').children);
+    signupSlideIndex=(index+slides.length)%slides.length;
+    slides.forEach((slide,i)=>{const active=i===signupSlideIndex;slide.classList.toggle('is-active',active);slide.setAttribute('aria-hidden',String(!active));});
+    document.querySelectorAll('[data-signup-slide]').forEach((button,i)=>button.setAttribute('aria-current',String(i===signupSlideIndex)));
+    const content=signupSlideContent[signupSlideIndex];
+    $('gvgpSignupSlideLabel').textContent=content.name;
+    $('gvgpSignupSlideTitle').textContent=content.title;
+    $('gvgpSignupSlideSubtitle').textContent=content.subtitle;
+    $('gvgpSignupSlideDescription').textContent=content.description;
+  }
+  function stopSignupSlides(){if(signupSlideTimer){clearInterval(signupSlideTimer);signupSlideTimer=null;}}
+  function startSignupSlides(reset){
+    stopSignupSlides();
+    if(reset){signupSlidePaused=false;setSignupSlide(0);}
+    const pause=$('gvgpSignupSlidePause');
+    pause.textContent=signupSlidePaused?'▶':'Ⅱ';
+    pause.setAttribute('aria-pressed',String(signupSlidePaused));
+    pause.setAttribute('aria-label',signupSlidePaused?'Retomar imagens':'Pausar imagens');
+    document.querySelectorAll('#gvgpSignupSlides img').forEach(img=>{img.loading='eager';});
+    if(signupSlidePaused||document.hidden||$('gvgpSignupBox').classList.contains('gvgp-hidden'))return;
+    signupSlideTimer=setInterval(()=>setSignupSlide(signupSlideIndex+1),3000);
+  }
+  $('gvgpSignupSlideDots').addEventListener('click',event=>{
+    const button=event.target.closest('[data-signup-slide]');if(!button)return;
+    setSignupSlide(Number(button.getAttribute('data-signup-slide'))||0);startSignupSlides(false);
+  });
+  $('gvgpSignupSlidePause').addEventListener('click',()=>{signupSlidePaused=!signupSlidePaused;startSignupSlides(false);});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopSignupSlides();else if(!$('gvgpSignupBox').classList.contains('gvgp-hidden'))startSignupSlides(false);});
   let signupReturnFocus=null;
   function openSignup(){
     const box=$('gvgpSignupBox'),btn=$('gvgpSignupToggle');
@@ -2198,6 +2265,7 @@ const FROTAS_URL = <?!= JSON.stringify(frotasUrl) ?>;
     box.classList.remove('gvgp-hidden');
     if(btn)btn.setAttribute('aria-expanded','true');
     document.body.classList.add('gvgp-signup-open');
+    startSignupSlides(true);
     const pass=$('gvgpSignupPass'),eye=$('gvgpSignupEye');
     if(pass)pass.type='password';
     if(eye){eye.setAttribute('aria-pressed','false');eye.setAttribute('aria-label','Mostrar senha');}
@@ -2209,6 +2277,7 @@ const FROTAS_URL = <?!= JSON.stringify(frotasUrl) ?>;
     box.classList.add('gvgp-hidden');
     if(btn)btn.setAttribute('aria-expanded','false');
     document.body.classList.remove('gvgp-signup-open');
+    stopSignupSlides();
     const target=signupReturnFocus&&signupReturnFocus.isConnected?signupReturnFocus:btn;
     if(target)target.focus();
   }
